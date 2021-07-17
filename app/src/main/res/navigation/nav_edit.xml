@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/nav_edit"
+    app:startDestination="@id/listChanger">
+
+    <fragment
+        android:id="@+id/editTask"
+        android:name="com.voidsamurai.lordoftime.fragments.EditTaskSelected"
+        android:label="EditTask" >
+        <action
+            android:id="@+id/action_editTask_to_listChanger"
+            app:destination="@id/listChanger" />
+        <argument
+            android:name="dataColor"
+            app:argType="layout.DataRowWithColor"
+            app:nullable="true"
+            android:defaultValue="@null" />
+    </fragment>
+    <fragment
+        android:id="@+id/listChanger"
+        android:name="com.voidsamurai.lordoftime.fragments.EditList"
+        android:label="ListChanger" >
+        <action
+            android:id="@+id/action_listChanger_to_editTask"
+            app:destination="@id/editTask" />
+    </fragment>
+</navigation>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/FirstFragment">
+
+    <fragment
+        android:id="@+id/FirstFragment"
+        android:name="com.voidsamurai.lordoftime.fragments.HomeFragment"
+        android:label="first_fragment_label"
+        tools:layout="@layout/fragment_home">
+
+        <action
+            android:id="@+id/action_FirstFragment_to_colorsFragment2"
+            app:destination="@id/colorsFragment"
+            app:enterAnim="@anim/slide_in_left_long"
+            app:exitAnim="@anim/slide_out_right"
+            app:popEnterAnim="@anim/slide_in_right"
+            app:popExitAnim="@anim/slide_out_left_long" />
+        <action
+            android:id="@+id/action_FirstFragment_to_tasksEditHostFragment"
+            app:destination="@id/tasksEditHostFragment"
+            app:enterAnim="@anim/fade_in" />
+        <action
+            android:id="@+id/action_FirstFragment_to_manyCharts"
+            app:destination="@id/manyCharts" />
+    </fragment>
+    <fragment
+        android:id="@+id/colorsFragment"
+        android:name="com.voidsamurai.lordoftime.fragments.ColorsFragment"
+        android:label="fragment_colors_list"
+        tools:layout="@layout/fragment_colors_list" >
+        <action
+            android:id="@+id/action_colorsFragment2_to_FirstFragment"
+            app:destination="@id/FirstFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/tasksEditHostFragment"
+        android:name="com.voidsamurai.lordoftime.fragments.TasksEditHostFragment"
+        android:label="fragment_tasks_edit_host"
+        tools:layout="@layout/fragment_tasks_edit_host" >
+        <action
+            android:id="@+id/action_tasksEditHostFragment_to_FirstFragment"
+            app:destination="@id/FirstFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/manyCharts"
+        android:name="com.voidsamurai.lordoftime.fragments.ManyChartsFragment"
+        android:label="fragment_many_charts"
+        tools:layout="@layout/fragment_many_charts" >
+        <action
+            android:id="@+id/action_manyCharts_to_FirstFragment"
+            app:destination="@id/FirstFragment" />
+    </fragment>
+</navigation>

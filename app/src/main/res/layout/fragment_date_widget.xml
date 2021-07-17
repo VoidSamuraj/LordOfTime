@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+
+<!--
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragments.DateChartFragment">
+
+    <com.google.android.material.button.MaterialButtonToggleGroup
+        android:id="@+id/materialButtonToggleGroup"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/edit_height"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:singleSelection="true"
+        app:checkedButton="@+id/day_button"
+        android:weightSum="3">
+        <Button
+            android:id="@+id/month_button"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="@string/months"
+            style="@style/Widget.App.Button.OutlinedButton.IconOnly"
+            />
+        <Button
+            android:id="@+id/week_button"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="@string/weeks"
+            style="@style/Widget.App.Button.OutlinedButton.IconOnly"
+
+            />
+        <Button
+            android:id="@+id/day_button"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="@string/days"
+            style="@style/Widget.App.Button.OutlinedButton.IconOnly"
+
+            />
+    </com.google.android.material.button.MaterialButtonToggleGroup>
+
+    <ImageButton
+        android:id="@+id/date_back"
+        android:layout_width="@dimen/calendar_button_width"
+        android:layout_height="@dimen/calendar_button_height"
+        android:background="@null"
+        android:src="@drawable/ic_arrow_back_ios"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/materialButtonToggleGroup" />
+
+    <TextView
+        android:id="@+id/current_month_label"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="@+id/date_forward"
+        app:layout_constraintEnd_toStartOf="@+id/date_forward"
+        app:layout_constraintStart_toEndOf="@+id/date_back"
+        app:layout_constraintTop_toBottomOf="@+id/materialButtonToggleGroup" />
+
+    <ImageButton
+        android:id="@+id/date_forward"
+        android:layout_width="@dimen/calendar_button_width"
+        android:layout_height="@dimen/calendar_button_height"
+        android:background="@null"
+        android:src="@drawable/ic_arrow_forward_ios"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/materialButtonToggleGroup" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/date_back"
+        app:layout_constraintVertical_bias="0.0"
+        tools:layout_editor_absoluteX="-16dp"
+        android:gravity="center">
+
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/first_week"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center_horizontal"
+            tools:itemCount="2">
+
+        </androidx.recyclerview.widget.RecyclerView>
+
+
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/second_week"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center_horizontal"
+            tools:itemCount="2">
+
+        </androidx.recyclerview.widget.RecyclerView>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/third_week"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center_horizontal"
+            tools:itemCount="2">
+
+        </androidx.recyclerview.widget.RecyclerView>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/fourth_week"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center_horizontal"
+            tools:itemCount="2">
+
+        </androidx.recyclerview.widget.RecyclerView>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/fifth_week"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center_horizontal"
+            tools:itemCount="2">
+
+        </androidx.recyclerview.widget.RecyclerView>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/sixth_week"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center_horizontal"
+            tools:itemCount="2">
+
+        </androidx.recyclerview.widget.RecyclerView>
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+-->
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragments.DateChartFragment">
+
+    <com.google.android.material.button.MaterialButtonToggleGroup
+        android:id="@+id/materialButtonToggleGroup"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/edit_height"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:singleSelection="true"
+        app:checkedButton="@+id/day_button"
+        android:weightSum="3">
+        <Button
+            android:id="@+id/month_button"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="@string/months"
+            style="@style/Widget.App.Button.OutlinedButton.IconOnly"
+            />
+        <Button
+            android:id="@+id/week_button"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="@string/weeks"
+            style="@style/Widget.App.Button.OutlinedButton.IconOnly"
+
+            />
+        <Button
+            android:id="@+id/day_button"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="@string/days"
+            style="@style/Widget.App.Button.OutlinedButton.IconOnly"
+
+            />
+    </com.google.android.material.button.MaterialButtonToggleGroup>
+
+    <ImageButton
+        android:id="@+id/date_back"
+        android:layout_width="@dimen/calendar_button_width"
+        android:layout_height="@dimen/calendar_button_height"
+        android:background="@null"
+        android:src="@drawable/ic_arrow_back_ios"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/materialButtonToggleGroup" />
+
+    <TextSwitcher
+        android:id="@+id/current_month_label"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="@+id/date_forward"
+        app:layout_constraintEnd_toStartOf="@+id/date_forward"
+        app:layout_constraintStart_toEndOf="@+id/date_back"
+        app:layout_constraintTop_toBottomOf="@+id/materialButtonToggleGroup">
+        <TextView
+            android:gravity="center"
+            android:textSize="20sp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="1"/>
+        <TextView
+            android:gravity="center"
+            android:textSize="20sp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+    </TextSwitcher>
+
+    <ImageButton
+        android:id="@+id/date_forward"
+        android:layout_width="@dimen/calendar_button_width"
+        android:layout_height="@dimen/calendar_button_height"
+        android:background="@null"
+        android:src="@drawable/ic_arrow_forward_ios"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/materialButtonToggleGroup" />
+<!--
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragment_date_cal"
+        android:name="com.voidsamurai.lordoftime.fragments.FragmentDateChartElement"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/date_back"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        />
+
+        -->
+
+    <LinearLayout
+        android:id="@+id/date_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/date_back"
+        app:layout_constraintVertical_bias="0.0"
+        tools:layout_editor_absoluteX="-16dp"
+        android:gravity="center"
+       />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+

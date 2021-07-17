@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingStart="@dimen/line_height"
+    android:paddingEnd="@dimen/line_height">
+
+    <EditText
+        android:id="@+id/name_edit"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/edit_height"
+        android:background="@drawable/border"
+        android:inputType="textPersonName"
+        android:paddingStart="@dimen/small_padding"
+        android:paddingEnd="@dimen/small_padding"
+        android:textSize="@dimen/line_text_size"
+        app:layout_constraintStart_toStartOf="@+id/textName"
+        app:layout_constraintTop_toBottomOf="@+id/textName" />
+
+    <EditText
+        android:id="@+id/priority_edit"
+        android:layout_width="@dimen/half_color_edit"
+        android:layout_height="@dimen/edit_height"
+        android:background="@drawable/border"
+        android:gravity="center"
+        android:inputType="number"
+        android:paddingStart="@dimen/small_padding"
+        android:paddingEnd="@dimen/small_padding"
+        android:textSize="@dimen/line_text_size"
+        app:layout_constraintStart_toStartOf="@+id/textPriority"
+        app:layout_constraintTop_toBottomOf="@+id/textPriority" />
+
+    <EditText
+        android:id="@+id/hour_edit"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/edit_height"
+        android:paddingStart="@dimen/small_padding"
+        android:paddingEnd="@dimen/small_padding"
+        android:minWidth="60dp"
+        android:gravity="center"
+        android:textColor="@color/black"
+        android:textSize="@dimen/line_text_size"
+        android:background="@drawable/border"
+        app:layout_constraintStart_toEndOf="@+id/date_edit"
+        app:layout_constraintTop_toTopOf="@+id/date_edit"
+        android:layout_marginStart="@dimen/default_margin"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        tools:text="12:00" />
+
+    <EditText
+        android:id="@+id/date_edit"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/edit_height"
+        android:background="@drawable/border"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:gravity="center"
+        android:minWidth="100dp"
+        android:paddingStart="@dimen/small_padding"
+        android:paddingEnd="@dimen/small_padding"
+        android:textColor="@color/black"
+        android:textSize="@dimen/line_text_size"
+
+        app:layout_constraintStart_toStartOf="@+id/textDate"
+        app:layout_constraintTop_toBottomOf="@+id/textDate"
+        tools:text="07/30/02" />
+
+
+    <EditText
+        android:id="@+id/duration_edit"
+        android:layout_width="@dimen/half_color_edit"
+        android:layout_height="@dimen/edit_height"
+        android:background="@drawable/border"
+        android:gravity="center"
+        android:inputType="numberDecimal"
+        android:paddingStart="@dimen/small_padding"
+        android:paddingEnd="@dimen/small_padding"
+        android:textSize="@dimen/line_text_size"
+
+        app:layout_constraintStart_toStartOf="@+id/textDuration"
+        app:layout_constraintTop_toBottomOf="@+id/textDuration" />
+
+
+    <!--
+    <Spinner
+        android:id="@+id/check_category"
+        android:layout_width="230dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/border"
+        app:layout_constraintStart_toStartOf="@+id/category_edit"
+        app:layout_constraintTop_toTopOf="@+id/category_edit"
+        android:spinnerMode="dropdown"
+        />
+-->
+    <LinearLayout
+        android:id="@+id/category_edit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:textSize="@dimen/line_text_size"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/textCategory"
+        app:layout_constraintTop_toBottomOf="@+id/textCategory">
+
+        <LinearLayout
+            android:id="@+id/linear_color"
+            android:layout_width="wrap_content"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:background="@drawable/border"
+            android:gravity="center_vertical"
+            android:orientation="vertical">
+
+            <Spinner
+                android:id="@+id/check_category"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/color_line_with_margin"
+                android:layout_marginTop="0dp"
+                android:dropDownVerticalOffset="@dimen/color_line_with_margin"
+                android:gravity="center"
+                android:spinnerMode="dropdown"
+                android:textSize="@dimen/line_text_size"
+                android:background="@drawable/border"
+                android:popupBackground="@drawable/filled_border"
+                />
+
+
+        </LinearLayout>
+
+
+        <ImageButton
+            android:id="@+id/add_color"
+            android:layout_width="@dimen/edit_height"
+            android:layout_height="match_parent"
+            android:background="@drawable/border"
+            android:scaleType="fitCenter"
+            app:tint="@color/blue_gray"
+            app:srcCompat="@drawable/ic_edit"
+            android:padding="@dimen/small_padding"/>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/textName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/task_changer_label_margin"
+        android:text="@string/name"
+        android:textSize="@dimen/line_text_size"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textPriority"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/priority"
+        android:textSize="@dimen/line_text_size"
+        android:layout_marginTop="@dimen/task_changer_label_margin"
+        app:layout_constraintStart_toStartOf="@+id/category_edit"
+        app:layout_constraintTop_toBottomOf="@+id/duration_edit" />
+
+    <TextView
+        android:id="@+id/textCategory"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/category"
+        android:textSize="@dimen/line_text_size"
+        android:layout_marginTop="@dimen/task_changer_label_margin"
+        app:layout_constraintStart_toStartOf="@+id/name_edit"
+        app:layout_constraintTop_toBottomOf="@+id/name_edit" />
+
+    <TextView
+        android:id="@+id/textDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/start_time"
+        android:textSize="@dimen/line_text_size"
+        android:layout_marginTop="@dimen/task_changer_label_margin"
+
+        app:layout_constraintStart_toStartOf="@+id/priority_edit"
+        app:layout_constraintTop_toBottomOf="@+id/category_edit" />
+
+    <TextView
+        android:id="@+id/textDuration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/duration_time"
+        android:textSize="@dimen/line_text_size"
+        android:layout_marginTop="@dimen/task_changer_label_margin"
+        app:layout_constraintStart_toStartOf="@+id/date_edit"
+        app:layout_constraintTop_toBottomOf="@+id/date_edit" />
+
+    <ImageButton
+        android:id="@+id/delete_edit_button"
+        android:layout_width="@dimen/edit_buttons_size"
+        android:layout_height="@dimen/edit_buttons_size"
+
+        android:layout_marginTop="@dimen/line_height"
+        android:background="@null"
+        android:scaleType="fitCenter"
+
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/priority_edit"
+        app:srcCompat="@drawable/ic_delete"
+        app:tint="@color/cardview_dark_background" />
+
+    <ImageButton
+        android:id="@+id/cancel_edit_button"
+        android:layout_width="@dimen/edit_buttons_size"
+        android:layout_height="@dimen/edit_buttons_size"
+        android:layout_marginBottom="@dimen/task_changer_label_margin"
+        android:background="@null"
+        android:scaleType="fitCenter"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/ic_arrow_back"
+        app:tint="@color/cardview_dark_background" />
+
+    <!--
+
+    <ImageButton
+        android:id="@+id/cancel_edit_button"
+        android:layout_width="@dimen/edit_buttons_size"
+        android:layout_height="@dimen/edit_buttons_size"
+        android:layout_marginBottom="@dimen/task_changer_label_margin"
+        android:background="@null"
+        android:scaleType="fitCenter"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/ic_arrow_back"
+        app:tint="@color/cardview_dark_background" />
+
+    -->
+    <ImageButton
+        android:id="@+id/save_edit_button"
+        android:layout_width="@dimen/edit_buttons_size"
+        android:layout_height="@dimen/edit_buttons_size"
+        android:layout_marginBottom="@dimen/task_changer_label_margin"
+        android:scaleType="fitCenter"
+        android:background="@null"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/ic_save"
+        app:tint="@color/lemon" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
