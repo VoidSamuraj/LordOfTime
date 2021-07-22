@@ -106,7 +106,7 @@ class EditTaskSelected : Fragment() ,DatePickerDialog.OnDateSetListener,TimePick
         }
 
         add_color.setOnClickListener{
-            it?.findNavController()!!.navigate(R.id.action_FirstFragment_to_colorsFragment2)
+            it?.findNavController()!!.navigate(R.id.action_editTask_to_colorsFragment2)
         }
 
         date_edit.setOnClickListener{

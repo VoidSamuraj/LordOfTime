@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="hours" >
+        <item>1 godzina</item>
+        <item>2 godziny</item>
+        <item>3 godziny</item>
+        <item>4 godziny</item>
+        <item>5 godzin</item>
+        <item>6 godzin</item>
+        <item>7 godzin</item>
+        <item>8 godzin</item>
+        <item>9 godzin</item>
+        <item>10 godzin</item>
+        <item>11 godzin</item>
+        <item>12 godzin</item>
+        <item>13 godzin</item>
+        <item>14 godzin</item>
+        <item>15 godzin</item>
+        <item>16 godzin</item>
+        <item>17 godzin</item>
+        <item>18 godzin</item>
+        <item>19 godzin</item>
+        <item>20 godzin</item>
+        <item>21 godzin</item>
+        <item>22 godziny</item>
+        <item>23 godziny</item>
+        <item>24 godziny</item>
+
+    </string-array>
+</resources>

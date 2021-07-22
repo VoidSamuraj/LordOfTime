@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/nav_edit"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_edit"
     app:startDestination="@id/listChanger">
 
     <fragment
@@ -15,6 +17,9 @@
             app:argType="layout.DataRowWithColor"
             app:nullable="true"
             android:defaultValue="@null" />
+        <action
+            android:id="@+id/action_editTask_to_colorsFragment2"
+            app:destination="@id/colorsFragment2" />
     </fragment>
     <fragment
         android:id="@+id/listChanger"
@@ -22,6 +27,15 @@
         android:label="ListChanger" >
         <action
             android:id="@+id/action_listChanger_to_editTask"
+            app:destination="@id/editTask" />
+    </fragment>
+    <fragment
+        android:id="@+id/colorsFragment2"
+        android:name="com.voidsamurai.lordoftime.fragments.ColorsFragment"
+        android:label="fragment_colors_list"
+        tools:layout="@layout/fragment_colors_list" >
+        <action
+            android:id="@+id/action_colorsFragment2_to_editTask"
             app:destination="@id/editTask" />
     </fragment>
 </navigation>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<transitionSet
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:transitionOrdering="together">
+    <changeBounds
+        android:duration="300"
+        android:interpolator="@android:interpolator/linear">
+
+    </changeBounds>
+    <!--<fade android:duration="2000"
+        android:startDelay="200"
+        android:fadingMode="fade_in">
+        <targets>
+            <target android:targetId="@+id/card2"></target>
+        </targets>
+    </fade>
+    <fade android:duration="500"
+        android:fadingMode="fade_out">
+        <targets>
+            <target android:targetId="@+id/card2"></target>
+        </targets>
+    </fade>-->
+</transitionSet>

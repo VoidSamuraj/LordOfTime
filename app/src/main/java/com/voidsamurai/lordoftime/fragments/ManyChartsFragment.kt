@@ -5,10 +5,12 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.graphics.Color
 import android.os.Bundle
+import android.transition.Fade
 import android.transition.TransitionInflater
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -17,7 +19,9 @@ import com.voidsamurai.lordoftime.charts.MyChart
 import com.voidsamurai.lordoftime.R
 import com.voidsamurai.lordoftime.bd.LOTDatabaseHelper
 import com.voidsamurai.lordoftime.fragments.adapters.LinearChartAdapter
+import com.voidsamurai.lordoftime.startAnimation
 import kotlinx.android.synthetic.main.fragment_chart.*
+import kotlinx.android.synthetic.main.fragment_many_charts.*
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -42,9 +46,12 @@ class ManyChartsFragment : Fragment() {
         super.onCreate(savedInstanceState)
         oh = LOTDatabaseHelper(requireContext())
         db = oh.readableDatabase
-        sharedElementEnterTransition = TransitionInflater.from(context).inflateTransition(android.R.transition.move)
-        enterTransition=TransitionInflater.from(context).inflateTransition(android.R.transition.fade)
-        exitTransition=TransitionInflater.from(context).inflateTransition(android.R.transition.fade)
+       // enterTransition=TransitionInflater.from(context).inflateTransition(android.R.transition.fade)
+        sharedElementEnterTransition = TransitionInflater.from(context).inflateTransition(R.transition.move_fade)
+       // exitTransition=TransitionInflater.from(context).inflateTransition(R.transition.fade_out)
+
+
+
 
 
     }
@@ -56,7 +63,17 @@ class ManyChartsFragment : Fragment() {
         chartRecyclerView =chart_description
         chartRecyclerView.addOnItemTouchListener(HomeFragment.RecyclerViewDisabler())
         fillChartWithData()
+        AnimationUtils.loadAnimation(context,R.anim.fade_in).also { animation ->
+            chart2.startAnimation(animation)
+        }
     }
+
+    /**
+     * Called when the Fragment is no longer resumed.  This is generally
+     * tied to [Activity.onPause] of the containing
+     * Activity's lifecycle.
+     */
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -98,5 +115,10 @@ class ManyChartsFragment : Fragment() {
 
     }
 
+    override fun onStop() {
+        super.onStop()
 
+       // enterTransition=null
+
+    }
 }

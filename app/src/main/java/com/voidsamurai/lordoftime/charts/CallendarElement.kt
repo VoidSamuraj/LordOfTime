@@ -16,11 +16,13 @@ class CallendarElement(context: Context?, attributeSet: AttributeSet):
     private var color:Boolean=true
     private var paint: Paint = Paint()
     private var side:Int=0
+    private var scale:Int=24
 
     fun fillData(
         date:Int,
         duration:Float,
-        currentMonth:Boolean
+        currentMonth:Boolean,
+        scale:Int?
     ) {
         this.date=date
         this.duration=duration
@@ -28,6 +30,7 @@ class CallendarElement(context: Context?, attributeSet: AttributeSet):
         canvas?.let {
             drawElement(canvas!!) }
         forceLayout()
+        scale?.let { this.scale=it }
     }
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
@@ -50,9 +53,9 @@ class CallendarElement(context: Context?, attributeSet: AttributeSet):
         paint.setShadowLayer(0f,0f,0f,Color.BLACK)
         paint.style= Paint.Style.FILL
         if(color)
-            drawArc(canvas,0f,duration*360/24,Color.GREEN)
+            drawArc(canvas,0f,duration*360/scale,Color.GREEN)
         else
-            drawArc(canvas,0f,duration*360/24,Color.GRAY)
+            drawArc(canvas,0f,duration*360/scale,Color.GRAY)
         if(color)
             paint.color=Color.WHITE
         else

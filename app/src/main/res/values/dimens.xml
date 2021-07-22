@@ -1,9 +1,9 @@
 <resources>
     <dimen name="space_between_cards">4dp</dimen>
     <dimen name="small_margin">5dp</dimen>
+    <dimen name="radius_card_view">5dp</dimen>
     <dimen name="small_padding">6dp</dimen>
     <dimen name="padding_elewation">10dp</dimen>
-    <dimen name="radius_card_view">5dp</dimen>
     <dimen name="fab_margin">12dp</dimen>
     <dimen name="task_changer_label_margin">12dp</dimen>
     <dimen name="default_margin">16dp</dimen>

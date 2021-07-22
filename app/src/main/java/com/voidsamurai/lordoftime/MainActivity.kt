@@ -4,7 +4,9 @@ import android.annotation.SuppressLint
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.os.Bundle
+import android.os.Handler
 import android.view.*
+import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
@@ -18,6 +20,7 @@ import androidx.navigation.ui.setupWithNavController
 import com.voidsamurai.lordoftime.bd.LOTDatabaseHelper
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_home.*
+import kotlinx.android.synthetic.main.fragment_many_charts.*
 import layout.DataRowWithColor
 import java.util.*
 import kotlin.collections.ArrayList
@@ -110,7 +113,10 @@ class MainActivity : AppCompatActivity() {
             else{
                 navController.popBackStack()
             }
+        }else if(navController.currentDestination?.label=="fragment_many_charts"){
+              findNavController(R.id.nav_host_fragment).navigateUp()
         }
+     //
         else
             super.onBackPressed()
     }

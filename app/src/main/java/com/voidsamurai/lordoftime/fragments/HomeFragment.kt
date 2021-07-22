@@ -2,12 +2,17 @@ package com.voidsamurai.lordoftime.fragments
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.os.Build
 import android.os.Bundle
+import android.transition.*
 import android.view.*
 import android.view.animation.*
+import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -38,7 +43,6 @@ class HomeFragment : Fragment() {
         private lateinit var todoRecyclerView: RecyclerView
         private lateinit var newestRecyclerView: RecyclerView
         private lateinit var chartRecyclerView: RecyclerView
-
         @SuppressLint("StaticFieldLeak")
         private  var contx : Context?=null
 
@@ -98,6 +102,15 @@ class HomeFragment : Fragment() {
 
     }
 
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+       sharedElementEnterTransition = TransitionInflater.from(context).inflateTransition(android.R.transition.move)
+        //enterTransition=TransitionInflater.from(context).inflateTransition(android.R.transition.fade)
+        //exitTransition=TransitionInflater.from(context).inflateTransition(android.R.transition.fade)
+
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -107,6 +120,8 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         // pieChart=pie_chart
+        postponeEnterTransition()
+        card2.doOnPreDraw { startPostponedEnterTransition() }
 
         myChart=my_chart
         contx=context
@@ -135,8 +150,35 @@ class HomeFragment : Fragment() {
             val extras = FragmentNavigatorExtras(
                 card2 to "chartCard"
             )
-            findNavController().navigate(R.id.action_FirstFragment_to_manyCharts, null, null, extras)
 
+            findNavController().navigate(R.id.action_FirstFragment_to_manyCharts, null, null, extras)
+          //  findNavController().navigate(R.id.action_FirstFragment_to_manyCharts)
+
+           /* var endFragment=ManyChartsFragment
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                setSharedElementReturnTransition(TransitionInflater.from(
+                    getActivity()).inflateTransition(android.R.transition.move));
+                setExitTransition(
+                    TransitionInflater.from(
+                    getActivity()).inflateTransition(android.R.transition.fade));
+
+                endFragment.setSharedElementEnterTransition(TransitionInflater.from(
+                    getActivity()).inflateTransition(android.R.transition.move));
+                endFragment.setEnterTransition(TransitionInflater.from(
+                    getActivity()).inflateTransition(android.R.transition.fade));
+            }
+
+            var bundle =  Bundle();
+            bundle.putString("ACTION", textView.getText().toString());
+            bundle.putParcelable("IMAGE", ((BitmapDrawable) imageView.getDrawable()).getBitmap());
+            endFragment.setArguments(bundle);
+            var fragmentManager = fragmentManager;
+            fragmentManager?.beginTransaction()
+                ?.replace(R.id.container, endFragment)
+                ?.addToBackStack("Payment")
+                ?.addSharedElement(staticImage, getString(R.string.fragment_image_trans))
+                ?.commit();
+        }*/
         }
     }
 

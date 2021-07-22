@@ -10,10 +10,10 @@ import com.voidsamurai.lordoftime.charts.CallendarElement
 import com.voidsamurai.lordoftime.LinearViewHolder
 import com.voidsamurai.lordoftime.fragments.ManyChartsFragment
 import com.voidsamurai.lordoftime.R
-import com.voidsamurai.lordoftime.charts.NTuple4
+import com.voidsamurai.lordoftime.charts.NTuple5
 
 
-class CalendarAdapter(private val dataSet: ArrayList<NTuple4<Int, Float, Boolean,Int>?>) :
+class CalendarAdapter(private val dataSet: ArrayList<NTuple5<Int, Float, Boolean, Int, Int?>?>) :
 
     RecyclerView.Adapter<LinearViewHolder>() {
 
@@ -36,7 +36,7 @@ class CalendarAdapter(private val dataSet: ArrayList<NTuple4<Int, Float, Boolean
         val calendarLinear=layout.findViewById<LinearLayout>(R.id.calendar_linear)
         calendarLinear.layoutParams.width=x.toInt()
         calendarLinear.layoutParams.height=x.toInt()
-        dataSet[position]?.let { calendarView.fillData(it.t1,it.t2,it.t3)}
+        dataSet[position]?.let { calendarView.fillData(it.t1,it.t2,it.t3,it.t5)}
     }
 
 
