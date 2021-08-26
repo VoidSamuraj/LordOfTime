@@ -7,7 +7,6 @@ import android.database.sqlite.SQLiteDatabase
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,8 +21,8 @@ import com.voidsamurai.lordoftime.LinearViewHolder
 import com.voidsamurai.lordoftime.R
 import com.voidsamurai.lordoftime.bd.LOTDatabaseHelper
 import com.voidsamurai.lordoftime.charts.NTuple5
+import com.voidsamurai.lordoftime.databinding.FragmentDateWidgetBinding
 import com.voidsamurai.lordoftime.fragments.adapters.CalendarAdapter
-import kotlinx.android.synthetic.main.fragment_date_widget.*
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -35,27 +34,21 @@ class DateChartFragment : Fragment() {
         lateinit var dayAim:TextView
 
     }
+
+    private var _binding: FragmentDateWidgetBinding?=null
+    private val binding get()=_binding!!
+    
     private var productiveDays:Int=0
     private var workPer:Float=0f
     private var productivePer:Float=0f
-    private lateinit var summary:TextView
-    private lateinit var dayAimButton:LinearLayout
     private lateinit var weeks1:Array<RecyclerView>
     private lateinit var weeks2:Array<RecyclerView>
-    private lateinit var hostLinearLayout:LinearLayout
-    private lateinit var hostLinearLayout2:LinearLayout
-    private lateinit var monthLabel: TextSwitcher
-    private lateinit var dateBack: ImageButton
-    private lateinit var dateForward: ImageButton
-    private lateinit var monthButton:Button
-    private lateinit var weekButton:Button
-    private lateinit var dayButton:Button
     private var date:Calendar= Calendar.getInstance()
     private lateinit var db: SQLiteDatabase
     private lateinit var oh: LOTDatabaseHelper
     private lateinit var nc:NavController
     private val ydf= SimpleDateFormat("YYYY")
-    private val mdf= SimpleDateFormat("MM/YY")
+    private val mdf= SimpleDateFormat("MM/yy")
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -67,28 +60,20 @@ class DateChartFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_date_widget, container, false)
+    ): View {
+        _binding= FragmentDateWidgetBinding.inflate(inflater, container, false)
+
+        return binding.root
     }
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        summary=summary_text
-        dayAim=hours
-        dayAimButton=numberPicker
-        hostLinearLayout=date_layout
-        hostLinearLayout2=date_layout2
+        dayAim=binding.hours
         nc = findNavController()
-        monthLabel=current_month_label
-        dateBack=date_back
-        dateForward=date_forward
-        monthButton=month_button
-        weekButton=week_button
-        dayButton=day_button
-        weeks1 = arrayOf( first_week,second_week,third_week,fourth_week,fifth_week,sixth_week)
-        weeks2 = arrayOf( first_week2,second_week2,third_week2,fourth_week2,fifth_week2,sixth_week2)
+        weeks1 = arrayOf( binding.firstWeek,binding.secondWeek,binding.thirdWeek,binding.fourthWeek,binding.fifthWeek,binding.sixthWeek)
+        weeks2 = arrayOf( binding.firstWeek2,binding.secondWeek2,binding.thirdWeek2,binding.fourthWeek2,binding.fifthWeek2,binding.sixthWeek2)
 
         createDaysCalendarChart(Calendar.getInstance(),true, weeks1)
         createDaysCalendarChart(Calendar.getInstance(),true, weeks2)
@@ -97,26 +82,26 @@ class DateChartFragment : Fragment() {
             productivePer=Math.round(productivePer*100).toFloat()/100
             workPer=Math.round(workPer*100).toFloat()/100
             if (workPer>100)workPer=100f
-            summary.text="Produktywne dni: $productiveDays dni. Wydajność:$workPer%"
+            binding.summaryText.text=String.format("Produktywne dni: %o dni. Wydajność:%o%",productiveDays,workPer)
         }
         fun fillAim(){
             dayAim.text=dayAimH.toString()
-          fillLabels()
+            fillLabels()
         }
         fun updateAfterAimChange(){
-          var id=materialButtonToggleGroup.checkedButtonId
+            val id=binding.materialButtonToggleGroup.checkedButtonId
             if(id==R.id.day_button)
-                if (hostLinearLayout.visibility==View.VISIBLE)
+                if (binding.dateLayout.visibility==View.VISIBLE)
                     createDaysCalendarChart(date,true,weeks1)
                 else
                     createDaysCalendarChart(date,true,weeks2)
             else if (id==R.id.week_button)
-                if (hostLinearLayout.visibility==View.VISIBLE)
+                if (binding.dateLayout.visibility==View.VISIBLE)
                     createWeekCalendarChart(date,true,weeks1)
                 else
                     createWeekCalendarChart(date,true,weeks2)
             else if (id==R.id.month_button)
-                if (hostLinearLayout.visibility==View.VISIBLE)
+                if (binding.dateLayout.visibility==View.VISIBLE)
                     createMonthCalendarChart(date,true,weeks1)
                 else
                     createMonthCalendarChart(date,true,weeks2)
@@ -136,80 +121,80 @@ class DateChartFragment : Fragment() {
 
         })
         fun slideNone(){
-            monthLabel.inAnimation= null
-            monthLabel.outAnimation= null
-            hostLinearLayout.animation=null
-            hostLinearLayout2.animation=null
+            binding.currentMonthLabel.inAnimation= null
+            binding.currentMonthLabel.outAnimation= null
+            binding.dateLayout.animation=null
+            binding.dateLayout2.animation=null
         }
 
         fun slideRight(){
-            monthLabel.inAnimation= AnimationUtils.loadAnimation(context, R.anim.slide_in_right)
-            monthLabel.outAnimation= AnimationUtils.loadAnimation(context, R.anim.slide_out_left)
-            if (hostLinearLayout.visibility==View.VISIBLE){
-                hostLinearLayout2.visibility=View.VISIBLE
-                hostLinearLayout.startAnimation(AnimationUtils.loadAnimation(context, R.anim.slide_out_left))
-                hostLinearLayout2.startAnimation(AnimationUtils.loadAnimation(context, R.anim.slide_in_right))
-                hostLinearLayout.visibility=View.INVISIBLE
+            binding.currentMonthLabel.inAnimation= AnimationUtils.loadAnimation(context, R.anim.slide_in_right)
+            binding.currentMonthLabel.outAnimation= AnimationUtils.loadAnimation(context, R.anim.slide_out_left)
+            if (binding.dateLayout.visibility==View.VISIBLE){
+                binding.dateLayout2.visibility=View.VISIBLE
+                binding.dateLayout.startAnimation(AnimationUtils.loadAnimation(context, R.anim.slide_out_left))
+                binding.dateLayout2.startAnimation(AnimationUtils.loadAnimation(context, R.anim.slide_in_right))
+                binding.dateLayout.visibility=View.INVISIBLE
 
             }
             else{
-                hostLinearLayout.visibility=View.VISIBLE
-                hostLinearLayout.startAnimation(AnimationUtils.loadAnimation(context, R.anim.slide_in_right))
-                hostLinearLayout2.startAnimation(AnimationUtils.loadAnimation(context, R.anim.slide_out_left))
-                hostLinearLayout2.visibility=View.INVISIBLE
+                binding.dateLayout.visibility=View.VISIBLE
+                binding.dateLayout.startAnimation(AnimationUtils.loadAnimation(context, R.anim.slide_in_right))
+                binding.dateLayout2.startAnimation(AnimationUtils.loadAnimation(context, R.anim.slide_out_left))
+                binding.dateLayout2.visibility=View.INVISIBLE
 
             }
 
         }
         fun slideLeft(){
-            monthLabel.inAnimation= AnimationUtils.loadAnimation(context, R.anim.slide_in_left)
-            monthLabel.outAnimation= AnimationUtils.loadAnimation(context, R.anim.slide_out_right)
+            binding.currentMonthLabel.inAnimation= AnimationUtils.loadAnimation(context, R.anim.slide_in_left)
+            binding.currentMonthLabel.outAnimation= AnimationUtils.loadAnimation(context, R.anim.slide_out_right)
 
-            if (hostLinearLayout.visibility==View.VISIBLE){
-                hostLinearLayout2.visibility=View.VISIBLE
-                hostLinearLayout.startAnimation(AnimationUtils.loadAnimation(context, R.anim.slide_out_right))
-                hostLinearLayout2.startAnimation(AnimationUtils.loadAnimation(context, R.anim.slide_in_left))
-                hostLinearLayout.visibility=View.INVISIBLE
+            if (binding.dateLayout.visibility==View.VISIBLE){
+                binding.dateLayout2.visibility=View.VISIBLE
+                binding.dateLayout.startAnimation(AnimationUtils.loadAnimation(context, R.anim.slide_out_right))
+                binding.dateLayout2.startAnimation(AnimationUtils.loadAnimation(context, R.anim.slide_in_left))
+                binding.dateLayout.visibility=View.INVISIBLE
 
             }
             else{
-                hostLinearLayout.visibility=View.VISIBLE
-                hostLinearLayout.startAnimation(AnimationUtils.loadAnimation(context, R.anim.slide_in_left))
-                hostLinearLayout2.startAnimation(AnimationUtils.loadAnimation(context, R.anim.slide_out_right))
-                hostLinearLayout2.visibility=View.INVISIBLE
+                binding.dateLayout.visibility=View.VISIBLE
+                binding.dateLayout.startAnimation(AnimationUtils.loadAnimation(context, R.anim.slide_in_left))
+                binding.dateLayout2.startAnimation(AnimationUtils.loadAnimation(context, R.anim.slide_out_right))
+                binding.dateLayout2.visibility=View.INVISIBLE
 
             }
 
         }
-        dayButton.callOnClick()
+        binding.dayButton.callOnClick()
 
-        monthButton.setOnClickListener{
+        binding.monthButton.setOnClickListener{
 
             date= Calendar.getInstance()
             slideNone()
-            monthLabel.setText(ydf.format(date.time))
-            if (hostLinearLayout.visibility==View.VISIBLE)
+            binding.currentMonthLabel.setText(ydf.format(date.time))
+            if (binding.dateLayout.visibility==View.VISIBLE)
                 createMonthCalendarChart(date,true,weeks1)
             else
                 createMonthCalendarChart(date,true,weeks2)
             fillAim()
 
-            dateBack.setOnClickListener {
+            binding.dateBack.setOnClickListener {
                 date.add(Calendar.YEAR,-1)
                 slideLeft()
-                monthLabel.setText(ydf.format(date.time))
-                if (hostLinearLayout.visibility==View.VISIBLE)
+                binding.currentMonthLabel.setText(ydf.format(date.time))
+                if (binding.dateLayout.visibility==View.VISIBLE)
                     createMonthCalendarChart(date,true,weeks1)
                 else
                     createMonthCalendarChart(date,true,weeks2)
                 fillAim()
 
             }
-            dateForward.setOnClickListener {
+            binding.dateForward.setOnClickListener {
                 date.add(Calendar.YEAR,1)
-               slideRight()
-                monthLabel.setText(ydf.format(date.time))
-                if (hostLinearLayout.visibility==View.VISIBLE)
+                slideRight()
+                binding.currentMonthLabel.setText(ydf.format(date.time))
+                if (binding.dateLayout.visibility==View.VISIBLE)
                     createMonthCalendarChart(date,true,weeks1)
                 else
                     createMonthCalendarChart(date,true,weeks2)
@@ -219,11 +204,11 @@ class DateChartFragment : Fragment() {
 
         }
 
-        weekButton.setOnClickListener{
+        binding.weekButton.setOnClickListener{
             date= Calendar.getInstance()
             slideNone()
-            monthLabel.setText(mdf.format(date.time))
-            if (hostLinearLayout.visibility==View.VISIBLE)
+            binding.currentMonthLabel.setText(mdf.format(date.time))
+            if (binding.dateLayout.visibility==View.VISIBLE)
                 createWeekCalendarChart(date,true,weeks1)
             else
                 createWeekCalendarChart(date,true,weeks2)
@@ -231,11 +216,11 @@ class DateChartFragment : Fragment() {
 
 
 
-            dateBack.setOnClickListener {
+            binding.dateBack.setOnClickListener {
                 date.add(Calendar.MONTH,-1)
                 slideLeft()
-                monthLabel.setText(mdf.format(date.time))
-                if (hostLinearLayout.visibility==View.VISIBLE)
+                binding.currentMonthLabel.setText(mdf.format(date.time))
+                if (binding.dateLayout.visibility==View.VISIBLE)
                     createWeekCalendarChart(date,true,weeks1)
                 else
                     createWeekCalendarChart(date,true,weeks2)
@@ -243,12 +228,12 @@ class DateChartFragment : Fragment() {
 
             }
 
-            dateForward.setOnClickListener {
+            binding.dateForward.setOnClickListener {
 
                 date.add(Calendar.MONTH,1)
                 slideRight()
-                monthLabel.setText(mdf.format(date.time))
-                if (hostLinearLayout.visibility==View.VISIBLE)
+                binding.currentMonthLabel.setText(mdf.format(date.time))
+                if (binding.dateLayout.visibility==View.VISIBLE)
                     createWeekCalendarChart(date,true,weeks1)
                 else
                     createWeekCalendarChart(date,true,weeks2)
@@ -257,22 +242,22 @@ class DateChartFragment : Fragment() {
             }
         }
 
-        dayButton.setOnClickListener{
+        binding.dayButton.setOnClickListener{
             date= Calendar.getInstance()
             slideNone()
-            monthLabel.setText(mdf.format(date.time))
-            if (hostLinearLayout.visibility==View.VISIBLE)
+            binding.currentMonthLabel.setText(mdf.format(date.time))
+            if (binding.dateLayout.visibility==View.VISIBLE)
                 createDaysCalendarChart(date,true,weeks1)
             else
                 createDaysCalendarChart(date,true,weeks2)
             fillAim()
 
 
-            dateBack.setOnClickListener {
+            binding.dateBack.setOnClickListener {
                 date.add(Calendar.MONTH,-1)
                 slideLeft()
-                monthLabel.setText(mdf.format(date.time))
-                if (hostLinearLayout.visibility==View.VISIBLE)
+                binding.currentMonthLabel.setText(mdf.format(date.time))
+                if (binding.dateLayout.visibility==View.VISIBLE)
                     createDaysCalendarChart(date,true,weeks1)
                 else
                     createDaysCalendarChart(date,true,weeks2)
@@ -280,11 +265,11 @@ class DateChartFragment : Fragment() {
 
             }
 
-            dateForward.setOnClickListener {
+            binding.dateForward.setOnClickListener {
                 date.add(Calendar.MONTH,1)
                 slideRight()
-                monthLabel.setText(mdf.format(date.time))
-                if (hostLinearLayout.visibility==View.VISIBLE)
+                binding.currentMonthLabel.setText(mdf.format(date.time))
+                if (binding.dateLayout.visibility==View.VISIBLE)
                     createDaysCalendarChart(date,true,weeks1)
                 else
                     createDaysCalendarChart(date,true,weeks2)
@@ -293,11 +278,11 @@ class DateChartFragment : Fragment() {
             }
         }
 
-        dateBack.setOnClickListener {
+        binding.dateBack.setOnClickListener {
             date.add(Calendar.MONTH,-1)
             slideLeft()
-            monthLabel.setText(mdf.format(date.time))
-            if (hostLinearLayout.visibility==View.VISIBLE)
+            binding.currentMonthLabel.setText(mdf.format(date.time))
+            if (binding.dateLayout.visibility==View.VISIBLE)
                 createDaysCalendarChart(date,true,weeks1)
             else
                 createDaysCalendarChart(date,true,weeks2)
@@ -305,11 +290,11 @@ class DateChartFragment : Fragment() {
 
         }
 
-        dateForward.setOnClickListener {
+        binding.dateForward.setOnClickListener {
             date.add(Calendar.MONTH,1)
             slideRight()
-            monthLabel.setText(mdf.format(date.time))
-            if (hostLinearLayout.visibility==View.VISIBLE)
+            binding.currentMonthLabel.setText(mdf.format(date.time))
+            if (binding.dateLayout.visibility==View.VISIBLE)
                 createDaysCalendarChart(date,true,weeks1)
             else
                 createDaysCalendarChart(date,true,weeks2)
@@ -317,21 +302,30 @@ class DateChartFragment : Fragment() {
 
         }
 
-        monthLabel.setText(mdf.format(date.time))
+        binding.currentMonthLabel.setText(mdf.format(date.time))
 
 
         fillAim()
 
-        dayAimButton.setOnClickListener {
-         var fnp=NumberPicker()
-         fnp.show(requireActivity().supportFragmentManager,"Hours")
+        binding.numberPicker.setOnClickListener {
+            val fnp=NumberPicker()
+            fnp.show(requireActivity().supportFragmentManager,"Hours")
 
         }
     }
 
+    /**
+     * Called when the fragment is no longer in use.  This is called
+     * after [.onStop] and before [.onDetach].
+     */
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding=null
+    }
+
     private fun createDaysCalendarChart(monthCalendar: Calendar, isMondayFirstDay:Boolean=false, weeks:Array<RecyclerView>){
         productiveDays=0
-        var hours:Float=0f
+        var hours=0f
         if (isMondayFirstDay)
             monthCalendar.firstDayOfWeek=Calendar.MONDAY
         else
@@ -339,17 +333,16 @@ class DateChartFragment : Fragment() {
 
 
         val allData:Map<Calendar,String> =getDBData()
-
-        val monthData:Map<Calendar,String> =allData.filter { entry ->
+      val monthData:Map<Calendar,String> =allData.filter { entry ->
             (monthCalendar.get(Calendar.YEAR)==entry.key.get(Calendar.YEAR)) &&(monthCalendar.get(Calendar.MONTH)==entry.key.get(Calendar.MONTH))
         }
+
         val lastMonthData:Map<Calendar,String> =allData.filter { entry ->
             (monthCalendar.get(Calendar.YEAR)==entry.key.get(Calendar.YEAR)) &&((monthCalendar.get(Calendar.MONTH)-1)==entry.key.get(Calendar.MONTH))
         }
         val nextMonthData:Map<Calendar,String> =allData.filter { entry ->
             (monthCalendar.get(Calendar.YEAR)==entry.key.get(Calendar.YEAR)) &&((monthCalendar.get(Calendar.MONTH)+1)==entry.key.get(Calendar.MONTH))
         }
-
         var daysData:Map<Int,String> = TreeMap()
         monthData.forEach { (t, u) ->
             daysData=daysData.plus(Pair(t.get(Calendar.DAY_OF_MONTH),u))
@@ -426,8 +419,8 @@ class DateChartFragment : Fragment() {
 
     private fun createWeekCalendarChart(monthCalendar:Calendar, isMondayFirstDay:Boolean=false,weeks:Array<RecyclerView>){
         productiveDays=0
-        var hours:Float=0f
-        var days=0
+        var hours=0f
+        val days: Int
         if (isMondayFirstDay)
             monthCalendar.firstDayOfWeek=Calendar.MONDAY
         else
@@ -520,7 +513,7 @@ class DateChartFragment : Fragment() {
     }
 
     private fun createMonthCalendarChart(monthCalendar:Calendar, isMondayFirstDay:Boolean=false, weeks:Array<RecyclerView>){
-        var hours:Float=0f
+        var hours =0f
         productiveDays=0
 
         if (isMondayFirstDay)
@@ -552,8 +545,8 @@ class DateChartFragment : Fragment() {
             monthsData=monthsData.plus(Pair(t.get(Calendar.MONTH)+1,u))
         }
 
-        var days=monthCalendar.getActualMaximum(Calendar.DAY_OF_YEAR)
-        var scale=days* dayAimH
+        val days=monthCalendar.getActualMaximum(Calendar.DAY_OF_YEAR)
+        val scale=days* dayAimH
         fun setMonthAdapter(recyclerView:RecyclerView,arrayList:ArrayList<NTuple5<Int,Float,Boolean,Int,Int?>?> ) {
             setAdapterManager(
                 recyclerView,
@@ -598,7 +591,6 @@ class DateChartFragment : Fragment() {
         val selectionQuery = "SELECT OLDSTATS.date_id, OLDSTATS.working_time from OLDSTATS "
         val c: Cursor = db.rawQuery(selectionQuery, null)
         var map:Map<Calendar,String> = HashMap()
-
         if(c.moveToFirst())
             do {
                 val cal = Calendar.getInstance()
@@ -608,7 +600,6 @@ class DateChartFragment : Fragment() {
                 cal.set(Calendar.SECOND,0)
                 cal.set(Calendar.MILLISECOND,0)
                 map=map.plus(Pair(cal,c.getString(1)))
-
             }while (c.moveToNext())
         c.close()
 

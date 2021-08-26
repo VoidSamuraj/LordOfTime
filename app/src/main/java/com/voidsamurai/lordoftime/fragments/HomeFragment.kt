@@ -1,18 +1,19 @@
 package com.voidsamurai.lordoftime.fragments
 
+import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import android.os.Build
 import android.os.Bundle
 import android.transition.*
+import android.util.Log
 import android.view.*
 import android.view.animation.*
+import androidx.core.animation.doOnEnd
+import androidx.core.animation.doOnStart
 import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -87,6 +88,14 @@ class HomeFragment : Fragment() {
         }
     }
 
+
+
+    private var hiddenWidth:Int=0
+    private var cornerWidth:Int=0
+    private var isButtonHidden:Boolean=true
+    private var isTaskStarted:Boolean=true
+    private lateinit var va: ValueAnimator
+
     class RecyclerViewDisabler : RecyclerView.OnItemTouchListener {
         override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean=true
         override fun onTouchEvent(rv: RecyclerView, e: MotionEvent) {}
@@ -115,7 +124,8 @@ class HomeFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_home, container, false)                           //
+        return inflater.inflate(R.layout.fragment_home, container, false)
+
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -136,13 +146,77 @@ class HomeFragment : Fragment() {
             interpolator = FastOutSlowInInterpolator()
         }
 
-        task_changerFAB.setOnClickListener {
-            task_changerFAB.visibility= View.INVISIBLE
-            circle_anim.visibility= View.VISIBLE
-            circle_anim.startAnimation(animation){
-                requireActivity().window.   setBackgroundDrawable(ColorDrawable(resources.getColor(R.color.task_color)))
-                it?.findNavController()!!.navigate(R.id.action_FirstFragment_to_tasksEditHostFragment)
+        hiddenWidth=button_group.layoutParams.width
+        cornerWidth=corner1.layoutParams.width
+        fun getValueButtonAnimator():ValueAnimator{
+
+            val width=resources.displayMetrics.widthPixels
+            val valAnim:ValueAnimator=ValueAnimator.ofInt(hiddenWidth,width)
+
+            valAnim.addUpdateListener {
+               val lp=button_group.layoutParams
+               lp.width=(it.animatedValue as Int)
+
+                val c1=corner1.layoutParams
+                val c2=corner2.layoutParams
+                val cornerW:Int
+                if(lp.width<hiddenWidth){
+
+                    cornerW=(cornerWidth*(button_status.width.toFloat()/cornerWidth.toFloat())).toInt()
+                    Log.v("perc","cornerwidth:"+cornerWidth+" perc:"+" scale:"+cornerW+"  lp:"+lp.width+"/"+hiddenWidth)
+                    c1.width=cornerW
+                    c1.height=cornerW
+                    c2.width=cornerW
+                    c2.height=cornerW
+
+                }else cornerW=cornerWidth
+
+                c1.width=cornerW
+                c1.height=cornerW
+                c2.width=cornerW
+                c2.height=cornerW
+                corner1.layoutParams=c1
+                corner2.layoutParams=c2
+                val perc= (((it.animatedValue as Int).toFloat()-hiddenWidth)/(width-hiddenWidth))
+
+               status_image.alpha=1-perc
+               label_hour.alpha=perc
+               button_group.layoutParams=lp
             }
+
+            valAnim.duration=500
+            valAnim.interpolator=AnticipateOvershootInterpolator()
+            return valAnim
+        }
+
+
+        task_changerFAB.setOnClickListener {
+
+          //  task_changerFAB.visibility= View.INVISIBLE
+            circle_anim.visibility= View.VISIBLE
+
+            val vanim: ValueAnimator
+            vanim = ValueAnimator.ofFloat(100f, 0f)
+            vanim.addUpdateListener {
+                Log.v("test",""+(it.animatedValue as Float) /100f)
+
+                button_group.alpha=(it.animatedValue as Float) /100f
+
+            }
+            vanim.duration=400
+            vanim.interpolator=AccelerateInterpolator()
+            vanim.doOnEnd {   circle_anim.startAnimation(animation){
+                requireActivity().window.   setBackgroundDrawable(ColorDrawable(resources.getColor(R.color.task_color,null)))
+                circle_anim.findNavController().navigate(R.id.action_FirstFragment_to_tasksEditHostFragment)
+            } }
+            if(!isButtonHidden) {
+                va.doOnStart { vanim.reverse() }
+                va.reverse()
+                va.doOnStart { }
+            }
+            else
+                vanim.start()
+
 
         }
 
@@ -152,36 +226,37 @@ class HomeFragment : Fragment() {
             )
 
             findNavController().navigate(R.id.action_FirstFragment_to_manyCharts, null, null, extras)
-          //  findNavController().navigate(R.id.action_FirstFragment_to_manyCharts)
 
-           /* var endFragment=ManyChartsFragment
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                setSharedElementReturnTransition(TransitionInflater.from(
-                    getActivity()).inflateTransition(android.R.transition.move));
-                setExitTransition(
-                    TransitionInflater.from(
-                    getActivity()).inflateTransition(android.R.transition.fade));
+        }
 
-                endFragment.setSharedElementEnterTransition(TransitionInflater.from(
-                    getActivity()).inflateTransition(android.R.transition.move));
-                endFragment.setEnterTransition(TransitionInflater.from(
-                    getActivity()).inflateTransition(android.R.transition.fade));
+        label_hour.setOnClickListener {
+            it?.findNavController()!!.navigate(R.id.action_FirstFragment_to_workingFragment)
+        }
+
+        for(i in 0 until button_group .childCount){
+            button_group.getChildAt(i).setOnClickListener {
+                if(isTaskStarted) {
+                    va=getValueButtonAnimator()
+                    if (isButtonHidden) {
+                        va.start()
+                        label_hour.isClickable=true
+                        isButtonHidden = false
+                    } else {
+                        va.reverse()
+                        label_hour.isClickable=false
+                        isButtonHidden = true
+                    }
+                }else
+                    it?.findNavController()!!.navigate(R.id.action_FirstFragment_to_workingFragment)
             }
-
-            var bundle =  Bundle();
-            bundle.putString("ACTION", textView.getText().toString());
-            bundle.putParcelable("IMAGE", ((BitmapDrawable) imageView.getDrawable()).getBitmap());
-            endFragment.setArguments(bundle);
-            var fragmentManager = fragmentManager;
-            fragmentManager?.beginTransaction()
-                ?.replace(R.id.container, endFragment)
-                ?.addToBackStack("Payment")
-                ?.addSharedElement(staticImage, getString(R.string.fragment_image_trans))
-                ?.commit();
-        }*/
         }
     }
 
 
-
+    override fun onResume() {
+        super.onResume()
+        label_hour.isClickable=false
+        label_hour.alpha=0f
+        isButtonHidden=true
+    }
 }

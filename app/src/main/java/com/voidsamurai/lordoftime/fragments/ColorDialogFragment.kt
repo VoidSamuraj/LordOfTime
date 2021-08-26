@@ -47,7 +47,6 @@ class ColorDialogFragment(
         val builder: AlertDialog.Builder = AlertDialog.Builder(activity)
         val inflater: LayoutInflater = requireActivity().layoutInflater
         vieww= inflater.inflate(LayoutId, null)
-
         oldCategory?.let{ vieww.findViewById<TextView>(R.id.category_name).text=it}
 
 

@@ -33,4 +33,8 @@
     <string name="months">Months</string>
     <string name="days">Days</string>
     <string name="aim">Cel:</string>
+    <string name="delete">delete</string>
+    <string name="back">back</string>
+    <string name="save">save</string>
+    <string name="start_working">start working</string>
 </resources>

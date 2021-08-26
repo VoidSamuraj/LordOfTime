@@ -4,17 +4,19 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Calendar;
+import java.util.Date;
 
 
 public class LOTDatabaseHelper extends SQLiteOpenHelper {
     private static final String DB_NAME = "LOT";
-    private static final int DB_VERSION = 2;
+    private static final int DB_VERSION = 3;
     private static SQLiteDatabase db;
 
     public LOTDatabaseHelper(@Nullable Context context) {
@@ -49,25 +51,43 @@ public class LOTDatabaseHelper extends SQLiteOpenHelper {
             db.execSQL("CREATE TABLE OLDSTATS (date_id INTEGER PRIMARY KEY , working_time TEXT);");
 
             Calendar cal = Calendar.getInstance();
-            cal.set(2001, 11, 1, 12, 6,0);
+            cal.set(2021, 11, 1, 12, 6,0);
             cal.set(Calendar.MILLISECOND,0);
-            addTaskRow("Książki", "Ludzie bezdomni", cal.getTime().getTime(), "2.4",3);
-            cal.set(2001, 11, 1, 15, 6,0);
+            fillData("Książki", "Ludzie bezdomni", cal.getTime().getTime(), "2.4",3);
+            cal.set(2021, 11, 1, 15, 6,0);
             cal.set(Calendar.MILLISECOND,0);
-            addTaskRow("Sport", "Sztanga", cal.getTime().getTime(), "6.6",1);
-            cal.set(2001, 11, 2, 1, 6,0);
+            fillData("Sport", "Sztanga", cal.getTime().getTime(), "6.6",1);
+            cal.set(2021, 11, 2, 1, 6,0);
             cal.set(Calendar.MILLISECOND,0);
-            addTaskRow("Sport", "Bieganie", cal.getTime().getTime(), "1.8",1);
-            cal.set(2002, 4, 11, 14, 16,0);
+            fillData("Sport", "Bieganie", cal.getTime().getTime(), "1.8",1);
+            cal.set(2022, 4, 11, 14, 16,0);
             cal.set(Calendar.MILLISECOND,0);
-            addTaskRow("Praca w ogrodzie","Sadzenie cebuli",cal.getTime().getTime(),"2.4" ,2);
-            cal.set(2002, 6, 30, 10, 2,0);
+            fillData("Praca w ogrodzie","Sadzenie cebuli",cal.getTime().getTime(),"2.4" ,2);
+            cal.set(2022, 6, 30, 10, 2,0);
             cal.set(Calendar.MILLISECOND,0);
-            addTaskRow("Praca w ogrodzie","Podlewanie kwiatów",cal.getTime().getTime(),"0.4",2 );
+            fillData("Praca w ogrodzie","Podlewanie kwiatów",cal.getTime().getTime(),"0.4",2 );
 
             addColorRow( "Praca w ogrodzie", "#FFAA56");
             addColorRow( "Książki", "#AAFF96");
             addColorRow( "Sport", "#2266BB");
+        }
+        if(oldVersion<3){
+            Calendar cal = Calendar.getInstance();
+            cal.set(2021, 11, 1, 12, 6,0);
+            cal.set(Calendar.MILLISECOND,0);
+            fillData("Książki", "Ludzie bezdomni", cal.getTime().getTime(), "2.4",3);
+            cal.set(2021, 11, 1, 15, 6,0);
+            cal.set(Calendar.MILLISECOND,0);
+            fillData("Sport", "Sztanga", cal.getTime().getTime(), "6.6",1);
+            cal.set(2021, 11, 2, 1, 6,0);
+            cal.set(Calendar.MILLISECOND,0);
+            fillData("Sport", "Bieganie", cal.getTime().getTime(), "1.8",1);
+            cal.set(2022, 4, 11, 14, 16,0);
+            cal.set(Calendar.MILLISECOND,0);
+            fillData("Praca w ogrodzie","Sadzenie cebuli",cal.getTime().getTime(),"2.4" ,2);
+            cal.set(2022, 6, 30, 10, 2,0);
+            cal.set(Calendar.MILLISECOND,0);
+            fillData("Praca w ogrodzie","Podlewanie kwiatów",cal.getTime().getTime(),"0.4",2 );
         }
         if(oldVersion<5){
 
@@ -86,7 +106,13 @@ public class LOTDatabaseHelper extends SQLiteOpenHelper {
 */
         }
 
-    }  /**
+    }
+    private void fillData(String category, String name, Long startdatetime, String hours, int priority){
+        addTaskRow(category,name,startdatetime,hours,priority);
+        addOldstatRow(startdatetime,hours);
+    }
+
+    /**
      *
      * @param date set only Y,M,D rest need to be 0, also milliseconds
      * @param duration float value as String
@@ -94,6 +120,11 @@ public class LOTDatabaseHelper extends SQLiteOpenHelper {
     public void addOldstatRow(Long date,String duration){
         ContentValues cv = createOldstatValues(date,duration);
         db.insert("OLDSTATS", null, cv);
+        cv.clear();
+    }
+    public void editOldstatRow(Long date,Long newDate,String duration){
+        ContentValues cv = createOldstatValues(newDate,duration);
+        db.update("OLDSTATS", cv,"date_id = ?",new String[]{String.valueOf(date)});
         cv.clear();
     }
 

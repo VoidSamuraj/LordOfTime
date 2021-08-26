@@ -25,6 +25,9 @@
         <action
             android:id="@+id/action_FirstFragment_to_manyCharts"
             app:destination="@id/manyCharts" />
+        <action
+            android:id="@+id/action_FirstFragment_to_workingFragment"
+            app:destination="@id/workingFragment" />
     </fragment>
     <fragment
         android:id="@+id/colorsFragment"
@@ -51,6 +54,15 @@
         tools:layout="@layout/fragment_many_charts" >
         <action
             android:id="@+id/action_manyCharts_to_FirstFragment"
+            app:destination="@id/FirstFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/workingFragment"
+        android:name="com.voidsamurai.lordoftime.WorkingFragment"
+        android:label="fragment_working"
+        tools:layout="@layout/fragment_working" >
+        <action
+            android:id="@+id/action_workingFragment_to_FirstFragment"
             app:destination="@id/FirstFragment" />
     </fragment>
 </navigation>

@@ -1,6 +1,5 @@
 package com.voidsamurai.lordoftime.fragments
 
-import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.graphics.Color
@@ -15,8 +14,8 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import com.voidsamurai.lordoftime.MainActivity
 import com.voidsamurai.lordoftime.R
+import com.voidsamurai.lordoftime.databinding.FragmentTaskEditBinding
 import com.voidsamurai.lordoftime.fragments.adapters.ArrayColorAdapter
-import kotlinx.android.synthetic.main.fragment_task_edit.*
 import layout.DataRowWithColor
 import java.util.*
 
@@ -25,6 +24,8 @@ class EditTaskSelected : Fragment() ,DatePickerDialog.OnDateSetListener,TimePick
     companion object{
         private lateinit var adapter: ArrayColorAdapter
     }
+    private var _binding: FragmentTaskEditBinding?=null
+    private val binding get()=_binding!!
 
     private var dateFormat:java.text.DateFormat= java.text.DateFormat.getDateInstance(
         java.text.DateFormat.LONG,
@@ -38,11 +39,11 @@ class EditTaskSelected : Fragment() ,DatePickerDialog.OnDateSetListener,TimePick
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_task_edit, container, false)
+    ): View {
+        _binding= FragmentTaskEditBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
-    @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -53,13 +54,13 @@ class EditTaskSelected : Fragment() ,DatePickerDialog.OnDateSetListener,TimePick
 
         if(arguments!=null&&EditTaskSelectedArgs.fromBundle(requireArguments()).dataColor!=null){
             data =EditTaskSelectedArgs.fromBundle(requireArguments()).dataColor
-            delete_edit_button.visibility=View.VISIBLE
-            name_edit.setText(data!!.name)
-            check_category.setSelection(adapter.getPosition(Pair(data!!.category,data!!.color)))
-            priority_edit.setText(data!!.priority.toString())
-            date_edit.setText(dateFormat.format(data!!.date.time))
-            duration_edit.setText(data!!.workingTime.toString())
-            hour_edit.setText("" + data!!.date.get(Calendar.HOUR) + ":" + data!!.date.get(Calendar.MINUTE))
+            binding.deleteEditButton.visibility=View.VISIBLE
+            binding.nameEdit.setText(data!!.name)
+            binding.checkCategory.setSelection(adapter.getPosition(Pair(data!!.category,data!!.color)))
+            binding.priorityEdit.setText(data!!.priority.toString())
+            binding.dateEdit.setText(dateFormat.format(data!!.date.time))
+            binding.durationEdit.setText(data!!.workingTime.toString())
+            binding.hourEdit.setText(String.format("%s:%s",data!!.date.get(Calendar.HOUR),data!!.date.get(Calendar.MINUTE)))
             newDate= Calendar.getInstance()
             data!!.date.let {newDate.set(
                 it.get(Calendar.YEAR),
@@ -71,13 +72,13 @@ class EditTaskSelected : Fragment() ,DatePickerDialog.OnDateSetListener,TimePick
             )
                 newDate.set(Calendar.MILLISECOND, 0)
             }
-            delete_edit_button.setOnClickListener{
+            binding.deleteEditButton.setOnClickListener{
                 deleteRow(data!!)
                 update()
                 it.findNavController().navigateUp()
             }
 
-            save_edit_button.setOnClickListener{
+            binding.saveEditButton.setOnClickListener{
                 updateRow()
                 update()
                 it.findNavController().navigateUp()
@@ -86,30 +87,30 @@ class EditTaskSelected : Fragment() ,DatePickerDialog.OnDateSetListener,TimePick
             newDate= Calendar.getInstance()
             newDate.set(Calendar.SECOND, 0)
             newDate.set(Calendar.MILLISECOND, 0)
-            date_edit.setText(dateFormat.format(newDate.time))
-            hour_edit.setText("" + newDate.get(Calendar.HOUR) + ":" + newDate.get(Calendar.MINUTE))
+            binding.dateEdit.setText(dateFormat.format(newDate.time))
+            binding.hourEdit.setText("${newDate.get(Calendar.HOUR)}:${newDate.get(Calendar.MINUTE)}")
 
-            delete_edit_button.visibility=View.GONE
+            binding.deleteEditButton.visibility=View.GONE
 
-            save_edit_button.setOnClickListener{
+            binding.saveEditButton.setOnClickListener{
 
                 addRow(
-                    (check_category.selectedItem as Pair<*, *>).first.toString (),
-                    name_edit.text.toString(),
+                    (binding.checkCategory.selectedItem as Pair<*, *>).first.toString (),
+                    binding.nameEdit.text.toString(),
                     newDate.time.time,
-                    duration_edit.text.toString(),
-                    priority_edit.text.toString().toInt()
+                    binding.durationEdit.text.toString(),
+                    binding.priorityEdit.text.toString().toInt()
                 )
                 update()
                 it.findNavController().navigateUp()
             }
         }
 
-        add_color.setOnClickListener{
+        binding.addColor.setOnClickListener{
             it?.findNavController()!!.navigate(R.id.action_editTask_to_colorsFragment2)
         }
 
-        date_edit.setOnClickListener{
+        binding.dateEdit.setOnClickListener{
             val dp =
                 DatePickerDialog(
                     requireContext(),
@@ -121,7 +122,7 @@ class EditTaskSelected : Fragment() ,DatePickerDialog.OnDateSetListener,TimePick
             dp.show()
         }
 
-        hour_edit.setOnClickListener{
+        binding.hourEdit.setOnClickListener{
             val tp =  TimePickerDialog(
                 requireContext(), this,
                 newDate.get(Calendar.HOUR), newDate.get(Calendar.MINUTE), true
@@ -130,19 +131,27 @@ class EditTaskSelected : Fragment() ,DatePickerDialog.OnDateSetListener,TimePick
             tp.show()
         }
 
-        cancel_edit_button.setOnClickListener{
+        binding.cancelEditButton.setOnClickListener{
             it.findNavController().navigateUp()
         }
     }
-
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding=null
+    }
     private fun updateRow() {
         MainActivity.getDBOpenHelper().editTaskRow(
             data!!.id,
-            (check_category.selectedItem as Pair<*, *>).first.toString (),
-            name_edit.text.toString(),
+            (binding.checkCategory.selectedItem as Pair<*, *>).first.toString (),
+            binding.nameEdit.text.toString(),
             newDate.time.time,
-            duration_edit.text.toString(),
-            priority_edit.text.toString().toInt()
+            binding.durationEdit.text.toString(),
+            binding.priorityEdit.text.toString().toInt()
+        )
+        MainActivity.getDBOpenHelper().editOldstatRow(
+            data!!.date.time.time,
+            newDate.time.time,
+            binding.durationEdit.text.toString()
         )
     }
 
@@ -154,25 +163,29 @@ class EditTaskSelected : Fragment() ,DatePickerDialog.OnDateSetListener,TimePick
         priority: Int
     ) {
         MainActivity.getDBOpenHelper().addTaskRow(category, name, startDateTime, hours, priority)
+        MainActivity.getDBOpenHelper().addOldstatRow(startDateTime,hours)
         update()
     }
 
-    private fun deleteRow(dataRowWithColor: DataRowWithColor)= MainActivity.getDBOpenHelper().deleteTaskRow(dataRowWithColor.id)
+    private fun deleteRow(dataRowWithColor: DataRowWithColor){
+        MainActivity.getDBOpenHelper().deleteTaskRow(dataRowWithColor.id)
+        MainActivity.getDBOpenHelper().deleteOldstatRow(dataRowWithColor.date.time.time)
+    }
 
     override fun onDateSet(view: DatePicker?, year: Int, month: Int, dayOfMonth: Int) {
         newDate.set(year, month, dayOfMonth)
         newDate.set(Calendar.SECOND, 0)
         newDate.set(Calendar.MILLISECOND, 0)
-        date_edit.setText(dateFormat.format(newDate.time))
+        binding.dateEdit.setText(dateFormat.format(newDate.time))
     }
 
-    @SuppressLint("SetTextI18n")
+
     override fun onTimeSet(view: TimePicker?, hourOfDay: Int, minute: Int) {
         newDate.set(Calendar.HOUR, hourOfDay)
         newDate.set(Calendar.MINUTE, minute)
         newDate.set(Calendar.SECOND, 0)
         newDate.set(Calendar.MILLISECOND, 0)
-        hour_edit.setText((if (hourOfDay < 10) "0" else "") + hourOfDay.toString() + ":" + if (minute < 10) "0" else "" + minute.toString())
+        binding.hourEdit.setText((if (hourOfDay < 10) "0" else "") + hourOfDay.toString() + ":" + if (minute < 10) "0" else "" + minute.toString())
     }
 
     private fun update(){
@@ -186,6 +199,6 @@ class EditTaskSelected : Fragment() ,DatePickerDialog.OnDateSetListener,TimePick
 
         adapter= ArrayColorAdapter(requireContext(),R.layout.color_edit_element,MainActivity.getColors().toList())
         adapter.setDropDownViewResource(R.layout.color_edit_element)
-        check_category.adapter = adapter
+        binding.checkCategory.adapter = adapter
     }
 }

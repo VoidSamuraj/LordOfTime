@@ -9,214 +9,270 @@
     tools:context=".fragments.HomeFragment">
 
     <RelativeLayout
+        android:id="@+id/relativeLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        app:layout_constraintTop_toTopOf="parent">
+        android:orientation="vertical">
 
-        <Space
-            android:id="@+id/space1"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/padding_elewation"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentEnd="true"
-            android:layout_marginStart="0dp"
-            android:layout_marginTop="0dp" />
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/card1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/space1"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentEnd="true"
-            android:layout_marginStart="@dimen/small_padding"
-            android:layout_marginEnd="@dimen/small_padding"
-            app:cardElevation="@dimen/padding_elewation"
-            app:cardCornerRadius="@dimen/radius_card_view">
 
-            <LinearLayout
+            <Space
+                android:id="@+id/space1"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
+                android:layout_height="@dimen/padding_elewation"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginStart="0dp"
+                android:layout_marginTop="0dp" />
 
-                <TextView
-                    android:id="@+id/textView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:text="@string/newest_tasks_header"
-                    android:textSize="@dimen/main_header" />
+            <androidx.cardview.widget.CardView
+                android:id="@+id/card1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/space1"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginStart="@dimen/small_padding"
+                android:layout_marginEnd="@dimen/small_padding"
+                app:cardCornerRadius="@dimen/radius_card_view"
+                app:cardElevation="@dimen/padding_elewation">
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/newest_Tasks_RecycleView"
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingTop="@dimen/small_padding"
-                    android:paddingBottom="@dimen/task_changer_label_margin"
-                    tools:itemCount="3"
-                    tools:layout_height="70dp"
-                    tools:listitem="3" />
-            </LinearLayout>
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
 
-        </androidx.cardview.widget.CardView>
+                    <TextView
+                        android:id="@+id/textView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:text="@string/newest_tasks_header"
+                        android:textSize="@dimen/main_header" />
 
-        <Space
-            android:id="@+id/space2"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/padding_elewation"
-            android:layout_below="@+id/card1"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentEnd="true"/>
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/newest_Tasks_RecycleView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="@dimen/small_padding"
+                        android:paddingBottom="@dimen/task_changer_label_margin"
+                        tools:itemCount="3"
+                        tools:layout_height="70dp"
+                        tools:listitem="3" />
+                </LinearLayout>
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/card2"
-            android:transitionName="chartCard"
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:layout_marginStart="@dimen/small_padding"
-            android:layout_marginEnd="@dimen/small_padding"
-            android:layout_below="@+id/space2"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentEnd="true"
-            app:cardElevation="@dimen/padding_elewation"
-            app:cardCornerRadius="@dimen/radius_card_view">
+            </androidx.cardview.widget.CardView>
 
-            <LinearLayout
+            <Space
+                android:id="@+id/space2"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
+                android:layout_height="@dimen/padding_elewation"
+                android:layout_below="@+id/card1"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true" />
 
-                <TextView
-                    android:id="@+id/textView2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:text="@string/chart_header"
-                    android:textSize="@dimen/main_header" />
-
-                <include
-                    android:id="@+id/chart_frag"
-                    layout="@layout/fragment_chart"
-                    />
-            </LinearLayout>
-
-        </androidx.cardview.widget.CardView>
-
-        <Space
-            android:id="@+id/space3"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/padding_elewation"
-            android:layout_below="@+id/card2"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentEnd="true"
-            />
-
-        <androidx.cardview.widget.CardView
-            android:id="@+id/cardView3"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/small_padding"
-            android:layout_marginEnd="@dimen/small_padding"
-            android:layout_below="@+id/space3"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentEnd="true"
-            app:cardElevation="@dimen/padding_elewation"
-            app:cardCornerRadius="@dimen/radius_card_view">
-
-            <LinearLayout
+            <androidx.cardview.widget.CardView
+                android:id="@+id/card2"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
+                android:layout_height="220dp"
+                android:layout_below="@+id/space2"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginStart="@dimen/small_padding"
+                android:layout_marginEnd="@dimen/small_padding"
+                android:transitionName="chartCard"
+                app:cardCornerRadius="@dimen/radius_card_view"
+                app:cardElevation="@dimen/padding_elewation">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:text="@string/priority_header"
-                    android:textSize="@dimen/main_header"/>
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/todo_recycle_view"
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fadeScrollbars="true"
-                    android:isScrollContainer="true"
-                    android:maxHeight="300dp"
-                    android:nestedScrollingEnabled="true"
-                    android:overScrollMode="ifContentScrolls"
-                    android:paddingStart="@dimen/small_padding"
-                    android:paddingTop="@dimen/small_padding"
-                    android:paddingBottom="@dimen/task_changer_label_margin"
-                    android:scrollbarAlwaysDrawVerticalTrack="true"
-                    android:scrollbars="vertical"
-                    android:verticalScrollbarPosition="left" />
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
 
-            </LinearLayout>
+                    <TextView
+                        android:id="@+id/textView2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:text="@string/chart_header"
+                        android:textSize="@dimen/main_header" />
 
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/task_changerFAB"
+                    <include
+                        android:id="@+id/chart_frag"
+                        layout="@layout/fragment_chart" />
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <Space
+                android:id="@+id/space3"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/padding_elewation"
+                android:layout_below="@+id/card2"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardView3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/space3"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginStart="@dimen/small_padding"
+                android:layout_marginEnd="@dimen/small_padding"
+                app:cardCornerRadius="@dimen/radius_card_view"
+                app:cardElevation="@dimen/padding_elewation">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:text="@string/priority_header"
+                        android:textSize="@dimen/main_header" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/todo_recycle_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fadeScrollbars="true"
+                        android:isScrollContainer="true"
+                        android:maxHeight="300dp"
+                        android:nestedScrollingEnabled="true"
+                        android:overScrollMode="ifContentScrolls"
+                        android:paddingStart="@dimen/small_padding"
+                        android:paddingTop="@dimen/small_padding"
+                        android:paddingBottom="@dimen/task_changer_label_margin"
+                        android:scrollbarAlwaysDrawVerticalTrack="true"
+                        android:scrollbars="vertical"
+                        android:verticalScrollbarPosition="left" />
+
+                </LinearLayout>
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/task_changerFAB"
+                    android:layout_width="@dimen/fab_size"
+                    android:layout_height="@dimen/fab_size"
+                    android:layout_gravity="end|bottom"
+                    android:layout_margin="@dimen/fab_margin"
+                    android:backgroundTint="@color/task_color"
+                    android:clickable="true"
+                    android:focusable="auto"
+                    android:contentDescription="@string/edit"
+                    android:foregroundGravity="center"
+                    android:src="@drawable/ic_edit"
+                    android:tint="@color/white" />
+
+            </androidx.cardview.widget.CardView>
+
+            <View
+                android:id="@+id/circle_anim"
                 android:layout_width="@dimen/fab_size"
                 android:layout_height="@dimen/fab_size"
+                android:layout_above="@+id/cardView3"
+                android:layout_alignEnd="@+id/cardView3"
+                android:layout_alignBottom="@id/cardView3"
                 android:layout_gravity="end|bottom"
-                android:foregroundGravity="center"
                 android:layout_margin="@dimen/fab_margin"
-                android:clickable="true"
-                android:contentDescription="@string/edit"
-                android:src="@drawable/ic_edit"
-                android:tint="@color/white"
-                android:backgroundTint="@color/task_color"/>
+                android:background="@drawable/circle"
+                android:backgroundTint="@color/task_color"
+                android:elevation="@dimen/padding_elewation"
+                android:visibility="invisible" />
 
-        </androidx.cardview.widget.CardView>
-
-        <View
-            android:id="@+id/circle_anim"
-            android:layout_width="@dimen/fab_size"
-            android:layout_height="@dimen/fab_size"
-            android:layout_gravity="end|bottom"
-            android:layout_margin="@dimen/fab_margin"
-            android:layout_alignBottom="@id/cardView3"
-            android:layout_alignEnd="@+id/cardView3"
-            android:layout_above="@+id/cardView3"
-            android:background="@drawable/circle"
-            android:elevation="@dimen/padding_elewation"
-            android:visibility="invisible"
-            android:backgroundTint="@color/task_color"/>
 
     </RelativeLayout>
 
-    <!--
-    <View
-        android:id="@+id/main_tint"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/black_tint"
-        android:visibility="gone">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/button_group"
+        android:layout_width="100dp"
+        android:layout_height="200dp"
+        android:alpha="0.8"
+        app:layout_constraintBottom_toBottomOf="@+id/relativeLayout"
+        app:layout_constraintStart_toStartOf="parent"
+       >
 
-    </View>
+        <ImageView
+            android:id="@+id/corner1"
+            android:layout_width="@dimen/button_corners"
+            android:layout_height="@dimen/button_corners"
+            android:scaleType="fitXY"
+            android:src="@drawable/ic_corner1"
+            app:layout_constraintBottom_toTopOf="@+id/button_status"
+            app:layout_constraintStart_toStartOf="parent"
+            app:tint="@color/light_blue_600"
+            android:contentDescription="leftCorner" />
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/task_changer"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_margin="@dimen/default_margin"
-        android:elevation="@dimen/default_margin"
-        android:visibility="gone"
-        app:cardCornerRadius="@dimen/small_margin"
-        tools:layout_editor_absoluteY="566dp"
-        tools:visibility="gone">
+        <ImageView
+            android:id="@+id/corner2"
+            android:layout_width="@dimen/button_corners"
+            android:layout_height="@dimen/button_corners"
+            android:scaleType="fitXY"
+            android:src="@drawable/ic_corner2"
+            app:tint="@color/light_blue_600"
+            app:layout_constraintStart_toStartOf="@+id/corner1"
+            app:layout_constraintTop_toBottomOf="@+id/button_status"
+            android:contentDescription="rightCorner" />
+
+        <ImageView
+            android:id="@+id/imageView3"
+            android:layout_width="50dp"
+            android:layout_height="99dp"
+            android:layout_marginEnd="10dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/rhalf_sphere"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="@color/light_blue_600"
+            android:contentDescription="halfSphere" />
+
+        <FrameLayout
+            android:id="@+id/button_status"
+            android:layout_width="0dp"
+            android:layout_height="99dp"
+            android:background="@color/light_blue_600"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/imageView3"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" >
+
+            <TextView
+                android:id="@+id/label_hour"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:layout_gravity="center"
+                android:layout_marginStart="25dp"
+                 android:layout_marginEnd="0dp"
+                android:text="10:11"
+                android:textAlignment="center"
+                android:textSize="@dimen/label_button">
+
+            </TextView>
+        </FrameLayout>
+
+        <ImageView
+            android:id="@+id/status_image"
+            android:layout_width="80dp"
+            android:layout_height="60dp"
+            android:background="@null"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_baseline_play_arrow_24"
+            app:layout_constraintBottom_toBottomOf="@+id/imageView3"
+            app:layout_constraintEnd_toEndOf="@id/imageView3"
+            app:layout_constraintTop_toTopOf="@+id/imageView3"
+            app:tint="@color/light_blue_900"
+            android:contentDescription="status_img" />
 
 
-        <fragment
-            android:id="@+id/edit_fragment"
-            android:name="androidx.navigation.fragment.NavHostFragment"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:defaultNavHost="true"
-            app:navGraph="@navigation/nav_edit" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </androidx.cardview.widget.CardView>-->
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

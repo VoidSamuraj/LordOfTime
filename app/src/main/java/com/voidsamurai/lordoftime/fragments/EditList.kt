@@ -9,35 +9,37 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.voidsamurai.lordoftime.MainActivity
 import com.voidsamurai.lordoftime.R
+import com.voidsamurai.lordoftime.databinding.FragmentChangerListBinding
 import com.voidsamurai.lordoftime.fragments.adapters.EditAdapter
-import kotlinx.android.synthetic.main.fragment_changer_list.*
 import layout.DataRowWithColor
 
 
 class EditList : Fragment() {
-    private lateinit var editTasksRecycleView: RecyclerView
 
     companion object{
         private lateinit var editAdapter: EditAdapter
         fun update()=editAdapter.notifyDataSetChanged()
     }
 
+
+    private var _binding: FragmentChangerListBinding?=null
+    private val binding get()=_binding!!
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_changer_list, container, false)
+    ): View {
+        _binding=FragmentChangerListBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        editTasksRecycleView=edit_tasks_recycleView
         fillEditList(MainActivity.getQueryArrayByPriority())
 
-        add_record_button.setOnClickListener{
+        binding.addRecordButton.setOnClickListener{
 
             it?.findNavController()!!.navigate(R.id.action_listChanger_to_editTask)
 
@@ -46,14 +48,18 @@ class EditList : Fragment() {
 
     private fun fillEditList(query:ArrayList<DataRowWithColor>){
         editAdapter= EditAdapter(query)
-        editTasksRecycleView.adapter=editAdapter
-        editTasksRecycleView.layoutManager=LinearLayoutManager(context)
-        editTasksRecycleView.smoothScrollToPosition(editTasksRecycleView.adapter!!.itemCount)
+        binding.editTasksRecycleView.adapter=editAdapter
+        binding.editTasksRecycleView.layoutManager=LinearLayoutManager(context)
+        binding.editTasksRecycleView.smoothScrollToPosition(binding.editTasksRecycleView.adapter!!.itemCount)
     }
 
     override fun onPause() {
         super.onPause()
         requireActivity().window.setBackgroundDrawable(ColorDrawable(Color.WHITE))
 
+    }
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding=null
     }
 }

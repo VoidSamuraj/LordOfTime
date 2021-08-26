@@ -6,7 +6,6 @@ import android.os.Handler
 import android.os.Looper
 import android.view.*
 import androidx.fragment.app.Fragment
-
 import com.voidsamurai.lordoftime.MainActivity
 import com.voidsamurai.lordoftime.R
 

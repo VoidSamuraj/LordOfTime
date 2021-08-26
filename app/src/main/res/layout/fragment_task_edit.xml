@@ -208,7 +208,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/priority_edit"
         app:srcCompat="@drawable/ic_delete"
-        app:tint="@color/cardview_dark_background" />
+        app:tint="@color/cardview_dark_background"
+        android:contentDescription="@string/delete" />
 
     <ImageButton
         android:id="@+id/cancel_edit_button"
@@ -220,23 +221,10 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@drawable/ic_arrow_back"
-        app:tint="@color/cardview_dark_background" />
+        app:tint="@color/cardview_dark_background"
+        android:contentDescription="@string/back" />
 
-    <!--
 
-    <ImageButton
-        android:id="@+id/cancel_edit_button"
-        android:layout_width="@dimen/edit_buttons_size"
-        android:layout_height="@dimen/edit_buttons_size"
-        android:layout_marginBottom="@dimen/task_changer_label_margin"
-        android:background="@null"
-        android:scaleType="fitCenter"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/ic_arrow_back"
-        app:tint="@color/cardview_dark_background" />
-
-    -->
     <ImageButton
         android:id="@+id/save_edit_button"
         android:layout_width="@dimen/edit_buttons_size"
@@ -247,7 +235,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/ic_save"
-        app:tint="@color/lemon" />
+        app:tint="@color/lemon"
+        android:contentDescription="@string/save" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

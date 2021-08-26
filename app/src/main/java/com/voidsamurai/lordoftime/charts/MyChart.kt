@@ -39,11 +39,11 @@ class MyChart(context: Context?, attributeSet: AttributeSet ):
         super.onDraw(canvas)
         this.canvas=canvas
 
-        side = if (width > height) {
-            height * 9 / 10
-        } else {
-            width * 9 / 10
-        }
+        side = if (width > height)
+            height * 8 / 10
+         else
+            width * 8 / 10
+
         drawPie(canvas)
     }
 
