@@ -6,13 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.voidsamurai.lordoftime.fragments.ColorDialogFragment
 import com.voidsamurai.lordoftime.LinearViewHolder
 import com.voidsamurai.lordoftime.R
-import com.voidsamurai.lordoftime.fragments.ColorsFragment
 
-class ColorsAdapter(private val dataSet: List<Pair<String,String>>) : RecyclerView.Adapter<LinearViewHolder>(){
+class ColorsAdapter(val activity: FragmentActivity,private val dataSet: List<Pair<String,String>>) : RecyclerView.Adapter<LinearViewHolder>(){
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LinearViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.color_edit_element, parent, false)
@@ -25,8 +25,8 @@ class ColorsAdapter(private val dataSet: List<Pair<String,String>>) : RecyclerVi
         layout.findViewById<View>(R.id.chart_color_block).setBackgroundColor( Color.parseColor(dataSet[position].second))
         layout.findViewById<TextView>(R.id.chart_text_block).text = dataSet[position].first
         layout.findViewById<LinearLayout>(R.id.colors_linear_layout).setOnClickListener{
-            val ft = ColorDialogFragment(R.layout.fragment_edit_color_category,2,dataSet[position].first,dataSet[position].second)
-            ft.show(ColorsFragment.getActicity().supportFragmentManager,"EditCategory")
+            val ft = ColorDialogFragment(R.layout.fragment_edit_color_category,ColorDialogFragment.EDIT ,dataSet[position].first,dataSet[position].second)
+            ft.show(activity.supportFragmentManager,"EditCategory")
         }
     }
 

@@ -21,5 +21,6 @@
         android:layout_margin="@dimen/fab_margin"
         android:src="@drawable/ic_add_circle"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        android:contentDescription="@string/add" />
 </androidx.constraintlayout.widget.ConstraintLayout>

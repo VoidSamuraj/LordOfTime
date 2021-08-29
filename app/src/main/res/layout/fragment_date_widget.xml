@@ -51,7 +51,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="H" />
+            android:text="@string/h" />
 
     </LinearLayout>
 
@@ -101,7 +101,8 @@
         android:background="@null"
         android:src="@drawable/ic_arrow_back_ios"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/materialButtonToggleGroup" />
+        app:layout_constraintTop_toBottomOf="@+id/materialButtonToggleGroup"
+        android:contentDescription="@string/back" />
 
     <TextSwitcher
         android:id="@+id/current_month_label"
@@ -117,7 +118,8 @@
             android:layout_height="match_parent"
             android:gravity="center"
             android:text="1"
-            android:textSize="20sp" />
+            android:textSize="20sp"
+            tools:ignore="HardcodedText" />
 
         <TextView
             android:layout_width="match_parent"
@@ -134,23 +136,12 @@
         android:background="@null"
         android:src="@drawable/ic_arrow_forward_ios"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/materialButtonToggleGroup" />
-<!--
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/fragment_date_cal"
-        android:name="com.voidsamurai.lordoftime.fragments.FragmentDateChartElement"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/date_back"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        />
+        app:layout_constraintTop_toBottomOf="@+id/materialButtonToggleGroup"
+        android:contentDescription="@string/next" />
 
-        -->
     <LinearLayout
         android:id="@+id/date_layout"
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -158,8 +149,7 @@
         app:layout_constraintTop_toBottomOf="@+id/date_back"
         app:layout_constraintVertical_bias="0.0"
         tools:layout_editor_absoluteX="-16dp"
-        android:gravity="center"
-        >
+        android:gravity="center">
 
 
         <androidx.recyclerview.widget.RecyclerView
@@ -228,9 +218,6 @@
     <LinearLayout
         android:visibility="invisible"
         android:id="@+id/date_layout2"
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"

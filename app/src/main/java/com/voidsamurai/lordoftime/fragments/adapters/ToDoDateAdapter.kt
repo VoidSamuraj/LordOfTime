@@ -36,7 +36,7 @@ class ToDoDateAdapter(private val dataSet: ArrayList<DataRowWithColor>): Recycle
             }
         }
 
-        val sdf= SimpleDateFormat("dd/MM/YY  HH:mm")
+        val sdf= SimpleDateFormat("dd/MM/yy  HH:mm")
         layout.findViewById<TextView>(R.id.todo_date).text = sdf.format(dataSet[position].date.time)
 
     }

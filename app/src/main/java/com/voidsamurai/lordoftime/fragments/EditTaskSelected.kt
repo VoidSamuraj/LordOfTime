@@ -1,5 +1,6 @@
 package com.voidsamurai.lordoftime.fragments
 
+import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.graphics.Color
@@ -21,9 +22,8 @@ import java.util.*
 
 
 class EditTaskSelected : Fragment() ,DatePickerDialog.OnDateSetListener,TimePickerDialog.OnTimeSetListener{
-    companion object{
-        private lateinit var adapter: ArrayColorAdapter
-    }
+
+    private lateinit var adapter: ArrayColorAdapter
     private var _binding: FragmentTaskEditBinding?=null
     private val binding get()=_binding!!
 
@@ -44,6 +44,7 @@ class EditTaskSelected : Fragment() ,DatePickerDialog.OnDateSetListener,TimePick
         return binding.root
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -139,6 +140,7 @@ class EditTaskSelected : Fragment() ,DatePickerDialog.OnDateSetListener,TimePick
         super.onDestroy()
         _binding=null
     }
+
     private fun updateRow() {
         MainActivity.getDBOpenHelper().editTaskRow(
             data!!.id,
@@ -180,6 +182,7 @@ class EditTaskSelected : Fragment() ,DatePickerDialog.OnDateSetListener,TimePick
     }
 
 
+    @SuppressLint("SetTextI18n")
     override fun onTimeSet(view: TimePicker?, hourOfDay: Int, minute: Int) {
         newDate.set(Calendar.HOUR, hourOfDay)
         newDate.set(Calendar.MINUTE, minute)
@@ -190,14 +193,14 @@ class EditTaskSelected : Fragment() ,DatePickerDialog.OnDateSetListener,TimePick
 
     private fun update(){
         (context as MainActivity).getDataFromDB()
-        EditList.update()
-        HomeFragment.fillViewsWithDatabaseData()
+        //EditList.update()
+        //HomeFragment.fillViewsWithDatabaseData()
     }
     private fun setColorSpinner(){
-        val list: Array<String> = MainActivity.getColors().keys.toTypedArray()
+        val list: Array<String> = MainActivity.getColors().value!!.keys.toTypedArray()
         list.sort()
 
-        adapter= ArrayColorAdapter(requireContext(),R.layout.color_edit_element,MainActivity.getColors().toList())
+        adapter= ArrayColorAdapter(requireContext(),R.layout.color_edit_element,MainActivity.getColors().value!!.toList())
         adapter.setDropDownViewResource(R.layout.color_edit_element)
         binding.checkCategory.adapter = adapter
     }

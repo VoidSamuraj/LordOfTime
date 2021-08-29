@@ -3,6 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    tools:viewBindingIgnore="true"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="center_vertical"
@@ -13,7 +14,8 @@
         android:layout_width="wrap_content"
         android:layout_height="@dimen/line_height"
         app:srcCompat="@drawable/ic_arrow_forward_ios"
-        android:layout_gravity="center" />
+        android:layout_gravity="center"
+        tools:ignore="ContentDescription" />
 
     <TextView
         android:id="@+id/todo_name"
@@ -24,7 +26,8 @@
         android:paddingStart="4dp"
         android:layout_gravity="center"
         android:textSize="@dimen/line_text_size"
-        tools:text="test"/>
+        tools:text="test"
+        tools:ignore="RtlSymmetry" />
 
     <TextView
         android:id="@+id/todo_date"
@@ -34,6 +37,7 @@
         android:paddingStart="12dp"
         android:layout_gravity="center"
         android:textSize="@dimen/line_text_size"
-        tools:text="data" />
+        tools:text="data"
+        tools:ignore="RtlSymmetry" />
 
 </LinearLayout>

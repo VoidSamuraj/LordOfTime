@@ -19,7 +19,7 @@
             <Space
                 android:id="@+id/space1"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/padding_elewation"
+                android:layout_height="@dimen/padding_elevation"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentEnd="true"
@@ -36,7 +36,7 @@
                 android:layout_marginStart="@dimen/small_padding"
                 android:layout_marginEnd="@dimen/small_padding"
                 app:cardCornerRadius="@dimen/radius_card_view"
-                app:cardElevation="@dimen/padding_elewation">
+                app:cardElevation="@dimen/padding_elevation">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -67,7 +67,7 @@
             <Space
                 android:id="@+id/space2"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/padding_elewation"
+                android:layout_height="@dimen/padding_elevation"
                 android:layout_below="@+id/card1"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentEnd="true" />
@@ -83,7 +83,7 @@
                 android:layout_marginEnd="@dimen/small_padding"
                 android:transitionName="chartCard"
                 app:cardCornerRadius="@dimen/radius_card_view"
-                app:cardElevation="@dimen/padding_elewation">
+                app:cardElevation="@dimen/padding_elevation">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -98,9 +98,12 @@
                         android:text="@string/chart_header"
                         android:textSize="@dimen/main_header" />
 
-                    <include
+                    <fragment
                         android:id="@+id/chart_frag"
-                        layout="@layout/fragment_chart" />
+                        android:layout_height="match_parent"
+                        android:layout_width="match_parent"
+                        tools:layout="@layout/fragment_pie_chart"
+                        class="com.voidsamurai.lordoftime.fragments.FragmentPieChart"/>
                 </LinearLayout>
 
             </androidx.cardview.widget.CardView>
@@ -108,7 +111,7 @@
             <Space
                 android:id="@+id/space3"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/padding_elewation"
+                android:layout_height="@dimen/padding_elevation"
                 android:layout_below="@+id/card2"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentEnd="true" />
@@ -123,7 +126,7 @@
                 android:layout_marginStart="@dimen/small_padding"
                 android:layout_marginEnd="@dimen/small_padding"
                 app:cardCornerRadius="@dimen/radius_card_view"
-                app:cardElevation="@dimen/padding_elewation">
+                app:cardElevation="@dimen/padding_elevation">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -151,7 +154,8 @@
                         android:paddingBottom="@dimen/task_changer_label_margin"
                         android:scrollbarAlwaysDrawVerticalTrack="true"
                         android:scrollbars="vertical"
-                        android:verticalScrollbarPosition="left" />
+                        android:verticalScrollbarPosition="left"
+                        tools:ignore="RtlSymmetry" />
 
                 </LinearLayout>
 
@@ -163,7 +167,7 @@
                     android:layout_margin="@dimen/fab_margin"
                     android:backgroundTint="@color/task_color"
                     android:clickable="true"
-                    android:focusable="auto"
+                    android:focusable="true"
                     android:contentDescription="@string/edit"
                     android:foregroundGravity="center"
                     android:src="@drawable/ic_edit"
@@ -182,7 +186,7 @@
                 android:layout_margin="@dimen/fab_margin"
                 android:background="@drawable/circle"
                 android:backgroundTint="@color/task_color"
-                android:elevation="@dimen/padding_elewation"
+                android:elevation="@dimen/padding_elevation"
                 android:visibility="invisible" />
 
 
@@ -206,7 +210,7 @@
             app:layout_constraintBottom_toTopOf="@+id/button_status"
             app:layout_constraintStart_toStartOf="parent"
             app:tint="@color/light_blue_600"
-            android:contentDescription="leftCorner" />
+            tools:ignore="ContentDescription" />
 
         <ImageView
             android:id="@+id/corner2"
@@ -217,7 +221,7 @@
             app:tint="@color/light_blue_600"
             app:layout_constraintStart_toStartOf="@+id/corner1"
             app:layout_constraintTop_toBottomOf="@+id/button_status"
-            android:contentDescription="rightCorner" />
+            tools:ignore="ContentDescription" />
 
         <ImageView
             android:id="@+id/imageView3"
@@ -225,12 +229,12 @@
             android:layout_height="99dp"
             android:layout_marginEnd="10dp"
             android:scaleType="fitXY"
-            android:src="@drawable/rhalf_sphere"
+            android:src="@drawable/half_sphere_r"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:tint="@color/light_blue_600"
-            android:contentDescription="halfSphere" />
+            tools:ignore="ContentDescription" />
 
         <FrameLayout
             android:id="@+id/button_status"
@@ -249,8 +253,8 @@
                 android:maxLines="1"
                 android:layout_gravity="center"
                 android:layout_marginStart="25dp"
-                 android:layout_marginEnd="0dp"
-                android:text="10:11"
+                android:layout_marginEnd="0dp"
+                tools:text="10:11"
                 android:textAlignment="center"
                 android:textSize="@dimen/label_button">
 
@@ -268,7 +272,7 @@
             app:layout_constraintEnd_toEndOf="@id/imageView3"
             app:layout_constraintTop_toTopOf="@+id/imageView3"
             app:tint="@color/light_blue_900"
-            android:contentDescription="status_img" />
+            tools:ignore="ContentDescription" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

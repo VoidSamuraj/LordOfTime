@@ -6,7 +6,6 @@ import android.app.Dialog
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageButton
@@ -27,15 +26,15 @@ class ColorDialogFragment(
     private var oldCategory: String? = null,
     private var oldColor: String? = null
 ) : AppCompatDialogFragment() {
+
     companion object{
         const val SAVE=1
         const val EDIT=2
     }
 
-    private lateinit var vieww: View
+    private lateinit var contentView: View
     private lateinit var colorPicker:ColorPickerView
     private lateinit var lightSlider:LightnessSlider
-
 
     @SuppressLint("RestrictedApi")
     override fun setupDialog(dialog: Dialog, style: Int) {
@@ -46,32 +45,31 @@ class ColorDialogFragment(
         super.onCreateDialog(savedInstanceState)
         val builder: AlertDialog.Builder = AlertDialog.Builder(activity)
         val inflater: LayoutInflater = requireActivity().layoutInflater
-        vieww= inflater.inflate(LayoutId, null)
-        oldCategory?.let{ vieww.findViewById<TextView>(R.id.category_name).text=it}
+        contentView= inflater.inflate(LayoutId, null)
+        oldCategory?.let{ contentView.findViewById<TextView>(R.id.category_name).text=it}
 
 
-        colorPicker=vieww.findViewById(R.id.color_picker_view)
-        lightSlider=vieww.findViewById(R.id.v_lightness_slider)
-        builder.setView(vieww)
+        colorPicker=contentView.findViewById(R.id.color_picker_view)
+        lightSlider=contentView.findViewById(R.id.v_lightness_slider)
+        builder.setView(contentView)
             .setNegativeButton("Anuluj") { _, _ ->
 
             }
-        vieww.findViewById<ImageButton>(R.id.delete_color).setOnClickListener {
+        contentView.findViewById<ImageButton>(R.id.delete_color).setOnClickListener {
             MainActivity.getDBOpenHelper().deleteColorRow(getName())
             update()
-            Log.v("test",""+ colorPicker.selectedColor)
             dismiss()
         }
         if(dialogType==1){
 
             colorPicker.addOnColorSelectedListener {
 
-                setColorToImageView(vieww, R.id.last_color, R.drawable.ic_kolo_l, it)
-                setColorToImageView(vieww, R.id.new_color, R.drawable.ic_kolo_r, it)
+                setColorToImageView(contentView, R.id.last_color, R.drawable.ic_circle_l, it)
+                setColorToImageView(contentView, R.id.new_color, R.drawable.ic_circle_r, it)
             }
             lightSlider.setOnValueChangedListener {
-                setColorToImageView(vieww, R.id.last_color, R.drawable.ic_kolo_l, colorPicker.selectedColor)
-                setColorToImageView(vieww, R.id.new_color, R.drawable.ic_kolo_r, colorPicker.selectedColor)
+                setColorToImageView(contentView, R.id.last_color, R.drawable.ic_circle_l, colorPicker.selectedColor)
+                setColorToImageView(contentView, R.id.new_color, R.drawable.ic_circle_r, colorPicker.selectedColor)
             }
             builder.setPositiveButton("Zapisz") { _, _ ->
                 MainActivity.getDBOpenHelper().addColorRow(getName(), getColor())
@@ -81,10 +79,10 @@ class ColorDialogFragment(
         }
         else if(dialogType==2){
             colorPicker.addOnColorSelectedListener {
-                setColorToImageView(vieww, R.id.new_color, R.drawable.ic_kolo_r, it)
+                setColorToImageView(contentView, R.id.new_color, R.drawable.ic_circle_r, it)
             }
             lightSlider.setOnValueChangedListener {
-                setColorToImageView(vieww, R.id.new_color, R.drawable.ic_kolo_r, colorPicker.selectedColor)
+                setColorToImageView(contentView, R.id.new_color, R.drawable.ic_circle_r, colorPicker.selectedColor)
             }
             builder.setPositiveButton("Zapisz") { _, _ ->
                 if (oldCategory != null && oldColor != null)
@@ -100,21 +98,21 @@ class ColorDialogFragment(
         oldColor?.let{
             if(dialogType==2){
 
-                setColorToImageView(vieww, R.id.last_color, R.drawable.ic_kolo_l, parseColor(oldColor))
-                setColorToImageView(vieww, R.id.new_color, R.drawable.ic_kolo_r, parseColor(oldColor))
+                setColorToImageView(contentView, R.id.last_color, R.drawable.ic_circle_l, parseColor(oldColor))
+                setColorToImageView(contentView, R.id.new_color, R.drawable.ic_circle_r, parseColor(oldColor))
             }
         }
 
     }
 
-    private fun getName():String= vieww.findViewById<TextView>(R.id.category_name).text.toString()
+    private fun getName():String= contentView.findViewById<TextView>(R.id.category_name).text.toString()
     private fun getColor():String=String.format(
         "#%06X", 0xFFFFFF and
                 colorPicker.selectedColor
     )
     private fun update(){
         (context as MainActivity).getDataFromDB()
-        ColorsFragment.fillEditList(MainActivity.getColors())}
+    }
 
     private fun getColoredCircle(id: Int, color: Int):Drawable{
         val unwrappedDrawable = AppCompatResources.getDrawable(requireContext(), id)

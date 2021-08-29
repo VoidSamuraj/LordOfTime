@@ -3,29 +3,20 @@ package com.voidsamurai.lordoftime
 import android.annotation.SuppressLint
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
-import android.os.Build
 import android.os.Bundle
-import android.os.Handler
-import android.util.Log
 import android.view.*
-import android.view.animation.AnimationUtils
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.lifecycle.MutableLiveData
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
-import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import androidx.viewpager.widget.PagerAdapter
-import androidx.viewpager.widget.ViewPager
 import com.voidsamurai.lordoftime.bd.LOTDatabaseHelper
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.fragment_home.*
-import kotlinx.android.synthetic.main.fragment_many_charts.*
+import com.voidsamurai.lordoftime.databinding.ActivityMainBinding
 import layout.DataRowWithColor
 import java.util.*
 import kotlin.collections.ArrayList
@@ -33,8 +24,11 @@ import kotlin.collections.HashMap
 
 
 class MainActivity : AppCompatActivity() {
-    private var x1=0.0f
-    private var x2=0.0f
+
+
+
+    private var _mainFragmentBinding: ActivityMainBinding?=null
+    private val mainFragmentBinding get()=_mainFragmentBinding!!
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var _menu: Menu
@@ -48,10 +42,10 @@ class MainActivity : AppCompatActivity() {
         @SuppressLint("StaticFieldLeak")
         private lateinit var editNav: NavController
         private lateinit var oh: LOTDatabaseHelper
-        private lateinit var queryArrayByDate: ArrayList<DataRowWithColor>
-        private lateinit var queryArrayByPriority: ArrayList<DataRowWithColor>
-        private lateinit var queryArrayByDuration: ArrayList<DataRowWithColor>
-        private lateinit var colorsArray: Map<String,String>
+        private  var queryArrayByDate: MutableLiveData<ArrayList<DataRowWithColor>> = MutableLiveData()
+        private var queryArrayByPriority: MutableLiveData<ArrayList<DataRowWithColor>> = MutableLiveData()
+        private  var queryArrayByDuration: MutableLiveData<ArrayList<DataRowWithColor>> = MutableLiveData()
+        private  var colorsArray: MutableLiveData<Map<String,String>> = MutableLiveData()
         fun getQueryArrayByDate()= queryArrayByDate
         fun getQueryArrayByPriority()= queryArrayByPriority
         fun getQueryArrayByDuration()= queryArrayByDuration
@@ -60,10 +54,6 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    override fun onStart() {
-        super.onStart()
-
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,15 +61,16 @@ class MainActivity : AppCompatActivity() {
         db = oh.readableDatabase
         getDataFromDB()
 
-        setContentView(R.layout.activity_main)
+        _mainFragmentBinding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(mainFragmentBinding.root)
 
         setSupportActionBar(findViewById(R.id.toolbar))
         supportActionBar?.setDisplayShowTitleEnabled(false)
 
 
         navController = findNavController(R.id.nav_host_fragment)
-        drawerLayout = drawer_layout
-        nav_view.setupWithNavController(navController)
+        drawerLayout = mainFragmentBinding.drawerLayout
+        mainFragmentBinding.navView.setupWithNavController(navController)
         drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
 
         appBarConfiguration = AppBarConfiguration(navController.graph, drawerLayout)
@@ -111,21 +102,20 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-
         if (drawerLayout.isDrawerOpen(GravityCompat.START))
             drawerLayout.closeDrawer(GravityCompat.START)
         else if(navController.currentDestination?.label=="fragment_tasks_edit_host"){
             editNav=findNavController(R.id.edit_fragment)
 
-            if(editNav.currentDestination?.label=="EditTask")
+            if(editNav.currentDestination?.label=="EditTask"||editNav.currentDestination?.label=="fragment_colors_list")
                 editNav.popBackStack()
             else{
                 navController.popBackStack()
             }
         }else if(navController.currentDestination?.label=="fragment_many_charts"){
-              findNavController(R.id.nav_host_fragment).navigateUp()
+            findNavController(R.id.nav_host_fragment).navigateUp()
         }
-     //
+        //
         else
             super.onBackPressed()
     }
@@ -136,17 +126,12 @@ class MainActivity : AppCompatActivity() {
      * **/
 
 
-    /**
-     * @author Karol Robak
-     * Implements toolbar buttons animations
-     * **/
-
     fun getDataFromDB(){
         val selectionQuery: String = "SELECT TASKTABLE._id, TASKTABLE.category, TASKTABLE.name, TASKTABLE.datetime,TASKTABLE.working_time,TASKTABLE.priority, COLOR.color " +
                 "FROM TASKTABLE LEFT JOIN COLOR on TASKTABLE.category=COLOR.category_id ORDER BY TASKTABLE.datetime, TASKTABLE.priority DESC"
         val query:ArrayList<DataRowWithColor> =ArrayList()
         var c: Cursor = db.rawQuery(selectionQuery, null)
-        colorsArray=HashMap()
+        var array:Map<String,String> = HashMap()
 
         if(c.moveToFirst())
             do {
@@ -163,16 +148,17 @@ class MainActivity : AppCompatActivity() {
         c = db.rawQuery("SELECT * FROM COLOR", null)
         if(c.moveToFirst())
             do
-                colorsArray=colorsArray.plus(Pair(c.getString(0),c.getString(1)))
+                array=array.plus(Pair(c.getString(0),c.getString(1)))
             while (c.moveToNext())
         c.close()
+        colorsArray.value=array
         query.forEach { dataRowWithColor ->
             if (dataRowWithColor.date.before(Calendar.getInstance()))
                 dataRowWithColor.outdated=true
         }
-        queryArrayByDate =query
-        queryArrayByPriority=getSortedByPriority(query)
-        queryArrayByDuration=getSortedByDuration(query)
+        queryArrayByDate.value =query
+        queryArrayByPriority.value=getSortedByPriority(query)
+        queryArrayByDuration.value=getSortedByDuration(query)
     }
 
     private fun getSortedByDuration(qa: ArrayList<DataRowWithColor>): ArrayList<DataRowWithColor> {

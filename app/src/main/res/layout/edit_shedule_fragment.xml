@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<fragment
+<androidx.fragment.app.FragmentContainerView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:viewBindingIgnore="true"
     android:id="@+id/edit_fragment"
     android:name="androidx.navigation.fragment.NavHostFragment"
     android:layout_width="match_parent"
@@ -10,4 +12,4 @@
     app:navGraph="@navigation/nav_edit"
     >
 
-</fragment>
+</androidx.fragment.app.FragmentContainerView>

@@ -2,6 +2,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -28,7 +29,9 @@
             android:paddingEnd="@dimen/small_padding"
             android:textSize="@dimen/line_text_size"
             app:layout_constraintStart_toStartOf="@+id/textView6"
-            app:layout_constraintTop_toBottomOf="@+id/textView6" />
+            app:layout_constraintTop_toBottomOf="@+id/textView6"
+            android:importantForAutofill="no"
+            tools:ignore="LabelFor" />
 
         <TextView
             android:id="@+id/textView5"
@@ -43,7 +46,7 @@
     <RelativeLayout
         android:id="@+id/frameLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="@+id/textView5"
         app:layout_constraintTop_toBottomOf="@+id/textView5">
 
@@ -57,7 +60,8 @@
             android:layout_gravity="start|top"
             android:layout_marginStart="0dp"
             android:layout_marginTop="0dp"
-            android:src="@drawable/ic_kolo_l" />
+            android:src="@drawable/ic_circle_l"
+            tools:ignore="ContentDescription" />
 
         <ImageView
             android:id="@+id/new_color"
@@ -66,7 +70,8 @@
             android:layout_alignParentTop="true"
             android:layout_marginTop="0dp"
             android:layout_toEndOf="@+id/last_color"
-            android:src="@drawable/ic_kolo_r" />
+            android:src="@drawable/ic_circle_r"
+            tools:ignore="ContentDescription" />
 
         <com.flask.colorpicker.ColorPickerView
             android:id="@+id/color_picker_view"
@@ -88,24 +93,19 @@
             android:background="@null"
             android:scaleType="fitCenter"
             app:srcCompat="@drawable/ic_delete"
-            app:tint="@color/black" />
+            app:tint="@color/black"
+            android:contentDescription="@string/delete" />
 
     </RelativeLayout>
 
     <com.flask.colorpicker.slider.LightnessSlider
-            android:id="@+id/v_lightness_slider"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            app:layout_constraintStart_toStartOf="@+id/frameLayout"
-            app:layout_constraintTop_toBottomOf="@+id/frameLayout" />
-<!--
-        <com.flask.colorpicker.slider.AlphaSlider
-            android:id="@+id/v_alpha_slider"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            app:layout_constraintStart_toStartOf="@+id/v_lightness_slider"
-            app:layout_constraintTop_toBottomOf="@+id/v_lightness_slider" />
--->
+        android:id="@+id/v_lightness_slider"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/frameLayout"
+        app:layout_constraintTop_toBottomOf="@+id/frameLayout" />
+
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -5,7 +5,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:layout_marginTop="5dp">
+        android:layout_marginTop="5dp"
+        tools:viewBindingIgnore="true">
 
         <View
             android:id="@+id/chart_color_block"
@@ -21,6 +22,7 @@
             android:layout_gravity="center"
             android:paddingStart="5dp"
             android:textSize="@dimen/chart_description"
-            tools:text="test"/>
+            tools:text="test"
+            tools:ignore="RtlSymmetry" />
 
     </LinearLayout>

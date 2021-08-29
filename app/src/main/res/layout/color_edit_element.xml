@@ -3,6 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    tools:viewBindingIgnore="true"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
@@ -35,7 +36,8 @@
             android:textSize="@dimen/line_text_size"
             app:layout_constraintStart_toEndOf="@+id/chart_color_block"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="test" />
+            tools:text="test"
+            tools:ignore="RtlSymmetry" />
     </LinearLayout>
     <View
         android:id="@+id/bottom_line"

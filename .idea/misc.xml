@@ -3,26 +3,51 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/drawable/background_circle.xml" value="0.3848958333333333" />
+        <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/drawable/border.xml" value="0.3848958333333333" />
         <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/drawable/button.xml" value="0.5708333333333333" />
+        <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/drawable/button_fancy.xml" value="0.3848958333333333" />
         <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/drawable/circle.xml" value="0.5708333333333333" />
+        <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/drawable/filled_border.xml" value="0.3848958333333333" />
+        <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/drawable/filled_border1dp.xml" value="0.3848958333333333" />
+        <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/drawable/ic__arrow_drop_down.xml" value="0.44114583333333335" />
+        <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/drawable/ic__person.xml" value="0.44114583333333335" />
+        <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/drawable/ic_add.xml" value="0.44114583333333335" />
+        <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/drawable/ic_add_circle.xml" value="0.44114583333333335" />
+        <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/drawable/ic_arrow_back.xml" value="0.44114583333333335" />
+        <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/drawable/ic_arrow_back_ios.xml" value="0.44114583333333335" />
         <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/drawable/ic_baseline_play_arrow_24.xml" value="0.5708333333333333" />
         <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/drawable/ic_baseline_play_circle_24.xml" value="0.5708333333333333" />
         <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/drawable/ic_baseline_play_circle_outline_24.xml" value="0.5708333333333333" />
+        <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/drawable/ic_cancel.xml" value="0.44114583333333335" />
         <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/drawable/ic_circle.xml" value="0.5708333333333333" />
+        <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/drawable/ic_circle_l.xml" value="0.44114583333333335" />
+        <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/drawable/ic_corner1.xml" value="0.44114583333333335" />
+        <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/drawable/ic_delete.xml" value="0.44114583333333335" />
+        <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/drawable/ic_edit.xml" value="0.44114583333333335" />
+        <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/drawable/ic_launcher_background.xml" value="0.44114583333333335" />
+        <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/drawable/ic_save.xml" value="0.44114583333333335" />
+        <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/drawable/ic_settings.xml" value="0.44114583333333335" />
+        <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/drawable/ic_square.xml" value="0.44114583333333335" />
+        <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/drawable/settings_anim_in.xml" value="0.44114583333333335" />
+        <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/drawable/settings_anim_out.xml" value="0.44114583333333335" />
         <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/layout/activity_home_nav_host.xml" value="0.37604166666666666" />
         <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/layout/activity_main.xml" value="0.2179930795847751" />
         <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/layout/calendar_card_view.xml" value="0.26975683890577506" />
+        <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/layout/chart_details_element.xml" value="0.33695652173913043" />
         <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/layout/color_edit_element.xml" value="0.44429347826086957" />
         <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/layout/edit_shedule_fragment.xml" value="0.44429347826086957" />
         <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/layout/fragment_changer_list.xml" value="0.44429347826086957" />
         <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/layout/fragment_chart.xml" value="0.44429347826086957" />
         <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/layout/fragment_colors_list.xml" value="0.44429347826086957" />
+        <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/layout/fragment_date_chart_element.xml" value="0.24518743667679838" />
         <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/layout/fragment_date_widget.xml" value="0.458786231884058" />
         <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/layout/fragment_edit_color_category.xml" value="0.44429347826086957" />
         <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/layout/fragment_home.xml" value="0.5" />
         <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/layout/fragment_home_nav_host.xml" value="0.43697916666666664" />
         <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/layout/fragment_many_charts.xml" value="0.5546875" />
         <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/layout/fragment_number_picker.xml" value="0.44429347826086957" />
+        <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/layout/fragment_pie_chart.xml" value="0.5072324011571842" />
         <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/layout/fragment_task_edit.xml" value="0.44429347826086957" />
         <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/layout/fragment_task_edit3.xml" value="0.5546875" />
         <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/layout/fragment_tasks_edit_host.xml" value="0.44429347826086957" />

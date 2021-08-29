@@ -11,7 +11,7 @@
 
     <Space
         android:layout_width="match_parent"
-        android:layout_height="@dimen/padding_elewation" />
+        android:layout_height="@dimen/padding_elevation" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/card2"
@@ -20,7 +20,7 @@
         android:layout_height="220dp"
         android:layout_marginStart="@dimen/small_padding"
         android:layout_marginEnd="@dimen/small_padding"
-        app:cardElevation="@dimen/padding_elewation"
+        app:cardElevation="@dimen/padding_elevation"
         app:cardCornerRadius="@dimen/radius_card_view">
 
         <LinearLayout
@@ -36,16 +36,19 @@
                 android:text="@string/chart_header"
                 android:textSize="@dimen/main_header" />
 
-            <include
+            <fragment
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:id="@+id/chart_frag"
-                layout="@layout/fragment_chart" />
+                tools:layout="@layout/fragment_pie_chart"
+                class="com.voidsamurai.lordoftime.fragments.FragmentPieChart"/>
         </LinearLayout>
 
     </androidx.cardview.widget.CardView>
 
     <Space
         android:layout_width="match_parent"
-        android:layout_height="@dimen/padding_elewation"
+        android:layout_height="@dimen/padding_elevation"
         />
 
     <androidx.cardview.widget.CardView
@@ -54,7 +57,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/small_padding"
         android:layout_marginEnd="@dimen/small_padding"
-        app:cardElevation="@dimen/padding_elewation"
+        app:cardElevation="@dimen/padding_elevation"
         app:cardCornerRadius="@dimen/radius_card_view"
         >
 

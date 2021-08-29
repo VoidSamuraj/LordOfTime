@@ -18,12 +18,7 @@ import layout.DataRowWithColor
 
 class EditList : Fragment() {
 
-    companion object{
-        private lateinit var editAdapter: EditAdapter
-        fun update()=editAdapter.notifyDataSetChanged()
-    }
-
-
+    private lateinit var editAdapter: EditAdapter
     private var _binding: FragmentChangerListBinding?=null
     private val binding get()=_binding!!
 
@@ -37,8 +32,9 @@ class EditList : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        fillEditList(MainActivity.getQueryArrayByPriority())
-
+        MainActivity.getQueryArrayByPriority().observe(viewLifecycleOwner,{
+            fillEditList(it)
+        })
         binding.addRecordButton.setOnClickListener{
 
             it?.findNavController()!!.navigate(R.id.action_listChanger_to_editTask)
@@ -61,5 +57,11 @@ class EditList : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         _binding=null
+    }
+
+
+    override fun onDestroyView() {
+        MainActivity.getQueryArrayByPriority().removeObservers(viewLifecycleOwner)
+        super.onDestroyView()
     }
 }

@@ -16,13 +16,13 @@ class MyChart(context: Context?, attributeSet: AttributeSet ):
     fun fillData(
         data: List<Pair<Int, Float>>?,
         maxVal: Int? = null,
-        fillColorDefaultt: Int? = null,
+        fillColorDefault: Int? = null,
         spaceBetween: Int? = null
     ) {
         this.data=data
         spaceBetween?.let { this.spaceBetween=it}
         maxVal?.let {this.maxVal=it}
-        fillColorDefaultt?.let {this.fillColorDefaultt=it}
+        fillColorDefault?.let {this.fillColorDefault=it}
         canvas?.let { drawPie(it)}
         forceLayout()
     }
@@ -31,7 +31,7 @@ class MyChart(context: Context?, attributeSet: AttributeSet ):
     private var data:List<Pair<Int, Float>>? = null
     private var spaceBetween:Int=0
     private var maxVal:Int?=null
-    private var fillColorDefaultt:Int?=null
+    private var fillColorDefault:Int?=null
     private var paint:Paint= Paint()
     private var side:Int =0
 
@@ -67,7 +67,7 @@ class MyChart(context: Context?, attributeSet: AttributeSet ):
         if(data!=null&&canvas!=null){
             if(maxVal!=null){
                 paint.setShadowLayer(15f,0f,0f,Color.BLACK)
-                drawArc1(canvas,0.0f,360.0f,fillColorDefaultt?:Color.WHITE)
+                drawArc1(canvas,0.0f,360.0f,fillColorDefault?:Color.WHITE)
                 paint.setShadowLayer(0f,0f,0f,Color.BLACK)
                 val scale:Float = 360.0f/ maxVal!!
                 duration=fillRound(scale)
@@ -155,27 +155,6 @@ class MyChart(context: Context?, attributeSet: AttributeSet ):
 
         }
     }
-    private fun drawArc(canvas: Canvas?,startAngle:Float,sweepAngle:Float,color: Int){
-        val skok=10
-        val move:Pair<Float,Float> = when(val mid=startAngle+(sweepAngle/2)){
-            in 0.0f..90.0f ->Pair((1-(mid/90))*skok,mid/90*skok)
-            in 90.0f..180.0f ->Pair(-(mid%90)/90*skok, (1-((mid%90)/90))*skok)
-            in 180.0f..270.0f ->Pair(-(1-((mid%90)/90))*skok,-(mid%90)/90*skok)
-            in 270.0f..360.0f ->Pair((mid%90)/90*skok,- (1-((mid%90)/90))*skok)
-            else -> Pair(0.0f,0.0f)
-        }
-        paint.style=Paint.Style.FILL
-        paint.color = color
-        canvas!!.drawArc(
-            (width / 2 - side / 2).toFloat()+move.first,
-            (height / 2 - side / 2).toFloat()+move.second,
-            (width / 2 + side / 2).toFloat()+move.first,
-            (height / 2 + side / 2).toFloat()+move.second,
-            startAngle,
-            sweepAngle,
-            true,
-            paint
-        )
-    }
+   
 
 }

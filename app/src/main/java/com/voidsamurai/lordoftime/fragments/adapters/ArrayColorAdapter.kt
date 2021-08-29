@@ -13,7 +13,8 @@ import com.voidsamurai.lordoftime.R
 
 class ArrayColorAdapter(
     context: Context,
-    @LayoutRes private val layoutResource: Int,
+    @LayoutRes
+    private val layoutResource: Int,
     private val list: List<Pair<String, String>>
 ):
     ArrayAdapter<Pair<String, String>>(context, layoutResource, list){

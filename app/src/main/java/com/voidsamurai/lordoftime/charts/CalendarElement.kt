@@ -7,7 +7,7 @@ import android.graphics.Paint
 import android.util.AttributeSet
 import android.view.View
 
-class CallendarElement(context: Context?, attributeSet: AttributeSet):
+class CalendarElement(context: Context?, attributeSet: AttributeSet):
     View(context,attributeSet) {
 
     private var canvas:Canvas?=null

@@ -18,7 +18,9 @@
         android:paddingEnd="@dimen/small_padding"
         android:textSize="@dimen/line_text_size"
         app:layout_constraintStart_toStartOf="@+id/textName"
-        app:layout_constraintTop_toBottomOf="@+id/textName" />
+        app:layout_constraintTop_toBottomOf="@+id/textName"
+        android:importantForAutofill="no"
+        tools:ignore="LabelFor" />
 
     <EditText
         android:id="@+id/priority_edit"
@@ -31,7 +33,9 @@
         android:paddingEnd="@dimen/small_padding"
         android:textSize="@dimen/line_text_size"
         app:layout_constraintStart_toStartOf="@+id/textPriority"
-        app:layout_constraintTop_toBottomOf="@+id/textPriority" />
+        app:layout_constraintTop_toBottomOf="@+id/textPriority"
+        android:importantForAutofill="no"
+        tools:ignore="LabelFor" />
 
     <EditText
         android:id="@+id/hour_edit"
@@ -49,7 +53,9 @@
         android:layout_marginStart="@dimen/default_margin"
         android:focusable="false"
         android:focusableInTouchMode="false"
-        tools:text="12:00" />
+        tools:text="12:00"
+        android:importantForAutofill="no"
+        tools:ignore="LabelFor,TextFields" />
 
     <EditText
         android:id="@+id/date_edit"
@@ -67,7 +73,9 @@
 
         app:layout_constraintStart_toStartOf="@+id/textDate"
         app:layout_constraintTop_toBottomOf="@+id/textDate"
-        tools:text="07/30/02" />
+        tools:text="07/30/02"
+        android:importantForAutofill="no"
+        tools:ignore="LabelFor,TextFields" />
 
 
     <EditText
@@ -82,7 +90,9 @@
         android:textSize="@dimen/line_text_size"
 
         app:layout_constraintStart_toStartOf="@+id/textDuration"
-        app:layout_constraintTop_toBottomOf="@+id/textDuration" />
+        app:layout_constraintTop_toBottomOf="@+id/textDuration"
+        android:importantForAutofill="no"
+        tools:ignore="LabelFor" />
 
 
     <!--
@@ -109,7 +119,7 @@
 
         <LinearLayout
             android:id="@+id/linear_color"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:background="@drawable/border"
@@ -141,7 +151,8 @@
             android:scaleType="fitCenter"
             app:tint="@color/blue_gray"
             app:srcCompat="@drawable/ic_edit"
-            android:padding="@dimen/small_padding"/>
+            android:padding="@dimen/small_padding"
+            tools:ignore="ContentDescription" />
 
     </LinearLayout>
 
