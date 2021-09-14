@@ -11,7 +11,7 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.voidsamurai.lordoftime.MainActivity
 import com.voidsamurai.lordoftime.R
-import com.voidsamurai.lordoftime.databinding.FragmentChangerListBinding
+import com.voidsamurai.lordoftime.databinding.FragmentEditListBinding
 import com.voidsamurai.lordoftime.fragments.adapters.EditAdapter
 import layout.DataRowWithColor
 
@@ -19,25 +19,25 @@ import layout.DataRowWithColor
 class EditList : Fragment() {
 
     private lateinit var editAdapter: EditAdapter
-    private var _binding: FragmentChangerListBinding?=null
+    private var _binding: FragmentEditListBinding?=null
     private val binding get()=_binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding=FragmentChangerListBinding.inflate(inflater, container, false)
+        _binding=FragmentEditListBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        MainActivity.getQueryArrayByPriority().observe(viewLifecycleOwner,{
+        (activity as MainActivity).getQueryArrayByPriority().observe(viewLifecycleOwner,{
             fillEditList(it)
         })
         binding.addRecordButton.setOnClickListener{
 
-            it?.findNavController()!!.navigate(R.id.action_listChanger_to_editTask)
+            it?.findNavController()!!.navigate(R.id.action_editList_to_editTaskSelected)
 
         }
     }
@@ -49,11 +49,7 @@ class EditList : Fragment() {
         binding.editTasksRecycleView.smoothScrollToPosition(binding.editTasksRecycleView.adapter!!.itemCount)
     }
 
-    override fun onPause() {
-        super.onPause()
-        requireActivity().window.setBackgroundDrawable(ColorDrawable(Color.WHITE))
 
-    }
     override fun onDestroy() {
         super.onDestroy()
         _binding=null
@@ -61,7 +57,7 @@ class EditList : Fragment() {
 
 
     override fun onDestroyView() {
-        MainActivity.getQueryArrayByPriority().removeObservers(viewLifecycleOwner)
+        (activity as MainActivity).getQueryArrayByPriority().removeObservers(viewLifecycleOwner)
         super.onDestroyView()
     }
 }

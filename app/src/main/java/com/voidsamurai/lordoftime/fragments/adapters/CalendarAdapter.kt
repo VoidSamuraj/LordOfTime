@@ -7,10 +7,10 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.RecyclerView
-import com.voidsamurai.lordoftime.charts.CalendarElement
+import com.voidsamurai.lordoftime.charts_and_views.CalendarElement
 import com.voidsamurai.lordoftime.LinearViewHolder
 import com.voidsamurai.lordoftime.R
-import com.voidsamurai.lordoftime.charts.NTuple5
+import com.voidsamurai.lordoftime.charts_and_views.NTuple5
 
 
 class CalendarAdapter(private val context: Context, private val dataSet: ArrayList<NTuple5<Int, Float, Boolean, Int, Int?>?>) :

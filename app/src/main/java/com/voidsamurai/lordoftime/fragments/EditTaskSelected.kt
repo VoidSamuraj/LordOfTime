@@ -108,7 +108,7 @@ class EditTaskSelected : Fragment() ,DatePickerDialog.OnDateSetListener,TimePick
         }
 
         binding.addColor.setOnClickListener{
-            it?.findNavController()!!.navigate(R.id.action_editTask_to_colorsFragment2)
+            it?.findNavController()!!.navigate(R.id.action_editTaskSelected_to_colorsFragment)
         }
 
         binding.dateEdit.setOnClickListener{
@@ -142,15 +142,15 @@ class EditTaskSelected : Fragment() ,DatePickerDialog.OnDateSetListener,TimePick
     }
 
     private fun updateRow() {
-        MainActivity.getDBOpenHelper().editTaskRow(
+        (activity as MainActivity).getDBOpenHelper().editTaskRow(
             data!!.id,
             (binding.checkCategory.selectedItem as Pair<*, *>).first.toString (),
             binding.nameEdit.text.toString(),
             newDate.time.time,
             binding.durationEdit.text.toString(),
-            binding.priorityEdit.text.toString().toInt()
-        )
-        MainActivity.getDBOpenHelper().editOldstatRow(
+            binding.priorityEdit.text.toString().toInt(),
+        null)
+        (activity as MainActivity).getDBOpenHelper().editOldstatRow(
             data!!.date.time.time,
             newDate.time.time,
             binding.durationEdit.text.toString()
@@ -164,14 +164,14 @@ class EditTaskSelected : Fragment() ,DatePickerDialog.OnDateSetListener,TimePick
         hours: String,
         priority: Int
     ) {
-        MainActivity.getDBOpenHelper().addTaskRow(category, name, startDateTime, hours, priority)
-        MainActivity.getDBOpenHelper().addOldstatRow(startDateTime,hours)
+        (activity as MainActivity).getDBOpenHelper().addTaskRow(category, name, startDateTime, hours, priority,"0.0")
+        (activity as MainActivity).getDBOpenHelper().addOldstatRow(startDateTime,hours)
         update()
     }
 
     private fun deleteRow(dataRowWithColor: DataRowWithColor){
-        MainActivity.getDBOpenHelper().deleteTaskRow(dataRowWithColor.id)
-        MainActivity.getDBOpenHelper().deleteOldstatRow(dataRowWithColor.date.time.time)
+        (activity as MainActivity).getDBOpenHelper().deleteTaskRow(dataRowWithColor.id)
+        (activity as MainActivity).getDBOpenHelper().deleteOldstatRow(dataRowWithColor.date.time.time)
     }
 
     override fun onDateSet(view: DatePicker?, year: Int, month: Int, dayOfMonth: Int) {
@@ -197,10 +197,10 @@ class EditTaskSelected : Fragment() ,DatePickerDialog.OnDateSetListener,TimePick
         //HomeFragment.fillViewsWithDatabaseData()
     }
     private fun setColorSpinner(){
-        val list: Array<String> = MainActivity.getColors().value!!.keys.toTypedArray()
+        val list: Array<String> = (activity as MainActivity).getColors().value!!.keys.toTypedArray()
         list.sort()
 
-        adapter= ArrayColorAdapter(requireContext(),R.layout.color_edit_element,MainActivity.getColors().value!!.toList())
+        adapter= ArrayColorAdapter(requireContext(),R.layout.color_edit_element,(activity as MainActivity).getColors().value!!.toList())
         adapter.setDropDownViewResource(R.layout.color_edit_element)
         binding.checkCategory.adapter = adapter
     }

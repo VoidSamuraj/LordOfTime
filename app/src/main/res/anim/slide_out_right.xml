@@ -2,7 +2,7 @@
 <set xmlns:android="http://schemas.android.com/apk/res/android"
     android:shareInterpolator="false">
     <translate
-        android:duration="@integer/time_duration_normal"
+        android:duration="@integer/time_duration_lfast"
         android:fromXDelta="0"
         android:toXDelta="100%p" />
 </set>

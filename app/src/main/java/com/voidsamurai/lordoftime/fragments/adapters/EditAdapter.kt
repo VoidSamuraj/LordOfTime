@@ -44,8 +44,8 @@ class EditAdapter(private val dataSet: ArrayList<DataRowWithColor>) :
         layout.findViewById<RelativeLayout>(R.id.relative_edit).background =
             (0x7F000000 or (Color.parseColor(dataSet[position].color) and 0xFFFFFF)).toDrawable()
         layout.findViewById<RelativeLayout>(R.id.relative_edit).setOnClickListener { v: View? ->
-            val action: EditListDirections.ActionListChangerToEditTask =
-                EditListDirections.actionListChangerToEditTask().setDataColor(dataSet[position])
+            val action: EditListDirections.ActionEditListToEditTaskSelected =
+                EditListDirections.actionEditListToEditTaskSelected().setDataColor(dataSet[position])
             v?.findNavController()!!.navigate(action)
 
         }

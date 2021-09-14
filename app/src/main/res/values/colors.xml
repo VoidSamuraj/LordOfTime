@@ -18,4 +18,7 @@
     <color name="black_tint">#6F000000</color>
     <color name="task_color">#1C6193</color>
     <color name="colorAccent">#276495</color>
+    <color name="work_button_color">#FF039BE5</color>
+    <color name="work_button_icon_color">#FF01579B</color>
+    <color name="working_progress_circle">#673AB7</color>
 </resources>

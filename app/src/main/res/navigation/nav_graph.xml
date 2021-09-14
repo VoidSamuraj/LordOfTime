@@ -19,50 +19,63 @@
             app:popEnterAnim="@anim/slide_in_right"
             app:popExitAnim="@anim/slide_out_left_long" />
         <action
-            android:id="@+id/action_FirstFragment_to_tasksEditHostFragment"
-            app:destination="@id/tasksEditHostFragment"
-            app:enterAnim="@anim/fade_in" />
-        <action
             android:id="@+id/action_FirstFragment_to_manyCharts"
             app:destination="@id/manyCharts" />
         <action
             android:id="@+id/action_FirstFragment_to_workingFragment"
-            app:destination="@id/workingFragment" />
+            app:destination="@id/workingFragment"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_right"
+            app:popEnterAnim="@anim/slide_in_right"
+            app:popExitAnim="@anim/slide_out_left" />
+        <action
+            android:id="@+id/action_FirstFragment_to_editList"
+            app:destination="@id/editList"
+            app:enterAnim="@anim/no_transition"
+            app:exitAnim="@anim/no_transition"
+            app:popEnterAnim="@anim/no_transition"
+            app:popExitAnim="@anim/no_transition" />
     </fragment>
     <fragment
         android:id="@+id/colorsFragment"
-        android:name="com.voidsamurai.lordoftime.fragments.ColorsFragment"
+        android:name="com.voidsamurai.lordoftime.fragments.ColorsListFragment"
         android:label="fragment_colors_list"
-        tools:layout="@layout/fragment_colors_list" >
-        <action
-            android:id="@+id/action_colorsFragment2_to_FirstFragment"
-            app:destination="@id/FirstFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/tasksEditHostFragment"
-        android:name="com.voidsamurai.lordoftime.fragments.TasksEditHostFragment"
-        android:label="fragment_tasks_edit_host"
-        tools:layout="@layout/fragment_tasks_edit_host" >
-        <action
-            android:id="@+id/action_tasksEditHostFragment_to_FirstFragment"
-            app:destination="@id/FirstFragment" />
-    </fragment>
+        tools:layout="@layout/fragment_colors_list" />
     <fragment
         android:id="@+id/manyCharts"
         android:name="com.voidsamurai.lordoftime.fragments.ManyChartsFragment"
         android:label="fragment_many_charts"
         tools:layout="@layout/fragment_many_charts" >
-        <action
-            android:id="@+id/action_manyCharts_to_FirstFragment"
-            app:destination="@id/FirstFragment" />
+        <argument
+            android:name="dataColor"
+            app:argType="layout.DataRowWithColor"
+            app:nullable="true"
+            android:defaultValue="@null" />
     </fragment>
     <fragment
         android:id="@+id/workingFragment"
-        android:name="com.voidsamurai.lordoftime.WorkingFragment"
-        android:label="fragment_working"
-        tools:layout="@layout/fragment_working" >
+        android:name="com.voidsamurai.lordoftime.fragments.WorkingFragment"
+        android:label="WorkingFragment"
+        tools:layout="@layout/fragment_working"/>
+    <fragment
+        android:id="@+id/editList"
+        android:name="com.voidsamurai.lordoftime.fragments.EditList"
+        android:label="EditList" >
         <action
-            android:id="@+id/action_workingFragment_to_FirstFragment"
-            app:destination="@id/FirstFragment" />
+            android:id="@+id/action_editList_to_editTaskSelected"
+            app:destination="@id/editTaskSelected" />
+    </fragment>
+    <fragment
+        android:id="@+id/editTaskSelected"
+        android:name="com.voidsamurai.lordoftime.fragments.EditTaskSelected"
+        android:label="EditTaskSelected" >
+        <action
+            android:id="@+id/action_editTaskSelected_to_colorsFragment"
+            app:destination="@id/colorsFragment" />
+        <argument
+            android:name="dataColor"
+            app:argType="layout.DataRowWithColor"
+            app:nullable="true"
+            android:defaultValue="@null" />
     </fragment>
 </navigation>

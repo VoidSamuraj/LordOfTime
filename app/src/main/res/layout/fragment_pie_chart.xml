@@ -11,7 +11,7 @@
 
 
 
-    <com.voidsamurai.lordoftime.charts.MyChart
+    <com.voidsamurai.lordoftime.charts_and_views.MyChart
         android:id="@+id/my_chart"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

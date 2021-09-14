@@ -14,7 +14,7 @@ import com.voidsamurai.lordoftime.databinding.FragmentColorsListBinding
 import com.voidsamurai.lordoftime.fragments.adapters.ColorsAdapter
 
 
-class ColorsFragment : Fragment() {
+class ColorsListFragment : Fragment() {
 
 
     private lateinit var colorAdapter: ColorsAdapter
@@ -41,9 +41,9 @@ class ColorsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        data=MainActivity.getColors()
+        data=(activity as MainActivity).getColors()
         colorList=binding.colorsList
-        MainActivity.getColors().observe(viewLifecycleOwner,{
+        (activity as MainActivity).getColors().observe(viewLifecycleOwner,{
             fillEditList(it)
         })
 
@@ -53,7 +53,7 @@ class ColorsFragment : Fragment() {
 
     }
     override fun onDestroyView() {
-        MainActivity.getColors().removeObservers(viewLifecycleOwner)
+        (activity as MainActivity).getColors().removeObservers(viewLifecycleOwner)
         super.onDestroyView()
     }
 
@@ -66,7 +66,7 @@ class ColorsFragment : Fragment() {
     private fun showDialog(){
 
         val ft =
-            ColorDialogFragment(R.layout.fragment_edit_color_category,ColorDialogFragment.SAVE)
+            ColorDialogFragment(R.layout.dialog_fragment_edit_color_category,ColorDialogFragment.SAVE)
         ft.show(requireActivity().supportFragmentManager,"Kolor")
     }
 }

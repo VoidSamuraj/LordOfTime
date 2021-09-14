@@ -41,7 +41,7 @@ class FragmentPieChart : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.chartDescription.addOnItemTouchListener(RecyclerViewDisabler())
-        MainActivity.getQueryArrayByDuration().observe(viewLifecycleOwner,{
+        (activity as MainActivity).getQueryArrayByDuration().observe(viewLifecycleOwner,{
             fillChartWithData(it)
 
         })
@@ -74,7 +74,7 @@ class FragmentPieChart : Fragment() {
 
 
     override fun onDestroyView() {
-        MainActivity.getQueryArrayByDuration().removeObservers(viewLifecycleOwner)
+        (activity as MainActivity).getQueryArrayByDuration().removeObservers(viewLifecycleOwner)
         super.onDestroyView()
     }
 

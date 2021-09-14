@@ -16,7 +16,7 @@
 
 
 
-            <Space
+            <androidx.legacy.widget.Space
                 android:id="@+id/space1"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/padding_elevation"
@@ -64,7 +64,7 @@
 
             </androidx.cardview.widget.CardView>
 
-            <Space
+            <androidx.legacy.widget.Space
                 android:id="@+id/space2"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/padding_elevation"
@@ -108,7 +108,7 @@
 
             </androidx.cardview.widget.CardView>
 
-            <Space
+            <androidx.legacy.widget.Space
                 android:id="@+id/space3"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/padding_elevation"
@@ -192,14 +192,33 @@
 
     </RelativeLayout>
 
+    <View
+        android:id="@+id/view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/corner1bg"
+        android:layout_width="@dimen/button_corners"
+        android:layout_height="@dimen/button_corners"
+        android:layout_marginBottom="148dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/ic_corner1"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:tint="@color/work_button_color"
+        tools:ignore="ContentDescription" />
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/button_group"
-        android:layout_width="100dp"
+        android:layout_width="@dimen/button_group_width"
         android:layout_height="200dp"
         android:alpha="0.8"
         app:layout_constraintBottom_toBottomOf="@+id/relativeLayout"
-        app:layout_constraintStart_toStartOf="parent"
-       >
+        app:layout_constraintStart_toStartOf="parent">
 
         <ImageView
             android:id="@+id/corner1"
@@ -209,7 +228,7 @@
             android:src="@drawable/ic_corner1"
             app:layout_constraintBottom_toTopOf="@+id/button_status"
             app:layout_constraintStart_toStartOf="parent"
-            app:tint="@color/light_blue_600"
+            app:tint="@color/work_button_color"
             tools:ignore="ContentDescription" />
 
         <ImageView
@@ -218,47 +237,102 @@
             android:layout_height="@dimen/button_corners"
             android:scaleType="fitXY"
             android:src="@drawable/ic_corner2"
-            app:tint="@color/light_blue_600"
             app:layout_constraintStart_toStartOf="@+id/corner1"
             app:layout_constraintTop_toBottomOf="@+id/button_status"
+            app:tint="@color/work_button_color"
             tools:ignore="ContentDescription" />
 
         <ImageView
             android:id="@+id/imageView3"
-            android:layout_width="50dp"
+            android:layout_width="@dimen/button_half_sphere_width"
             android:layout_height="99dp"
-            android:layout_marginEnd="10dp"
+            android:layout_marginEnd="@dimen/padding_elevation"
             android:scaleType="fitXY"
             android:src="@drawable/half_sphere_r"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:tint="@color/light_blue_600"
+            app:tint="@color/work_button_color"
             tools:ignore="ContentDescription" />
 
         <FrameLayout
             android:id="@+id/button_status"
             android:layout_width="0dp"
             android:layout_height="99dp"
-            android:background="@color/light_blue_600"
+            android:background="@color/work_button_color"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/imageView3"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" >
+            app:layout_constraintTop_toTopOf="parent">
 
             <TextView
-                android:id="@+id/label_hour"
+                android:id="@+id/startTaskLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:maxLines="1"
                 android:layout_gravity="center"
-                android:layout_marginStart="25dp"
-                android:layout_marginEnd="0dp"
-                tools:text="10:11"
-                android:textAlignment="center"
-                android:textSize="@dimen/label_button">
+                android:layout_marginStart="30dp"
+                android:lines="1"
+                android:maxLines="1"
+                android:textSize="@dimen/label_button"
+                android:text="@string/start_task">
 
             </TextView>
+            <LinearLayout
+                android:id="@+id/label_hour"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="30dp"
+                android:orientation="horizontal"
+                android:gravity="center_horizontal">
+
+                <TextSwitcher
+                    android:id="@+id/switcher_hour"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:inAnimation="@anim/slide_in_down"
+                    android:outAnimation="@anim/slide_out_down"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:textSize="@dimen/label_button"
+                    android:text=":"/>
+                <TextSwitcher
+                    android:id="@+id/switcher_minutes1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:inAnimation="@anim/slide_in_down"
+                    android:outAnimation="@anim/slide_out_down"/>
+                <TextSwitcher
+                    android:id="@+id/switcher_minutes2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:inAnimation="@anim/slide_in_down"
+                    android:outAnimation="@anim/slide_out_down"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:textSize="@dimen/label_button"
+                    android:text=":"/>
+                <TextSwitcher
+                    android:id="@+id/switcher_seconds1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:inAnimation="@anim/slide_in_down"
+                    android:outAnimation="@anim/slide_out_down"/>
+                <TextSwitcher
+                    android:id="@+id/switcher_seconds2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:inAnimation="@anim/slide_in_down"
+                    android:outAnimation="@anim/slide_out_down"/>
+            </LinearLayout>
         </FrameLayout>
 
         <ImageView
@@ -271,12 +345,24 @@
             app:layout_constraintBottom_toBottomOf="@+id/imageView3"
             app:layout_constraintEnd_toEndOf="@id/imageView3"
             app:layout_constraintTop_toTopOf="@+id/imageView3"
-            app:tint="@color/light_blue_900"
+            app:tint="@color/work_button_icon_color"
             tools:ignore="ContentDescription" />
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/analog_clock"
+            android:layout_width="80dp"
+            android:layout_height="60dp"
+            app:lottie_rawRes="@raw/clock"
+            app:lottie_speed="0.5"
+            app:lottie_loop="true"
+            app:lottie_autoPlay="true"
+            android:layout_marginEnd="5dp"
+            app:layout_constraintBottom_toBottomOf="@+id/imageView3"
+            app:layout_constraintEnd_toEndOf="@+id/imageView3"
+            app:layout_constraintTop_toTopOf="@+id/imageView3" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

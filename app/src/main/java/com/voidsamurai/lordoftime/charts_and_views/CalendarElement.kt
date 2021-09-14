@@ -1,4 +1,4 @@
-package com.voidsamurai.lordoftime.charts
+package com.voidsamurai.lordoftime.charts_and_views
 
 import android.content.Context
 import android.graphics.Canvas
@@ -27,9 +27,9 @@ class CalendarElement(context: Context?, attributeSet: AttributeSet):
         this.date=date
         this.duration=duration
         this.color=currentMonth
-        canvas?.let {
-            drawElement(canvas!!) }
-        forceLayout()
+        //canvas?.let {
+          //  drawElement(canvas!!) }
+        //forceLayout()
         scale?.let { this.scale=it }
     }
     override fun onDraw(canvas: Canvas?) {

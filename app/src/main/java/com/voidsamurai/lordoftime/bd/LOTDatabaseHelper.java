@@ -16,7 +16,7 @@ import java.util.Date;
 
 public class LOTDatabaseHelper extends SQLiteOpenHelper {
     private static final String DB_NAME = "LOT";
-    private static final int DB_VERSION = 3;
+    private static final int DB_VERSION = 4;
     private static SQLiteDatabase db;
 
     public LOTDatabaseHelper(@Nullable Context context) {
@@ -44,34 +44,36 @@ public class LOTDatabaseHelper extends SQLiteOpenHelper {
 
     private void updateMyDatabase(SQLiteDatabase db, int oldVersion, int newVersion){
         LOTDatabaseHelper.db =db;
-        if(oldVersion<1) {
-         //   db.execSQL("DROP TABLE TASKTABLE");
-            db.execSQL("CREATE TABLE TASKTABLE (_id INTEGER PRIMARY KEY AUTOINCREMENT, category TEXT,name TEXT, datetime INTEGER, working_time TEXT,priority INTEGER);");
+        if(oldVersion<4) {
+            db.execSQL("DROP TABLE TASKTABLE;");
+            db.execSQL("DROP TABLE OLDSTATS;");
+            db.execSQL("DROP TABLE COLOR;");
+            db.execSQL("CREATE TABLE TASKTABLE (_id INTEGER PRIMARY KEY AUTOINCREMENT, category TEXT,name TEXT, datetime INTEGER, working_time TEXT,priority INTEGER, current_work_time TEXT);");
             db.execSQL("CREATE TABLE COLOR (category_id TEXT PRIMARY KEY , color TEXT);");
             db.execSQL("CREATE TABLE OLDSTATS (date_id INTEGER PRIMARY KEY , working_time TEXT);");
 
             Calendar cal = Calendar.getInstance();
             cal.set(2021, 11, 1, 12, 6,0);
             cal.set(Calendar.MILLISECOND,0);
-            fillData("Książki", "Ludzie bezdomni", cal.getTime().getTime(), "2.4",3);
+            fillData("Książki", "Ludzie bezdomni", cal.getTime().getTime(), "2.4",3,"1.2");
             cal.set(2021, 11, 1, 15, 6,0);
             cal.set(Calendar.MILLISECOND,0);
-            fillData("Sport", "Sztanga", cal.getTime().getTime(), "6.6",1);
+            fillData("Sport", "Sztanga", cal.getTime().getTime(), "6.6",1,"2.6");
             cal.set(2021, 11, 2, 1, 6,0);
             cal.set(Calendar.MILLISECOND,0);
-            fillData("Sport", "Bieganie", cal.getTime().getTime(), "1.8",1);
+            fillData("Sport", "Bieganie", cal.getTime().getTime(), "1.8",1,"1.0");
             cal.set(2022, 4, 11, 14, 16,0);
             cal.set(Calendar.MILLISECOND,0);
-            fillData("Praca w ogrodzie","Sadzenie cebuli",cal.getTime().getTime(),"2.4" ,2);
+            fillData("Praca w ogrodzie","Sadzenie cebuli",cal.getTime().getTime(),"2.4" ,2,"2.0");
             cal.set(2022, 6, 30, 10, 2,0);
             cal.set(Calendar.MILLISECOND,0);
-            fillData("Praca w ogrodzie","Podlewanie kwiatów",cal.getTime().getTime(),"0.4",2 );
+            fillData("Praca w ogrodzie","Podlewanie kwiatów",cal.getTime().getTime(),"0.4",2 ,"0.0");
 
             addColorRow( "Praca w ogrodzie", "#FFAA56");
             addColorRow( "Książki", "#AAFF96");
             addColorRow( "Sport", "#2266BB");
         }
-        if(oldVersion<3){
+        /*if(oldVersion<3){
             Calendar cal = Calendar.getInstance();
             cal.set(2021, 11, 1, 12, 6,0);
             cal.set(Calendar.MILLISECOND,0);
@@ -88,27 +90,27 @@ public class LOTDatabaseHelper extends SQLiteOpenHelper {
             cal.set(2022, 6, 30, 10, 2,0);
             cal.set(Calendar.MILLISECOND,0);
             fillData("Praca w ogrodzie","Podlewanie kwiatów",cal.getTime().getTime(),"0.4",2 );
-        }
-        if(oldVersion<5){
+        }*/
+        if(oldVersion<6){
+        /*   db.execSQL("DROP TABLE OLDSTATS;");
+            db.execSQL("CREATE TABLE OLDSTATS (date_id INTEGER PRIMARY KEY , working_time TEXT);");
 
-           // db.execSQL("CREATE TABLE OLDSTATS (date_id INTEGER PRIMARY KEY , working_time TEXT);");
-/*
             Calendar cal = Calendar.getInstance();
-            cal.set(2021, 6, 1, 0, 0,0);
+            cal.set(2021, 11, 1, 0, 0,0);
             cal.set(Calendar.MILLISECOND,0);
-            addOldstatRow(cal.getTime().getTime(),"2.0");
+            addOldstatRow(cal.getTime().getTime(),"3.0");
             cal.set(2021, 8, 1, 0, 0,0);
             cal.set(Calendar.MILLISECOND,0);
             addOldstatRow(cal.getTime().getTime(),"4.0");
-            cal.set(2021, 6, 30, 0, 0,0);
+            cal.set(2021, 11, 1, 0, 0,0);
             cal.set(Calendar.MILLISECOND,0);
             addOldstatRow(cal.getTime().getTime(),"8.0");
 */
         }
 
     }
-    private void fillData(String category, String name, Long startdatetime, String hours, int priority){
-        addTaskRow(category,name,startdatetime,hours,priority);
+    private void fillData(String category, String name, Long startdatetime, String hours, int priority,String workingTime){
+        addTaskRow(category,name,startdatetime,hours,priority,workingTime);
         addOldstatRow(startdatetime,hours);
     }
 
@@ -137,13 +139,13 @@ public class LOTDatabaseHelper extends SQLiteOpenHelper {
                 ,"date_id = ?"
                 ,new String[]{String.valueOf(date)});
     }
-    public void addTaskRow(String category, String name, Long startdatetime, String hours, int priority) {                   // dodaj sprawdzanie czy wpisy już istnieją
-        ContentValues cv = createTasktableValues(category,name,startdatetime,hours,priority);
+    public void addTaskRow(String category, String name, Long startdatetime, String hours, int priority,String workingTime){                   // dodaj sprawdzanie czy wpisy już istnieją
+        ContentValues cv = createTasktableValues(category,name,startdatetime,hours,priority,workingTime);
         db.insert("TASKTABLE", null, cv);
         cv.clear();
     }
-    public void editTaskRow(int oldId, String category, String name, Long startdatetime, String hours, int priority){        // dodaj sprawdzanie czy wpisy już istnieją
-            ContentValues cv = createTasktableValues(category,name,startdatetime,hours,priority);
+    public void editTaskRow(int oldId, String category, String name, Long startdatetime, String hours, int priority,String workingTime){        // dodaj sprawdzanie czy wpisy już istnieją
+            ContentValues cv = createTasktableValues(category,name,startdatetime,hours,priority,workingTime);
             db.update("TASKTABLE"
                     ,cv
                     ,"_id = ?"
@@ -155,13 +157,14 @@ public class LOTDatabaseHelper extends SQLiteOpenHelper {
     }
 
     @NotNull
-    private  ContentValues createTasktableValues(String category, String name, Long starttime, String hours, int priority){
+    private  ContentValues createTasktableValues(String category, String name, Long starttime, String hours, int priority,String currentWorkingTime){
         ContentValues cv = new ContentValues();
         if(category!=null)cv.put("category",category);
         if(name!=null)cv.put("name",name);
         if(starttime!=null)cv.put("datetime",starttime);
         if(hours!=null)cv.put("working_time",hours);
         if(priority!=0)cv.put("priority",priority);
+        if(currentWorkingTime!=null)cv.put("current_work_time",currentWorkingTime);
         return cv;
     }
     private  ContentValues createOldstatValues( Long starttime, String hours){

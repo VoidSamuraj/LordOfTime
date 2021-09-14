@@ -6,6 +6,7 @@ import android.app.Dialog
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageButton
@@ -50,13 +51,14 @@ class ColorDialogFragment(
 
 
         colorPicker=contentView.findViewById(R.id.color_picker_view)
+        colorPicker.setInitialColor(Color.WHITE,false)
         lightSlider=contentView.findViewById(R.id.v_lightness_slider)
         builder.setView(contentView)
             .setNegativeButton("Anuluj") { _, _ ->
 
             }
         contentView.findViewById<ImageButton>(R.id.delete_color).setOnClickListener {
-            MainActivity.getDBOpenHelper().deleteColorRow(getName())
+            (activity as MainActivity).getDBOpenHelper().deleteColorRow(getName())
             update()
             dismiss()
         }
@@ -72,7 +74,7 @@ class ColorDialogFragment(
                 setColorToImageView(contentView, R.id.new_color, R.drawable.ic_circle_r, colorPicker.selectedColor)
             }
             builder.setPositiveButton("Zapisz") { _, _ ->
-                MainActivity.getDBOpenHelper().addColorRow(getName(), getColor())
+                (activity as MainActivity).getDBOpenHelper().addColorRow(getName(), getColor())
                 update()
 
             }
@@ -86,7 +88,8 @@ class ColorDialogFragment(
             }
             builder.setPositiveButton("Zapisz") { _, _ ->
                 if (oldCategory != null && oldColor != null)
-                    MainActivity.getDBOpenHelper().editColorRow(oldCategory, getName(), getColor())
+                    (activity as MainActivity).getDBOpenHelper().editColorRow(oldCategory, getName(), getColor())
+
                 update()
             }
         }
@@ -95,12 +98,24 @@ class ColorDialogFragment(
 
     override fun onResume() {
         super.onResume()
+        if(dialogType==1) {
+
+            setColorToImageView(contentView, R.id.last_color, R.drawable.ic_circle_l, Color.WHITE)
+            setColorToImageView(
+                contentView,
+                R.id.new_color,
+                R.drawable.ic_circle_r,
+                Color.WHITE
+            )
+        }
         oldColor?.let{
             if(dialogType==2){
-
                 setColorToImageView(contentView, R.id.last_color, R.drawable.ic_circle_l, parseColor(oldColor))
                 setColorToImageView(contentView, R.id.new_color, R.drawable.ic_circle_r, parseColor(oldColor))
             }
+
+
+
         }
 
     }

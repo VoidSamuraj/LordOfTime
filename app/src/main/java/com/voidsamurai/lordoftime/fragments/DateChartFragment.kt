@@ -18,7 +18,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.voidsamurai.lordoftime.LinearViewHolder
 import com.voidsamurai.lordoftime.R
 import com.voidsamurai.lordoftime.bd.LOTDatabaseHelper
-import com.voidsamurai.lordoftime.charts.NTuple5
+import com.voidsamurai.lordoftime.charts_and_views.NTuple5
 import com.voidsamurai.lordoftime.databinding.FragmentDateWidgetBinding
 import com.voidsamurai.lordoftime.fragments.adapters.CalendarAdapter
 import java.text.SimpleDateFormat
@@ -295,7 +295,7 @@ class DateChartFragment : Fragment() {
 
         binding.numberPicker.setOnClickListener {
             val fnp=NumberPicker(dayAimH.value!!)
-           // fnp.show(requireActivity().supportFragmentManager,"Hours")
+            // fnp.show(requireActivity().supportFragmentManager,"Hours")
             fnp.show(childFragmentManager,"Hours")
         }
     }
@@ -322,28 +322,35 @@ class DateChartFragment : Fragment() {
             monthCalendar.firstDayOfWeek=Calendar.SUNDAY
 
 
-        val allData:Map<Calendar,String> =getDBData()
-      val monthData:Map<Calendar,String> =allData.filter { entry ->
+        val allData:Map<Calendar,Float> =getDBData()
+        val monthData:Map<Calendar,Float> =allData.filter { entry ->
             (monthCalendar.get(Calendar.YEAR)==entry.key.get(Calendar.YEAR)) &&(monthCalendar.get(Calendar.MONTH)==entry.key.get(Calendar.MONTH))
         }
 
-        val lastMonthData:Map<Calendar,String> =allData.filter { entry ->
+        val lastMonthData:Map<Calendar,Float> =allData.filter { entry ->
             (monthCalendar.get(Calendar.YEAR)==entry.key.get(Calendar.YEAR)) &&((monthCalendar.get(Calendar.MONTH)-1)==entry.key.get(Calendar.MONTH))
         }
-        val nextMonthData:Map<Calendar,String> =allData.filter { entry ->
+        val nextMonthData:Map<Calendar,Float> =allData.filter { entry ->
             (monthCalendar.get(Calendar.YEAR)==entry.key.get(Calendar.YEAR)) &&((monthCalendar.get(Calendar.MONTH)+1)==entry.key.get(Calendar.MONTH))
         }
-        var daysData:Map<Int,String> = TreeMap()
+        val c:Calendar= Calendar.getInstance()
+        c.set(2021, 11, 1, 12, 6,0)
+
+        val daysData:MutableMap<Int,Float> = TreeMap()
         monthData.forEach { (t, u) ->
-            daysData=daysData.plus(Pair(t.get(Calendar.DAY_OF_MONTH),u))
+            val key=t.get(Calendar.DAY_OF_MONTH)
+            daysData[key] = u
         }
-        var lastDaysData:Map<Int,String> = TreeMap()
+        val lastDaysData:MutableMap<Int,Float> = TreeMap()
         lastMonthData.forEach { (t, u) ->
-            lastDaysData=lastDaysData.plus(Pair(t.get(Calendar.DAY_OF_MONTH),u))
+            val key=t.get(Calendar.DAY_OF_MONTH)
+            lastDaysData[key] = u
         }
-        var nextDaysData:Map<Int,String> = TreeMap()
+        val nextDaysData:MutableMap<Int,Float> = TreeMap()
         nextMonthData.forEach { (t, u) ->
-            nextDaysData=nextDaysData.plus(Pair(t.get(Calendar.DAY_OF_MONTH),u))
+            val key=t.get(Calendar.DAY_OF_MONTH)
+            nextDaysData[key] = u
+
         }
 
         val list:ArrayList<ArrayList<NTuple5<Int,Float,Boolean,Int,Int?>?>> = ArrayList()
@@ -396,13 +403,15 @@ class DateChartFragment : Fragment() {
 
             list.add(localList)
         }
-        var weekday=0
-        for (week in weeks)
+
+        weeks.forEachIndexed { weekDay, week ->
             setAdapterManager(
                 week,
-                CalendarAdapter(requireContext(),list[weekday++]),
+                CalendarAdapter(requireContext(),list[weekDay]),
                 LinearLayoutManager(context, RecyclerView.HORIZONTAL,false)
             )
+        }
+
         workPer=hours/( dayAimH.value!! * monthDays)
         productivePer=(productiveDays.toFloat()/monthDays*100)
     }
@@ -416,7 +425,7 @@ class DateChartFragment : Fragment() {
         else
             monthCalendar.firstDayOfWeek=Calendar.SUNDAY
 
-        val allData:Map<Calendar,String> =getDBData()
+        val allData:Map<Calendar,Float> =getDBData()
         val cal:Calendar=monthCalendar
         cal.set(Calendar.DAY_OF_MONTH,cal.getActualMaximum(Calendar.DAY_OF_MONTH))
 
@@ -424,31 +433,26 @@ class DateChartFragment : Fragment() {
         cal.set(Calendar.DAY_OF_MONTH,1)
         val firstWeek=cal.get(Calendar.WEEK_OF_YEAR)
 
-        val monthData:Map<Calendar,String> =allData.filter { entry ->
+        val monthData:Map<Calendar,Float> =allData.filter { entry ->
             (cal.get(Calendar.YEAR)==entry.key.get(Calendar.YEAR))&&(entry.key.get(Calendar.WEEK_OF_YEAR) in firstWeek..lastWeek)
         }
-        monthData.let {
-            for(el in it){
-                if(el.value.toFloat()>=dayAimH.value!!)
-                    ++productiveDays
-                hours+=el.value.toFloat()
-            }
+        val daysData:MutableMap<Int,Float> = TreeMap()
+
+        monthData.map {
+            if(it.value>=dayAimH.value!!)
+                ++productiveDays
+            hours+=it.value
+
+            val key=it.key.get(Calendar.WEEK_OF_YEAR)
+            if(daysData.containsKey(key))
+                daysData.replace(key, daysData[key] as Float+it.value)
+            else
+                daysData.put(key,it.value)
         }
-
-        var daysData:Map<Int,String> = TreeMap()
-        monthData.forEach { (t, u) ->
-
-            if(daysData.containsKey(t.get(Calendar.WEEK_OF_YEAR)))
-                daysData=daysData.plus(Pair(t.get(Calendar.WEEK_OF_YEAR),
-                    daysData[t.get(Calendar.WEEK_OF_YEAR)] +u))
-            daysData=daysData.plus(Pair(t.get(Calendar.WEEK_OF_YEAR),u))
-        }
-
 
         val calendar:Calendar= monthCalendar
-
         calendar.set(Calendar.DAY_OF_MONTH,1)
-        days=calendar.getActualMaximum(Calendar.DAY_OF_MONTH)
+
         val lastMonth:Calendar=Calendar.getInstance()
         lastMonth.set(Calendar.MONTH,monthCalendar.get(Calendar.MONTH)-1)
 
@@ -460,6 +464,7 @@ class DateChartFragment : Fragment() {
             )
         }
 
+        days=calendar.getActualMaximum(Calendar.DAY_OF_MONTH)
         val scale:Int= dayAimH.value!!*days
         var localList:ArrayList<NTuple5<Int,Float,Boolean,Int,Int?>?> =ArrayList()
         for (week in firstWeek..firstWeek + 2) {
@@ -512,30 +517,26 @@ class DateChartFragment : Fragment() {
             monthCalendar.firstDayOfWeek=Calendar.SUNDAY
 
 
-        val allData:Map<Calendar,String> =getDBData()
+        val allData:Map<Calendar,Float> =getDBData()
 
-
-
-        val yearData:Map<Calendar,String> =allData.filter { entry ->
+        val yearData:Map<Calendar,Float> =allData.filter { entry ->
             monthCalendar.get(Calendar.YEAR)==entry.key.get(Calendar.YEAR)
         }
-        yearData.let {
-            for(el in it){
-                if( el.value.toFloat()>=dayAimH.value!!)
-                    ++productiveDays
-                hours+=el.value.toFloat()
-            }
+
+        val monthsData:MutableMap<Int,Float> = TreeMap()
+        yearData.map {
+            if(it.value>=dayAimH.value!!)
+                ++productiveDays
+            hours+=it.value
+            val key=it.key.get(Calendar.MONTH)+1
+
+            if(monthsData.containsKey(key))
+                monthsData.replace(key,
+                    monthsData[key] as Float +it.value)
+            monthsData.put(key,it.value)
         }
 
-        var monthsData:Map<Int,String> = TreeMap()
-        yearData.forEach { (t, u) ->
-            if(monthsData.containsKey(t.get(Calendar.MONTH)+1))
-                monthsData=monthsData.plus(Pair(t.get(Calendar.MONTH)+1,
-                    monthsData[t.get(Calendar.MONTH)] +u))
-            monthsData=monthsData.plus(Pair(t.get(Calendar.MONTH)+1,u))
-        }
-
-        val days=monthCalendar.getActualMaximum(Calendar.DAY_OF_YEAR)
+        val days=monthCalendar.getActualMaximum(Calendar.DAY_OF_MONTH)
         val scale=days* dayAimH.value!!
         fun setMonthAdapter(recyclerView:RecyclerView,arrayList:ArrayList<NTuple5<Int,Float,Boolean,Int,Int?>?> ) {
             setAdapterManager(
@@ -577,10 +578,10 @@ class DateChartFragment : Fragment() {
 
 
 
-    private fun getDBData():Map<Calendar,String>{
+    private fun getDBData():Map<Calendar,Float>{
         val selectionQuery = "SELECT OLDSTATS.date_id, OLDSTATS.working_time from OLDSTATS "
         val c: Cursor = db.rawQuery(selectionQuery, null)
-        var map:Map<Calendar,String> = HashMap()
+        val map:MutableMap<Calendar,Float> = HashMap()
         if(c.moveToFirst())
             do {
                 val cal = Calendar.getInstance()
@@ -589,7 +590,8 @@ class DateChartFragment : Fragment() {
                 cal.set(Calendar.MINUTE,0)
                 cal.set(Calendar.SECOND,0)
                 cal.set(Calendar.MILLISECOND,0)
-                map=map.plus(Pair(cal,c.getString(1)))
+                map.putIfAbsent(cal,c.getString(1).toFloat())?.let { map.replace(cal,it+c.getString(1).toFloat()) }
+
             }while (c.moveToNext())
         c.close()
 

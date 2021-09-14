@@ -19,19 +19,19 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <EditText
-            android:id="@+id/category_name"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/edit_height"
-            android:background="@drawable/border"
-            android:inputType="textPersonName"
-            android:paddingStart="@dimen/small_padding"
-            android:paddingEnd="@dimen/small_padding"
-            android:textSize="@dimen/line_text_size"
-            app:layout_constraintStart_toStartOf="@+id/textView6"
-            app:layout_constraintTop_toBottomOf="@+id/textView6"
-            android:importantForAutofill="no"
-            tools:ignore="LabelFor" />
+    <EditText
+        android:id="@+id/category_name"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/edit_height"
+        android:background="@drawable/border"
+        android:importantForAutofill="no"
+        android:inputType="textPersonName"
+        android:paddingStart="@dimen/small_padding"
+        android:paddingEnd="@dimen/small_padding"
+        android:textSize="@dimen/line_text_size"
+        app:layout_constraintStart_toStartOf="@+id/textView6"
+        app:layout_constraintTop_toBottomOf="@+id/textView6"
+        tools:ignore="LabelFor,SpeakableTextPresentCheck" />
 
         <TextView
             android:id="@+id/textView5"

@@ -10,5 +10,7 @@ data class DataRowWithColor(
     var category: String, var name:String,
     var date: Calendar,
     var workingTime:Float, var priority:Int,
+    var currentWorkingTime:Float,
     var color: String,
-    var outdated:Boolean? = false):Parcelable
+    var outdated:Boolean? = false
+   ):Parcelable

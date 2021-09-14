@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="com.voidsamurai.lordoftime.MainActivity"
+    android:animateLayoutChanges="true">
+    <item
+        android:id="@+id/category"
+        android:title="@string/category"
+        app:showAsAction="always">
+    </item>
+    <item
+        android:id="@+id/order"
+        android:title="order"
+        android:icon="@drawable/ic_baseline_arrow_drop_down_24"
+        app:showAsAction="always">
+    </item>
+
+</menu>

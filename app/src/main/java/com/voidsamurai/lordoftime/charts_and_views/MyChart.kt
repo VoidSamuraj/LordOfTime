@@ -1,4 +1,4 @@
-package com.voidsamurai.lordoftime.charts
+package com.voidsamurai.lordoftime.charts_and_views
 
 import android.content.Context
 import android.graphics.Canvas
