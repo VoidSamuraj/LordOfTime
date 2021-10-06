@@ -1,5 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="work_button_color">#3672F4</color>
-    <color name="work_button_icon_color">#36A8F4</color>
+    <color name="logout_button">#323740</color>
+    <color name="background">#FF1B1E23</color>
+    <color name="text">#FFFFFF</color>
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="blue_gray">#2E6F95</color>
+    <color name="gray_light">#202232</color>
+    <color name="gray_dark">#1B1E23</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+    <color name="black">#FF000000</color>
+    <color name="lemon">#C2E812</color>
+    <color name="red">#D62839</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="light_blue_600">#FF039BE5</color>
+    <color name="light_blue_900">#FF01579B</color>
+    <color name="light_blue_A200">#FF40C4FF</color>
+    <color name="light_blue_A400">#FF00B0FF</color>
+    <color name="black_overlay">#66000000</color>
+    <color name="black_tint">#6F000000</color>
+    <color name="task_color">#1C6193</color>
+    <color name="colorAccent">#276495</color>
+    <color name="work_button_color">#FF039BE5</color>
+    <color name="work_button_icon_color">#FF01579B</color>
+    <color name="working_progress_circle">#673AB7</color>
+    <color name="gold1">#BF953F</color>
+    <color name="gold2">#FCF6BA</color>
+    <color name="gold3">#B38728</color>
+    <color name="gold4">#FBF5B7</color>
+    <color name="gold5">#AA771C</color>
+    <color name="drawer_bg">#3F51B5</color>
 </resources>

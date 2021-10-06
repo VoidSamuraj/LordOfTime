@@ -212,14 +212,18 @@
         app:tint="@color/work_button_color"
         tools:ignore="ContentDescription" />
 
+    <!--
+            android:layout_width="@dimen/button_group_width"
+
+    -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/button_group"
-        android:layout_width="@dimen/button_group_width"
         android:layout_height="200dp"
+        android:layout_width="@dimen/button_group_width"
         android:alpha="0.8"
         app:layout_constraintBottom_toBottomOf="@+id/relativeLayout"
         app:layout_constraintStart_toStartOf="parent">
-
+        <!-- @dimen/button_group_width  -->
         <ImageView
             android:id="@+id/corner1"
             android:layout_width="@dimen/button_corners"
@@ -255,28 +259,28 @@
             app:tint="@color/work_button_color"
             tools:ignore="ContentDescription" />
 
-        <FrameLayout
+        <ImageView
             android:id="@+id/button_status"
             android:layout_width="0dp"
             android:layout_height="99dp"
-            android:background="@color/work_button_color"
+            android:src="@drawable/square"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/imageView3"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:id="@+id/startTaskLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginStart="30dp"
-                android:lines="1"
-                android:maxLines="1"
-                android:textSize="@dimen/label_button"
-                android:text="@string/start_task">
-
-            </TextView>
+        <TextView
+            android:id="@+id/startTaskLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:lines="1"
+            android:maxLines="1"
+            android:text="@string/start_task"
+            android:textSize="@dimen/label_button"
+            android:textAlignment="center"
+            app:layout_constraintBottom_toBottomOf="@+id/button_status"
+            app:layout_constraintEnd_toStartOf="@+id/imageView3"
+            app:layout_constraintTop_toTopOf="@+id/button_status" />
             <LinearLayout
                 android:id="@+id/label_hour"
                 android:layout_width="match_parent"
@@ -333,7 +337,6 @@
                     android:inAnimation="@anim/slide_in_down"
                     android:outAnimation="@anim/slide_out_down"/>
             </LinearLayout>
-        </FrameLayout>
 
         <ImageView
             android:id="@+id/status_image"

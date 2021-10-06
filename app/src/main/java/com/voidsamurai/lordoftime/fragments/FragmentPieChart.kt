@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.voidsamurai.lordoftime.MainActivity
 import com.voidsamurai.lordoftime.databinding.FragmentPieChartBinding
 import com.voidsamurai.lordoftime.fragments.adapters.LinearChartAdapter
-import layout.DataRowWithColor
+import com.voidsamurai.lordoftime.bd.DataRowWithColor
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -39,6 +39,7 @@ class FragmentPieChart : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding.myChart.setLayerType(View.LAYER_TYPE_SOFTWARE, null)
 
         binding.chartDescription.addOnItemTouchListener(RecyclerViewDisabler())
         (activity as MainActivity).getQueryArrayByDuration().observe(viewLifecycleOwner,{
@@ -53,9 +54,9 @@ class FragmentPieChart : Fragment() {
         legendMap = ArrayList()
         for(row in tab) {
             if(chartMap.containsKey(row.category))
-                chartMap.getValue(row.category).let {  chartMap.replace(row.category, Pair(it.first,it.second+row.workingTime))}
+                chartMap.getValue(row.category).let {  chartMap.replace(row.category, Pair(it.first,it.second+row.workingTime/3600))}
             else
-                chartMap[row.category] = Pair(Color.parseColor(row.color),row.workingTime)
+                chartMap[row.category] = Pair(Color.parseColor(row.color),row.workingTime/3600)
             legendMap.add(Pair(row.category,row.color))
 
         }

@@ -3,8 +3,6 @@
 package com.voidsamurai.lordoftime.fragments
 
 import android.annotation.SuppressLint
-import android.database.Cursor
-import android.database.sqlite.SQLiteDatabase
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -16,8 +14,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.voidsamurai.lordoftime.LinearViewHolder
+import com.voidsamurai.lordoftime.MainActivity
 import com.voidsamurai.lordoftime.R
-import com.voidsamurai.lordoftime.bd.LOTDatabaseHelper
 import com.voidsamurai.lordoftime.charts_and_views.NTuple5
 import com.voidsamurai.lordoftime.databinding.FragmentDateWidgetBinding
 import com.voidsamurai.lordoftime.fragments.adapters.CalendarAdapter
@@ -38,19 +36,11 @@ class DateChartFragment : Fragment() {
     private lateinit var weeks1:Array<RecyclerView>
     private lateinit var weeks2:Array<RecyclerView>
     private var date:Calendar= Calendar.getInstance()
-    private lateinit var db: SQLiteDatabase
-    private lateinit var oh: LOTDatabaseHelper
     @SuppressLint("SimpleDateFormat")
     private val ydf= SimpleDateFormat("YYYY")
     @SuppressLint("SimpleDateFormat")
     private val mdf= SimpleDateFormat("MM/yy")
     private lateinit var dayAim:TextView
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        oh = LOTDatabaseHelper(requireContext())
-        db = oh.readableDatabase
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -322,7 +312,7 @@ class DateChartFragment : Fragment() {
             monthCalendar.firstDayOfWeek=Calendar.SUNDAY
 
 
-        val allData:Map<Calendar,Float> =getDBData()
+        val allData:Map<Calendar,Float> =(activity as MainActivity).getOldData().associate { Pair(it.first,it.second) }
         val monthData:Map<Calendar,Float> =allData.filter { entry ->
             (monthCalendar.get(Calendar.YEAR)==entry.key.get(Calendar.YEAR)) &&(monthCalendar.get(Calendar.MONTH)==entry.key.get(Calendar.MONTH))
         }
@@ -425,7 +415,7 @@ class DateChartFragment : Fragment() {
         else
             monthCalendar.firstDayOfWeek=Calendar.SUNDAY
 
-        val allData:Map<Calendar,Float> =getDBData()
+        val allData:Map<Calendar,Float> =(activity as MainActivity).getOldData().associate { Pair(it.first,it.second) }
         val cal:Calendar=monthCalendar
         cal.set(Calendar.DAY_OF_MONTH,cal.getActualMaximum(Calendar.DAY_OF_MONTH))
 
@@ -517,7 +507,7 @@ class DateChartFragment : Fragment() {
             monthCalendar.firstDayOfWeek=Calendar.SUNDAY
 
 
-        val allData:Map<Calendar,Float> =getDBData()
+        val allData:Map<Calendar,Float> =(activity as MainActivity).getOldData().associate { Pair(it.first,it.second) }
 
         val yearData:Map<Calendar,Float> =allData.filter { entry ->
             monthCalendar.get(Calendar.YEAR)==entry.key.get(Calendar.YEAR)
@@ -578,26 +568,7 @@ class DateChartFragment : Fragment() {
 
 
 
-    private fun getDBData():Map<Calendar,Float>{
-        val selectionQuery = "SELECT OLDSTATS.date_id, OLDSTATS.working_time from OLDSTATS "
-        val c: Cursor = db.rawQuery(selectionQuery, null)
-        val map:MutableMap<Calendar,Float> = HashMap()
-        if(c.moveToFirst())
-            do {
-                val cal = Calendar.getInstance()
-                cal.time=Date(c.getLong(0))
-                cal.set(Calendar.HOUR,0)
-                cal.set(Calendar.MINUTE,0)
-                cal.set(Calendar.SECOND,0)
-                cal.set(Calendar.MILLISECOND,0)
-                map.putIfAbsent(cal,c.getString(1).toFloat())?.let { map.replace(cal,it+c.getString(1).toFloat()) }
 
-            }while (c.moveToNext())
-        c.close()
-
-        return map
-
-    }
     private fun setAdapterManager(recyclerView: RecyclerView, adapter:RecyclerView.Adapter<LinearViewHolder>, layoutManager: RecyclerView.LayoutManager){
         recyclerView.adapter=adapter
         recyclerView.layoutManager=layoutManager

@@ -9,7 +9,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.voidsamurai.lordoftime.LinearViewHolder
 import com.voidsamurai.lordoftime.R
-import layout.DataRowWithColor
+import com.voidsamurai.lordoftime.bd.DataRowWithColor
 import java.text.SimpleDateFormat
 
 class ToDoDateAdapter(private val dataSet: ArrayList<DataRowWithColor>): RecyclerView.Adapter<LinearViewHolder>() {

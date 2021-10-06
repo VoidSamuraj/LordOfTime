@@ -3,8 +3,10 @@
     android:height="24dp"
     android:viewportWidth="24"
     android:viewportHeight="24"
-    android:tint="?attr/colorControlNormal">
+    android:tint="@color/working_progress_circle"
+    >
   <path
-      android:fillColor="@android:color/white"
+      android:fillColor="@color/working_progress_circle"
+      android:strokeColor="@color/working_progress_circle"
       android:pathData="M8,5v14l11,-7z"/>
 </vector>

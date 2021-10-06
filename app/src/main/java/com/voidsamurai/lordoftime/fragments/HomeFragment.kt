@@ -27,7 +27,10 @@ import com.voidsamurai.lordoftime.databinding.FragmentHomeBinding
 import com.voidsamurai.lordoftime.fragments.adapters.ToDoAdapter
 import com.voidsamurai.lordoftime.fragments.adapters.ToDoDateAdapter
 import com.voidsamurai.lordoftime.startAnimation
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlin.math.abs
 
 
@@ -165,51 +168,57 @@ class HomeFragment : Fragment() {
             val animator=getCircleValueAnimator(true)
             animator.start()
             CoroutineScope(Dispatchers.Main).launch{
-                homeFragmentBinding.relativeLayout.setBackgroundColor(Color.WHITE)
+                val color=resources.getColor(R.color.background,null)
+                homeFragmentBinding.relativeLayout.setBackgroundColor(color)
                 delay(510)
-                requireActivity().window.setBackgroundDrawable(ColorDrawable(Color.WHITE))
+                requireActivity().window.setBackgroundDrawable(ColorDrawable(color))
             }
             (activity as MainActivity).isFromEditFragment=false
 
         }else if((activity as MainActivity).isFromWorkFragment){
 
-            homeFragmentBinding.statusImage.visibility=View.INVISIBLE
-            homeFragmentBinding.analogClock.visibility=View.INVISIBLE
-            homeFragmentBinding.view.visibility=View.VISIBLE
-            homeFragmentBinding.view.setBackgroundColor(resources.getColor(R.color.work_button_color,null))
+            homeFragmentBinding.statusImage.visibility = View.INVISIBLE
+            homeFragmentBinding.analogClock.visibility = View.INVISIBLE
+            homeFragmentBinding.view.visibility = View.VISIBLE
+            homeFragmentBinding.view.setBackgroundColor(
+                resources.getColor(
+                    R.color.work_button_color,
+                    null
+                )
+            )
 
-            val va=getWorkButtonClickAnimator(true)
+            val va = getWorkButtonClickAnimator(true)
             va.doOnStart {
-                val cornersW=cornerWidth *51
-                setCornersSize(homeFragmentBinding.buttonGroup,statusMaxWidth,Y=false)
-                setCornersSize(homeFragmentBinding.corner1,cornersW)
-                setCornersSize(homeFragmentBinding.corner1bg,cornersW)
-                homeFragmentBinding.corner1bg.visibility=View.VISIBLE
-                homeFragmentBinding.buttonGroup.alpha=1f
-                homeFragmentBinding.view.visibility=View.INVISIBLE
+                val cornersW = cornerWidth * 51
+                setCornersSize(homeFragmentBinding.buttonGroup, statusMaxWidth, Y = false)
+                setCornersSize(homeFragmentBinding.corner1, cornersW)
+                setCornersSize(homeFragmentBinding.corner1bg, cornersW)
+                homeFragmentBinding.corner1bg.visibility = View.VISIBLE
+                homeFragmentBinding.buttonGroup.alpha = 1f
+                homeFragmentBinding.view.visibility = View.INVISIBLE
                 homeFragmentBinding.view.setBackgroundColor(Color.TRANSPARENT)
             }
             va.doOnEnd {
-                setCornersSize(homeFragmentBinding.buttonGroup,hiddenWidth,Y=false)
-                setCornersSize(homeFragmentBinding.corner1,cornerWidth)
-                setCornersSize(homeFragmentBinding.corner1bg,cornerWidth)
-                homeFragmentBinding.corner1bg.visibility=View.INVISIBLE
-                if((activity as MainActivity).isTaskStarted)
-                    homeFragmentBinding.analogClock.visibility=View.VISIBLE
+                setCornersSize(homeFragmentBinding.buttonGroup, hiddenWidth, Y = false)
+                setCornersSize(homeFragmentBinding.corner1, cornerWidth)
+                setCornersSize(homeFragmentBinding.corner1bg, cornerWidth)
+                homeFragmentBinding.corner1bg.visibility = View.INVISIBLE
+                if ((activity as MainActivity).isTaskStarted)
+                    homeFragmentBinding.analogClock.visibility = View.VISIBLE
                 else
-                    homeFragmentBinding.statusImage.visibility=View.VISIBLE
-                setCornersSize(homeFragmentBinding.corner2,cornerWidth)
-                homeFragmentBinding.buttonGroup.alpha=0.8f
+                    homeFragmentBinding.statusImage.visibility = View.VISIBLE
+                setCornersSize(homeFragmentBinding.corner2, cornerWidth)
+                homeFragmentBinding.buttonGroup.alpha = 0.8f
 
             }
             CoroutineScope(Dispatchers.Main).launch {
                 delay(resources.getInteger(R.integer.time_duration_normal).toLong())
                 va.reverse()
             }
-            (activity as MainActivity).isFromWorkFragment=false
+            (activity as MainActivity).isFromWorkFragment = false
 
         }
-       
+
 
 
         todoRecyclerView=homeFragmentBinding.todoRecycleView
@@ -260,21 +269,20 @@ class HomeFragment : Fragment() {
                     for(i in 0 until homeFragmentBinding.buttonGroup.childCount)
                         homeFragmentBinding.buttonGroup.getChildAt(i).setOnClickListener {
 
-                        homeFragmentBinding.corner1bg.visibility=View.VISIBLE
+                            homeFragmentBinding.corner1bg.visibility = View.VISIBLE
 
-                        val valAnim=getWorkButtonClickAnimator(false)
+                            val valAnim = getWorkButtonClickAnimator(false)
 
-                        valAnim.doOnEnd {
-                            statusMaxWidth=homeFragmentBinding.buttonStatus.layoutParams.width
-                            findNavController().navigate(R.id.action_FirstFragment_to_workingFragment)
-                        }
-                        CoroutineScope(Dispatchers.Main).run {
-                            launch {
-                                valAnim.start()
+                            valAnim.doOnEnd {
+                                statusMaxWidth = homeFragmentBinding.buttonStatus.layoutParams.width
+                                findNavController().navigate(R.id.action_FirstFragment_to_workingFragment)
+                            }
+                            CoroutineScope(Dispatchers.Main).run {
+                                launch {
+                                    valAnim.start()
+                                }
                             }
                         }
-
-                    }
                 }
 
             }
@@ -333,7 +341,7 @@ class HomeFragment : Fragment() {
                 lp.width=groupW*(20*(it.animatedValue as Int)/100)+groupW
             else {
                 val minus=resources.getDimension(R.dimen.button_half_sphere_width)+resources.getDimension(R.dimen.padding_elevation)
-               // lp.width = hiddenWidth * (80 * ((it.animatedValue as Int) / 100)) + hiddenWidth
+                // lp.width = hiddenWidth * (80 * ((it.animatedValue as Int) / 100)) + hiddenWidth
                 lp.width =cornerWidth * (39*(it.animatedValue as Int)/100) + cornerWidth+minus.toInt()
             }
 

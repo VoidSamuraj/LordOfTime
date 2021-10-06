@@ -1,7 +1,5 @@
 package com.voidsamurai.lordoftime.fragments
 
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,7 +11,7 @@ import com.voidsamurai.lordoftime.MainActivity
 import com.voidsamurai.lordoftime.R
 import com.voidsamurai.lordoftime.databinding.FragmentEditListBinding
 import com.voidsamurai.lordoftime.fragments.adapters.EditAdapter
-import layout.DataRowWithColor
+import com.voidsamurai.lordoftime.bd.DataRowWithColor
 
 
 class EditList : Fragment() {

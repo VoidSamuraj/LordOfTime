@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="logout_button">#E6E8EC</color>
+    <color name="background">#FFFFFF</color>
+    <color name="text">#000000</color>
     <color name="purple_200">#FFBB86FC</color>
     <color name="blue_gray">#2E6F95</color>
     <color name="gray_light">#202232</color>
@@ -21,4 +24,10 @@
     <color name="work_button_color">#FF039BE5</color>
     <color name="work_button_icon_color">#FF01579B</color>
     <color name="working_progress_circle">#673AB7</color>
+    <color name="gold1">#BF953F</color>
+    <color name="gold2">#FCF6BA</color>
+    <color name="gold3">#B38728</color>
+    <color name="gold4">#FBF5B7</color>
+    <color name="gold5">#AA771C</color>
+    <color name="drawer_bg">#3F51B5</color>
 </resources>

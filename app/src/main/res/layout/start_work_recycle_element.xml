@@ -42,7 +42,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@+id/category_name"
             app:layout_constraintTop_toBottomOf="@+id/category_name"
-            android:text="Zostało " />
+            android:text="@string/left" />
 
         <TextSwitcher
             android:id="@+id/progressPercent"
@@ -50,6 +50,7 @@
             android:layout_height="wrap_content"
             android:inAnimation="@anim/slide_in_down"
             android:outAnimation="@anim/slide_out_down"
+            android:layout_marginStart="10dp"
             app:layout_constraintBottom_toBottomOf="@+id/progress_label"
             app:layout_constraintStart_toEndOf="@+id/progress_label"
             app:layout_constraintTop_toTopOf="@+id/progress_label" />
@@ -64,26 +65,24 @@
 
             <com.voidsamurai.lordoftime.charts_and_views.ProgressCircle
                 android:id="@+id/progressCircle"
-
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_margin="20dp"
+                android:layout_width="133dp"
+                android:layout_height="133dp"
+                android:layout_margin="5dp"
                 />
         </FrameLayout>
         <ImageButton
             android:id="@+id/imageButton"
             android:layout_width="100dp"
             android:layout_height="100dp"
+            android:padding="30dp"
             app:layout_constraintBottom_toBottomOf="@+id/progressView"
             app:layout_constraintEnd_toEndOf="@+id/progressView"
             app:layout_constraintStart_toStartOf="@+id/progressView"
             app:layout_constraintTop_toTopOf="@+id/progressView"
             app:srcCompat="@drawable/ic_baseline_play_arrow_24"
-            app:tint="@color/working_progress_circle"
             android:background="@null"
-            android:scaleType="center"
-            android:scaleX="2"
-            android:scaleY="2"/>
+            android:scaleType="fitCenter"
+           />
 
         <View
             android:layout_width="match_parent"

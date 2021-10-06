@@ -3,7 +3,6 @@ package com.voidsamurai.lordoftime.fragments
 import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
-import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -17,7 +16,7 @@ import com.voidsamurai.lordoftime.MainActivity
 import com.voidsamurai.lordoftime.R
 import com.voidsamurai.lordoftime.databinding.FragmentTaskEditBinding
 import com.voidsamurai.lordoftime.fragments.adapters.ArrayColorAdapter
-import layout.DataRowWithColor
+import com.voidsamurai.lordoftime.bd.DataRowWithColor
 import java.util.*
 
 
@@ -32,7 +31,7 @@ class EditTaskSelected : Fragment() ,DatePickerDialog.OnDateSetListener,TimePick
         Locale.getDefault()
     )
 
-    private var data:DataRowWithColor? = null
+    private var data: DataRowWithColor? = null
     private lateinit var newDate: Calendar
 
 
@@ -50,7 +49,7 @@ class EditTaskSelected : Fragment() ,DatePickerDialog.OnDateSetListener,TimePick
 
         setColorSpinner()
 
-        requireActivity().window.setBackgroundDrawable(ColorDrawable(Color.WHITE))
+        requireActivity().window.setBackgroundDrawable(ColorDrawable(resources.getColor(R.color.background,null)))
 
 
         if(arguments!=null&&EditTaskSelectedArgs.fromBundle(requireArguments()).dataColor!=null){
@@ -60,7 +59,7 @@ class EditTaskSelected : Fragment() ,DatePickerDialog.OnDateSetListener,TimePick
             binding.checkCategory.setSelection(adapter.getPosition(Pair(data!!.category,data!!.color)))
             binding.priorityEdit.setText(data!!.priority.toString())
             binding.dateEdit.setText(dateFormat.format(data!!.date.time))
-            binding.durationEdit.setText(data!!.workingTime.toString())
+            binding.durationEdit.setText((data!!.workingTime/3600).toString())
             binding.hourEdit.setText(String.format("%s:%s",data!!.date.get(Calendar.HOUR),data!!.date.get(Calendar.MINUTE)))
             newDate= Calendar.getInstance()
             data!!.date.let {newDate.set(
@@ -147,14 +146,16 @@ class EditTaskSelected : Fragment() ,DatePickerDialog.OnDateSetListener,TimePick
             (binding.checkCategory.selectedItem as Pair<*, *>).first.toString (),
             binding.nameEdit.text.toString(),
             newDate.time.time,
-            binding.durationEdit.text.toString(),
+            (binding.durationEdit.text.toString().toFloat()*3600).toInt(),
             binding.priorityEdit.text.toString().toInt(),
-        null)
-        (activity as MainActivity).getDBOpenHelper().editOldstatRow(
-            data!!.date.time.time,
-            newDate.time.time,
-            binding.durationEdit.text.toString()
-        )
+            0)
+        (activity as MainActivity).tasks.add  ( id=data!!.id,
+            category = (binding.checkCategory.selectedItem as Pair<*, *>).first.toString (),
+            name = binding.nameEdit.text.toString(),
+            dateTime = newDate.time.time,
+            workingTime = (binding.durationEdit.text.toString().toFloat()*3600).toInt(),
+            priority = binding.priorityEdit.text.toString().toInt(),
+            currentWorkingTime = 0)
     }
 
     private fun addRow(
@@ -164,13 +165,16 @@ class EditTaskSelected : Fragment() ,DatePickerDialog.OnDateSetListener,TimePick
         hours: String,
         priority: Int
     ) {
-        (activity as MainActivity).getDBOpenHelper().addTaskRow(category, name, startDateTime, hours, priority,"0.0")
-        (activity as MainActivity).getDBOpenHelper().addOldstatRow(startDateTime,hours)
+        val id=(activity as MainActivity).getDBOpenHelper().addTaskRow(category, name, startDateTime, (hours.toFloat()*3600).toInt(), priority,0)
+        if(id!=-1L)
+            (activity as MainActivity).tasks.add  ( id=id.toInt(),category, name, startDateTime, (hours.toFloat()*3600).toInt(), priority,0)
+        //(activity as MainActivity).getDBOpenHelper().addOldstatRow(startDateTime,(hours.toFloat()*3600).toInt())
         update()
     }
 
     private fun deleteRow(dataRowWithColor: DataRowWithColor){
         (activity as MainActivity).getDBOpenHelper().deleteTaskRow(dataRowWithColor.id)
+        (activity as MainActivity).tasks.delete(dataRowWithColor.id.toString())
         (activity as MainActivity).getDBOpenHelper().deleteOldstatRow(dataRowWithColor.date.time.time)
     }
 

@@ -116,7 +116,7 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginStart="10dp"
                 android:textSize="@dimen/small_line_text_size"
-                android:text="@string/start_time" />
+                android:text="@string/date" />
 
             <TextView
                 android:id="@+id/start_val"

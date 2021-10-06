@@ -6,7 +6,6 @@ import android.app.Dialog
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageButton
@@ -19,6 +18,7 @@ import com.flask.colorpicker.ColorPickerView
 import com.flask.colorpicker.slider.LightnessSlider
 import com.voidsamurai.lordoftime.MainActivity
 import com.voidsamurai.lordoftime.R
+import com.voidsamurai.lordoftime.bd.DAOColors
 
 
 class ColorDialogFragment(
@@ -43,6 +43,8 @@ class ColorDialogFragment(
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+
+        val colors: DAOColors = (activity as MainActivity).colors
         super.onCreateDialog(savedInstanceState)
         val builder: AlertDialog.Builder = AlertDialog.Builder(activity)
         val inflater: LayoutInflater = requireActivity().layoutInflater
@@ -57,8 +59,10 @@ class ColorDialogFragment(
             .setNegativeButton("Anuluj") { _, _ ->
 
             }
+
         contentView.findViewById<ImageButton>(R.id.delete_color).setOnClickListener {
             (activity as MainActivity).getDBOpenHelper().deleteColorRow(getName())
+            colors.delete(getName())
             update()
             dismiss()
         }
@@ -75,6 +79,7 @@ class ColorDialogFragment(
             }
             builder.setPositiveButton("Zapisz") { _, _ ->
                 (activity as MainActivity).getDBOpenHelper().addColorRow(getName(), getColor())
+                colors.add(getName(),getColor())
                 update()
 
             }
@@ -87,10 +92,12 @@ class ColorDialogFragment(
                 setColorToImageView(contentView, R.id.new_color, R.drawable.ic_circle_r, colorPicker.selectedColor)
             }
             builder.setPositiveButton("Zapisz") { _, _ ->
-                if (oldCategory != null && oldColor != null)
-                    (activity as MainActivity).getDBOpenHelper().editColorRow(oldCategory, getName(), getColor())
-
-                update()
+                if (oldCategory != null && oldColor != null) {
+                    (activity as MainActivity).getDBOpenHelper()
+                        .editColorRow(oldCategory, getName(), getColor())
+                    colors.add(getName(),getColor())
+                    update()
+                }
             }
         }
         return builder.create()

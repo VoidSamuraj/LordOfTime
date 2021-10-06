@@ -28,7 +28,7 @@ class CalendarElement(context: Context?, attributeSet: AttributeSet):
         this.duration=duration
         this.color=currentMonth
         //canvas?.let {
-          //  drawElement(canvas!!) }
+        //  drawElement(canvas!!) }
         //forceLayout()
         scale?.let { this.scale=it }
     }

@@ -1,45 +1,65 @@
 <resources>
-    <string name="app_name">LordOfTime</string>
+    <string name="app_name" translatable="false">LordOfTime</string>
     <string name="action_settings">Settings</string>
-    <!-- Strings used for fragments for navigation -->
-    <string name="first_fragment_label">First Fragment</string>
-    <string name="second_fragment_label">Second Fragment</string>
     <string name="next">Next</string>
     <string name="previous">Previous</string>
-
-    <string name="hello_first_fragment">Hello first fragment</string>
-    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
     <string name="account">Account</string>
-    <string name="nav_open_drawer">Pokaż  dane konta</string>
-    <string name="nav_clode_draver">Ukryj dane konta</string>
-    <string name="newest_tasks_header">Zbliżające się zadania</string>
-    <string name="tasks_header">Ukryj dane konta</string>
-    <string name="chart_header">Dzisiejsza aktywność</string>
-    <string name="priority_header">Najważniejsze zadania</string>
-    <string name="title_activity_settings">FullscreenActivity</string>
-    <string name="dummy_button">Dummy Button</string>
-    <string name="dummy_content">DUMMY\nCONTENT</string>
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="newest_tasks_header">Upcoming tasks </string>
+    <string name="chart_header">Today activity</string>
+    <string name="priority_header">Most important</string>
     <string name="edit">edit</string>
-    <string name="priority">Priorytert</string>
-    <string name="date">Data</string>
-    <string name="category">Kategoria</string>
-    <string name="start_time">Data</string>
-    <string name="duration_time">Czas trwania</string>
-    <string name="name">Nazwa</string>
-    <string name="add_category">Dodaj kategorię</string>
-    <string name="category_name">Nazwa kategori</string>
-    <string name="color">Kolor</string>
+    <string name="priority">Priority</string>
+    <string name="date">Date</string>
+    <string name="category">Category</string>
+    <string name="duration_time">Duration</string>
+    <string name="name">Name</string>
+    <string name="categories">Categories</string>
+    <string name="category_name">Category name</string>
+    <string name="color">Color</string>
     <string name="weeks">Weeks</string>
     <string name="months">Months</string>
     <string name="days">Days</string>
-    <string name="aim">Cel:</string>
+    <string name="aim">Aim:</string>
     <string name="delete">delete</string>
     <string name="back">back</string>
     <string name="save">save</string>
     <string name="start_working">start working</string>
-    <string name="add">Dodaj</string>
-    <string name="h">H</string>
-    <string name="start_task">Zacznij Zadanie</string>
+    <string name="add">Add</string>
+    <string name="h" translatable="false">H</string>
+    <string name="start_task">Start Task</string>
+    <string name="ya_working">You are working  </string>
+    <string name="left">Left</string>
+    <string name="tasks">Tasks</string>
+    <string name="achievements">Achievements</string>
+    <string name="language">Language</string>
+    <string name="mode">Mode</string>
+    <string name="show_outdated">Show outdated</string>
+    <string name="notifications">Notifications </string>
+    <string name="auto">Auto</string>
+    <string name="no">No</string>
+    <string name="yes">Yes</string>
+    <string name="email">Email</string>
+    <string name="or">Or</string>
+    <string name="forgot_password">Forgot password?</string>
+    <string name="back_to_login">Back to login</string>
+    <string name="register">Register</string>
+    <string name="login" translatable="false">Login</string>
+    <string name="send_email">Send email</string>
+    <string name="password">Password</string>
+    <string name="sign_by">Sign by</string>
+    <string name="no_data">Please enter</string>
+    <string name="registered">You are registered successfully</string>
+    <string name="logged_in">You are logged successfully</string>
+    <string name="repeat_password">Repeat password</string>
+    <string name="different_passwords">Different passwords</string>
+    <string name="user_name">User name</string>
+    <string name="logout">Logout</string>
+    <string name="confirm">Confirm</string>
+    <string name="confirm_logout">Are you sure to logout?</string>
+    <string name="logout_success">Logout successfully</string>
+    <string name="login_error">Login Error</string>
+    <string name="avatar_changed">Avatar changed</string>
+    <string name="uploading_image">Uploading image</string>
+    <string name="avatar">Avatar</string>
 
 </resources>

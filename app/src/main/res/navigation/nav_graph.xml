@@ -35,6 +35,9 @@
             app:exitAnim="@anim/no_transition"
             app:popEnterAnim="@anim/no_transition"
             app:popExitAnim="@anim/no_transition" />
+        <action
+            android:id="@+id/action_FirstFragment_to_settings"
+            app:destination="@id/settings" />
     </fragment>
     <fragment
         android:id="@+id/colorsFragment"
@@ -48,7 +51,7 @@
         tools:layout="@layout/fragment_many_charts" >
         <argument
             android:name="dataColor"
-            app:argType="layout.DataRowWithColor"
+            app:argType="com.voidsamurai.lordoftime.bd.DataRowWithColor"
             app:nullable="true"
             android:defaultValue="@null" />
     </fragment>
@@ -56,7 +59,11 @@
         android:id="@+id/workingFragment"
         android:name="com.voidsamurai.lordoftime.fragments.WorkingFragment"
         android:label="WorkingFragment"
-        tools:layout="@layout/fragment_working"/>
+        tools:layout="@layout/fragment_working">
+        <action
+            android:id="@+id/action_workingFragment_to_editTaskSelected"
+            app:destination="@id/editTaskSelected" />
+    </fragment>
     <fragment
         android:id="@+id/editList"
         android:name="com.voidsamurai.lordoftime.fragments.EditList"
@@ -74,8 +81,13 @@
             app:destination="@id/colorsFragment" />
         <argument
             android:name="dataColor"
-            app:argType="layout.DataRowWithColor"
+            app:argType="com.voidsamurai.lordoftime.bd.DataRowWithColor"
             app:nullable="true"
             android:defaultValue="@null" />
     </fragment>
+    <fragment
+        android:id="@+id/settings"
+        android:name="com.voidsamurai.lordoftime.fragments.Settings"
+        android:label="fragment_settings"
+        tools:layout="@layout/fragment_settings" />
 </navigation>

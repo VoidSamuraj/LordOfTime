@@ -45,7 +45,6 @@
         android:paddingEnd="@dimen/small_padding"
         android:minWidth="60dp"
         android:gravity="center"
-        android:textColor="@color/black"
         android:textSize="@dimen/line_text_size"
         android:background="@drawable/border"
         app:layout_constraintStart_toEndOf="@+id/date_edit"
@@ -68,7 +67,6 @@
         android:minWidth="100dp"
         android:paddingStart="@dimen/small_padding"
         android:paddingEnd="@dimen/small_padding"
-        android:textColor="@color/black"
         android:textSize="@dimen/line_text_size"
 
         app:layout_constraintStart_toStartOf="@+id/textDate"
@@ -190,7 +188,7 @@
         android:id="@+id/textDate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/start_time"
+        android:text="@string/date"
         android:textSize="@dimen/line_text_size"
         android:layout_marginTop="@dimen/task_changer_label_margin"
 

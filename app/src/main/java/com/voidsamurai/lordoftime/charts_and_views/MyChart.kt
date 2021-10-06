@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.util.AttributeSet
 import android.view.View
+import com.voidsamurai.lordoftime.R
 import kotlin.math.cos
 import kotlin.math.sin
 
@@ -34,7 +35,6 @@ class MyChart(context: Context?, attributeSet: AttributeSet ):
     private var fillColorDefault:Int?=null
     private var paint:Paint= Paint()
     private var side:Int =0
-
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
         this.canvas=canvas
@@ -86,7 +86,7 @@ class MyChart(context: Context?, attributeSet: AttributeSet ):
             paint.setShadowLayer(8f,0f,0f,Color.BLACK)
             paint.textAlign=Paint.Align.CENTER
             paint.style= Paint.Style.FILL
-            paint.color = Color.WHITE
+            paint.color = Color.WHITE //resources.getColor(R.color.background,null)
             canvas.drawCircle(width/2.0f,height/2.0f,80f,Paint(paint))
             paint.setShadowLayer(0f,0f,0f,Color.BLACK)
             paint.color = Color.BLACK
@@ -99,6 +99,20 @@ class MyChart(context: Context?, attributeSet: AttributeSet ):
     }
     private fun drawArc1(canvas: Canvas,startAngle:Float,sweepAngle:Float,color: Int,duration:Float=0.0f){
 
+        /*
+        *
+        paint.style= Paint.Style.STROKE
+        paint.color = color
+        val rect:RectF =RectF( (width / 2 - side / 3).toFloat(),
+            (height / 2 - side / 3).toFloat(),
+            (width / 2 + side / 3).toFloat(),
+            (height / 2 + side / 3).toFloat())
+        val path=Path()
+        paint.strokeWidth=100f
+        path.addArc(rect, startAngle, sweepAngle)
+        canvas.drawPath(path,paint)
+
+        * */
         paint.style= Paint.Style.FILL
         paint.color = color
         canvas.drawArc(
@@ -124,6 +138,8 @@ class MyChart(context: Context?, attributeSet: AttributeSet ):
                 (width / 2) + cos(Math.toRadians(mid.toDouble())).toFloat() * (side / 2f)
             val yc: Float =
                 (height / 2) + sin(Math.toRadians(mid.toDouble())).toFloat() * (side / 2f)
+            paint.color=resources.getColor(R.color.text,null)
+
             canvas.drawLine(xc, yc, x, y, paint)
 
             val text:String=String.format("%02d",duration.toInt())+":"+String.format("%02d",(duration%1*60).toInt())
@@ -131,7 +147,7 @@ class MyChart(context: Context?, attributeSet: AttributeSet ):
             val len=20f
             paint.textSize=30f
             val lenText=paint.measureText(text)
-
+            paint.color=resources.getColor(R.color.text,null)
             paint.textAlign=Paint.Align.LEFT
 
             fun drawChartDesc(lineEnd:Float,textMove:Float=0.0f){

@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.voidsamurai.lordoftime.LinearViewHolder
 import com.voidsamurai.lordoftime.R
 import com.voidsamurai.lordoftime.fragments.EditListDirections
-import layout.DataRowWithColor
+import com.voidsamurai.lordoftime.bd.DataRowWithColor
 import java.util.*
 
 
@@ -37,7 +37,7 @@ class EditAdapter(private val dataSet: ArrayList<DataRowWithColor>) :
         layout.findViewById<TextView>(R.id.todo_name).text = (dataSet[position].name)
         layout.findViewById<TextView>(R.id.priority_value).text = (dataSet[position].priority.toString())
         layout.findViewById<TextView>(R.id.category_val).text = (dataSet[position].category)
-        layout.findViewById<TextView>(R.id.duration_val).text = dataSet[position].workingTime.toString()
+        layout.findViewById<TextView>(R.id.duration_val).text = (dataSet[position].workingTime/3600).toString()
         val df:java.text.DateFormat= java.text.DateFormat.getDateInstance(java.text.DateFormat.LONG,
             Locale.getDefault())
         layout.findViewById<TextView>(R.id.start_val).text = df.format(dataSet[position].date.time)

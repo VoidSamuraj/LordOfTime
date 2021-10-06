@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="match_parent"  android:fitsSystemWindows="true"
     tools:context=".MainActivity">
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -18,9 +18,7 @@
             android:layout_height="wrap_content"
             android:theme="@style/Theme.LordOfTime.AppBarOverlay">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+
 
                 <androidx.appcompat.widget.Toolbar
                     android:id="@+id/toolbar"
@@ -31,10 +29,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:popupTheme="@style/Theme.LordOfTime.PopupOverlay" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-
+                    app:popupTheme="@style/Theme.LordOfTime.PopupOverlay"/>
         </com.google.android.material.appbar.AppBarLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -65,6 +60,40 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
-        app:menu="@menu/drawer_menu"/>
+        app:headerLayout="@layout/header_layout"
+        android:background="@color/drawer_bg"
+        app:menu="@menu/drawer_menu">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+
+
+            <LinearLayout
+                android:id="@+id/settings"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:orientation="horizontal"
+                android:gravity="center">
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginEnd="@dimen/small_margin"
+                    android:src="@drawable/ic_settings"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="8"
+                    android:textAppearance="@android:style/TextAppearance.Material.Widget.IconMenu.Item"
+                    android:text="@string/action_settings" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </com.google.android.material.navigation.NavigationView>
 
 </androidx.drawerlayout.widget.DrawerLayout>
