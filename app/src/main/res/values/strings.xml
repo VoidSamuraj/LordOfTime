@@ -61,5 +61,9 @@
     <string name="avatar_changed">Avatar changed</string>
     <string name="uploading_image">Uploading image</string>
     <string name="avatar">Avatar</string>
+    <string name="email_sended">Email sent</string>
+    <string name="date_to">To</string>
+    <string name="from_hour">From</string>
+    <string name="cancel">Cancel</string>
 
 </resources>

@@ -49,12 +49,16 @@
         <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/layout/activity_main.xml" value="0.3333333333333333" />
         <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/layout/activity_splash_screen.xml" value="0.41822916666666665" />
         <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/layout/calendar_card_view.xml" value="0.26975683890577506" />
+        <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/layout/calendar_edit.xml" value="0.3046875" />
+        <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/layout/calendar_edit_element.xml" value="0.40307971014492755" />
         <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/layout/chart_details_element.xml" value="0.33695652173913043" />
         <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/layout/color_edit_element.xml" value="0.44429347826086957" />
         <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/layout/dialog_fragment_edit_color_category.xml" value="0.55" />
         <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/layout/edit_shedule_fragment.xml" value="0.44429347826086957" />
         <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/layout/fragment_account.xml" value="0.3333333333333333" />
         <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/layout/fragment_auth.xml" value="0.3333333333333333" />
+        <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/layout/fragment_calendar_day_edit.xml" value="0.22" />
+        <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/layout/fragment_calendar_edit.xml" value="0.3026041666666667" />
         <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/layout/fragment_changer_list.xml" value="0.44429347826086957" />
         <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/layout/fragment_chart.xml" value="0.44429347826086957" />
         <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/layout/fragment_colors_list.xml" value="0.44429347826086957" />
@@ -62,6 +66,7 @@
         <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/layout/fragment_date_widget.xml" value="0.458786231884058" />
         <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/layout/fragment_edit_color_category.xml" value="0.44429347826086957" />
         <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/layout/fragment_edit_list.xml" value="0.496875" />
+        <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/layout/fragment_edit_task_dialog.xml" value="0.459375" />
         <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/layout/fragment_forgot_password.xml" value="0.47552083333333334" />
         <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/layout/fragment_home.xml" value="0.3333333333333333" />
         <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/layout/fragment_home_nav_host.xml" value="0.43697916666666664" />
@@ -80,7 +85,7 @@
         <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/layout/login_fragment.xml" value="0.3333333333333333" />
         <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/layout/register_fragment.xml" value="0.22" />
         <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/layout/settings_activity.xml" value="0.5458333333333333" />
-        <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/layout/start_work_recycle_element.xml" value="0.6133518776077886" />
+        <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/layout/start_work_recycle_element.xml" value="0.4466666666666667" />
         <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/layout/todo_edit_element.xml" value="0.44429347826086957" />
         <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/layout/todo_element.xml" value="0.44429347826086957" />
         <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/menu/drawer_menu.xml" value="0.5461538461538461" />

@@ -5,6 +5,7 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.util.AttributeSet
+import android.util.Log
 import android.view.View
 import com.voidsamurai.lordoftime.R
 import kotlin.math.cos
@@ -40,9 +41,9 @@ class MyChart(context: Context?, attributeSet: AttributeSet ):
         this.canvas=canvas
 
         side = if (width > height)
-            height * 8 / 10
+            height * 7 / 10
          else
-            width * 8 / 10
+            width * 7 / 10
 
         drawPie(canvas)
     }
@@ -53,11 +54,13 @@ class MyChart(context: Context?, attributeSet: AttributeSet ):
             var startAngle =0.0f
             var dur =0.0f
             var width:Float
-            for (item in data!!){
+            data?.let {
+            for (item in it){
                 dur+=item.second
                 width=scale*item.second
                 drawArc1(canvas!!,startAngle,width,item.first,item.second)
                 startAngle+=width
+            }
             }
             return dur
         }
@@ -71,6 +74,7 @@ class MyChart(context: Context?, attributeSet: AttributeSet ):
                 paint.setShadowLayer(0f,0f,0f,Color.BLACK)
                 val scale:Float = 360.0f/ maxVal!!
                 duration=fillRound(scale)
+
 
             }else{
 
@@ -87,10 +91,10 @@ class MyChart(context: Context?, attributeSet: AttributeSet ):
             paint.textAlign=Paint.Align.CENTER
             paint.style= Paint.Style.FILL
             paint.color = Color.WHITE //resources.getColor(R.color.background,null)
-            canvas.drawCircle(width/2.0f,height/2.0f,80f,Paint(paint))
+            canvas.drawCircle(width/2.0f,height/2.0f,side/4f,Paint(paint))
             paint.setShadowLayer(0f,0f,0f,Color.BLACK)
             paint.color = Color.BLACK
-            paint.textSize=30f
+            paint.textSize=20f
             val text:String=String.format("%02d",duration.toInt())+":"+String.format("%02d",(duration%1*60).toInt())+"h"
             canvas.drawText(text,width/2f , height/2.0f- ((paint.descent() + paint.ascent()) / 2),paint)
 
@@ -144,8 +148,8 @@ class MyChart(context: Context?, attributeSet: AttributeSet ):
 
             val text:String=String.format("%02d",duration.toInt())+":"+String.format("%02d",(duration%1*60).toInt())
 
-            val len=20f
-            paint.textSize=30f
+            val len=10f
+            paint.textSize=20f
             val lenText=paint.measureText(text)
             paint.color=resources.getColor(R.color.text,null)
             paint.textAlign=Paint.Align.LEFT

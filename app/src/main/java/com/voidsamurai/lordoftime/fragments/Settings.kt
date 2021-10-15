@@ -19,6 +19,7 @@ import com.voidsamurai.lordoftime.AuthActivity
 import com.voidsamurai.lordoftime.MainActivity
 import com.voidsamurai.lordoftime.R
 import com.voidsamurai.lordoftime.databinding.FragmentSettingsBinding
+import kotlinx.coroutines.*
 
 
 class Settings : Fragment(), AdapterView.OnItemSelectedListener {
@@ -62,17 +63,22 @@ class Settings : Fragment(), AdapterView.OnItemSelectedListener {
 
 
         }
-        val oh=mActivity.getDBOpenHelper()
-        if(oh.isAvatarRowExist(mActivity.userId)){
-            val array = oh.getAvatarRow(mActivity.userId)
-            val bmp = BitmapFactory.decodeByteArray(array, 0, array.size)
-            settingsBinding.avatar.setImageBitmap(bmp)
-        }else
-            (activity as MainActivity).userImage?.let {
-                settingsBinding.avatar.setImageBitmap(mActivity.userImage)
 
-            }
+        var imageSet=false
+        CoroutineScope(Dispatchers.Default).launch {
+            var count=0
+            do {
+                    mActivity.userImage?.let {
+                        MainScope().launch {
+                            settingsBinding.avatar.setImageBitmap(mActivity.userImage)
+                        }
+                        imageSet = true
+                    }
 
+                ++count
+                delay(1000)
+            } while (!imageSet&&count<5)
+        }
 
         val adapter:ArrayAdapter<CharSequence> = ArrayAdapter.createFromResource(requireContext(),R.array.languages,android.R.layout.simple_spinner_item)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
@@ -121,6 +127,7 @@ class Settings : Fragment(), AdapterView.OnItemSelectedListener {
                 .setPositiveButton(R.string.yes) { _, _ ->
                     (activity as MainActivity).auth.signOut()
                     (activity as MainActivity).googleSignInClient.signOut()
+                    (activity as MainActivity).logout()
                     val intent= Intent(activity as MainActivity, AuthActivity::class.java)
                     intent.flags=Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                     startActivity(intent)

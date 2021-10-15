@@ -36,7 +36,8 @@
                     android:layout_margin="10dp"
                     android:background="@drawable/circle_stroke"
                     android:padding="10dp"
-                    android:src="@drawable/ic_baseline_alternate_email_24" />
+                    android:src="@drawable/ic_baseline_alternate_email_24"
+                    tools:ignore="ContentDescription" />
 
                 <View
                     android:id="@+id/divider3"
@@ -50,7 +51,8 @@
                     android:layout_margin="10dp"
                     android:background="@drawable/circle_stroke"
                     android:padding="10dp"
-                    android:src="@drawable/ic_baseline_lock_24" />
+                    android:src="@drawable/ic_baseline_lock_24"
+                    tools:ignore="ContentDescription" />
 
 
             </LinearLayout>
@@ -63,12 +65,15 @@
                 android:orientation="vertical">
 
                 <EditText
+                    android:inputType="textEmailAddress"
                     android:id="@+id/edit_email"
                     android:layout_width="match_parent"
                     android:layout_height="59dp"
                     android:background="@null"
                     android:hint="@string/email"
                     android:maxLines="1"
+                    android:lines="1"
+                    android:singleLine="true"
                     android:paddingStart="5dp"
                     android:paddingEnd="5dp" />
 
@@ -85,6 +90,8 @@
                     android:background="@null"
                     android:hint="@string/password"
                     android:maxLines="1"
+                    android:lines="1"
+                    android:singleLine="true"
                     android:paddingStart="5dp"
                     android:paddingEnd="5dp"
                     android:inputType="textPassword"/>
@@ -166,7 +173,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
                 android:background="@null"
-                android:src="@drawable/ic_google"/>
+                android:src="@drawable/ic_google"
+                tools:ignore="ContentDescription" />
         </LinearLayout>
 
 

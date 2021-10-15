@@ -34,13 +34,13 @@ class ProgressCircle(context: Context?, attributeSet: AttributeSet) : View(conte
             (height / 2 + side / 2).toFloat())
 
         fun drawShadow(){
-            paint.strokeWidth=40f
+            paint.strokeWidth=30f
             path.addArc(rect, 0f, 360f)
             paint.color = Color.LTGRAY
             paint.setShadowLayer(10f,0f,0f,Color.BLACK)
             canvas!!.drawPath(path, paint)
             paint.setShadowLayer(0f,0f,0f,Color.BLACK)
-            paint.strokeWidth=41f
+            paint.strokeWidth=31f
             path.reset()
         }
 

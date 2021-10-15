@@ -19,7 +19,7 @@
     <color name="light_blue_A400">#FF00B0FF</color>
     <color name="black_overlay">#66000000</color>
     <color name="black_tint">#6F000000</color>
-    <color name="task_color">#1C6193</color>
+    <color name="task_color">#FFFFFF</color>
     <color name="colorAccent">#276495</color>
     <color name="work_button_color">#FF039BE5</color>
     <color name="work_button_icon_color">#FF01579B</color>
@@ -30,4 +30,5 @@
     <color name="gold4">#FBF5B7</color>
     <color name="gold5">#AA771C</color>
     <color name="drawer_bg">#3F51B5</color>
+    <color name="transparent">#00F44336</color>
 </resources>

@@ -14,6 +14,7 @@ import android.widget.TextView
 import androidx.core.animation.doOnEnd
 import androidx.core.animation.doOnStart
 import androidx.fragment.app.Fragment
+import androidx.interpolator.view.animation.FastOutLinearInInterpolator
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.FragmentNavigatorExtras
@@ -175,7 +176,7 @@ class HomeFragment : Fragment() {
             }
             (activity as MainActivity).isFromEditFragment=false
 
-        }else if((activity as MainActivity).isFromWorkFragment){
+        }else if((activity as MainActivity).isFromWorkFragment&&false){
 
             homeFragmentBinding.statusImage.visibility = View.INVISIBLE
             homeFragmentBinding.analogClock.visibility = View.INVISIBLE
@@ -236,7 +237,7 @@ class HomeFragment : Fragment() {
         }
 
         //chart listener
-        homeFragmentBinding.card2.setOnClickListener{
+        homeFragmentBinding.card2Click.setOnClickListener{
             val extras = FragmentNavigatorExtras(
                 homeFragmentBinding.card2 to "chartCard"
             )
@@ -271,17 +272,17 @@ class HomeFragment : Fragment() {
 
                             homeFragmentBinding.corner1bg.visibility = View.VISIBLE
 
-                            val valAnim = getWorkButtonClickAnimator(false)
+                          //  val valAnim = getWorkButtonClickAnimator(false)
 
-                            valAnim.doOnEnd {
+                         //   valAnim.doOnEnd {
                                 statusMaxWidth = homeFragmentBinding.buttonStatus.layoutParams.width
                                 findNavController().navigate(R.id.action_FirstFragment_to_workingFragment)
-                            }
+                         /*   }
                             CoroutineScope(Dispatchers.Main).run {
                                 launch {
                                     valAnim.start()
                                 }
-                            }
+                            }*/
                         }
                 }
 
@@ -332,9 +333,9 @@ class HomeFragment : Fragment() {
         val groupW=lp.width
         val valAnim: ValueAnimator=
             if (isEnter)
-                ValueAnimator.ofInt(100,1)
+                ValueAnimator.ofInt(120,1)
             else
-                ValueAnimator.ofInt(1,100)
+                ValueAnimator.ofInt(1,120)
 
         valAnim.addUpdateListener {
             if (!isEnter)
@@ -354,9 +355,9 @@ class HomeFragment : Fragment() {
 
         }
 
-        valAnim.duration=200
+        valAnim.duration=400
 
-        valAnim.interpolator=FastOutSlowInInterpolator()
+        valAnim.interpolator=FastOutLinearInInterpolator()
         if (isEnter){
             valAnim.interpolator=ReverseInterpolator()
         }
@@ -364,6 +365,7 @@ class HomeFragment : Fragment() {
     }
     private fun getCircleValueAnimator(isEnter:Boolean):ValueAnimator{
 
+        homeFragmentBinding.buttonGroup.elevation=1f
 
         val valueAnimator: ValueAnimator=
             if (isEnter)
@@ -371,12 +373,24 @@ class HomeFragment : Fragment() {
             else
                 ValueAnimator.ofFloat(100f, 0f)
 
-        valueAnimator.addUpdateListener {
-            val alpha=(it.animatedValue as Float) /100f
-            homeFragmentBinding.buttonGroup.alpha=alpha
-            homeFragmentBinding.taskChangerFAB.alpha=alpha
-        }
-        valueAnimator.duration=200
+            valueAnimator.addUpdateListener {
+                var alpha=(it.animatedValue as Float) /100f
+                if(isEnter){
+                    if (it.animatedValue as Float>96)
+                        alpha=100f
+                    else if(it.animatedValue as Float>10)
+                        alpha=alpha*9/1000
+                    else
+                        alpha=0f
+
+                }
+                homeFragmentBinding.buttonGroup.alpha=alpha
+                homeFragmentBinding.taskChangerFAB.alpha=alpha
+            }
+        if (isEnter)
+            valueAnimator.duration=500
+        else
+            valueAnimator.duration=200
         valueAnimator.interpolator=AccelerateInterpolator()
 
         val animation = AnimationUtils.loadAnimation(requireContext(),R.anim.circle_explosion_anim).apply {
@@ -389,15 +403,19 @@ class HomeFragment : Fragment() {
 
         valueAnimator.doOnStart {
             CoroutineScope(Dispatchers.Main).launch {
+
                 delay(1)
                 homeFragmentBinding.circleAnim.startAnimation(animation) {
                     if (!isEnter) {
+                        (activity as MainActivity).isFromEditFragment=true
                         homeFragmentBinding.circleAnim.findNavController()
-                            .navigate(R.id.action_FirstFragment_to_editList)
+                            .navigate(R.id.action_FirstFragment_to_calendarEditFragment)
                     }
                 }
             }
         }
+        homeFragmentBinding.buttonGroup.elevation=100f
+
         return valueAnimator
     }
     private fun setCornersSize(corner:View,dp:Int,X:Boolean=true,Y:Boolean=true){

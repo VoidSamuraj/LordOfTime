@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.constraintlayout.widget.ConstraintLayout
+xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+xmlns:tools="http://schemas.android.com/tools"
+tools:context=".fragments.EditTaskDialog"
+android:layout_width="match_parent"
+android:layout_height="wrap_content"
+android:paddingStart="@dimen/line_height"
+android:paddingEnd="@dimen/line_height">
+
+    <TextView
+        android:id="@+id/textName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/task_changer_label_margin"
+        android:text="@string/name"
+        android:textSize="@dimen/line_text_size"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+    android:id="@+id/name_edit"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/edit_height"
+    android:background="@drawable/border"
+    android:inputType="textPersonName"
+    android:paddingStart="@dimen/small_padding"
+    android:paddingEnd="@dimen/small_padding"
+    android:textSize="@dimen/line_text_size"
+    app:layout_constraintStart_toStartOf="@+id/textName"
+    app:layout_constraintTop_toBottomOf="@+id/textName"
+    android:importantForAutofill="no"
+    tools:ignore="LabelFor" />
+
+    <LinearLayout
+        android:baselineAligned="false"
+        android:id="@+id/three_fields"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/category_edit"
+        android:weightSum="3">
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_weight="1"
+            android:layout_marginEnd="2dp">
+
+            <TextView
+                android:id="@+id/textPriority"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/priority"
+                android:textSize="@dimen/dialog_small_text"
+                android:layout_marginTop="@dimen/task_changer_label_margin" />
+
+            <EditText
+                android:id="@+id/priority_edit"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/edit_height"
+                android:background="@drawable/border"
+                android:gravity="center"
+                android:inputType="number"
+                android:paddingStart="@dimen/small_padding"
+                android:paddingEnd="@dimen/small_padding"
+                android:textSize="@dimen/line_text_size"
+                android:text="0"
+                android:importantForAutofill="no"
+                tools:ignore="HardcodedText,LabelFor" />
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="1dp"
+            android:layout_marginEnd="1dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/task_changer_label_margin"
+
+                android:text="@string/from_hour"
+                android:textSize="@dimen/dialog_small_text" />
+
+            <EditText
+                android:id="@+id/hour_edit"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/edit_height"
+                android:background="@drawable/border"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:gravity="center"
+                android:importantForAutofill="no"
+                android:minWidth="60dp"
+                android:paddingStart="@dimen/small_padding"
+                android:paddingEnd="@dimen/small_padding"
+                android:textSize="@dimen/line_text_size"
+                tools:ignore="LabelFor,TextFields"
+                tools:text="12:00" />
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="2dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textDuration"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/task_changer_label_margin"
+                android:text="@string/date_to"
+                android:textSize="@dimen/dialog_small_text" />
+
+            <EditText
+                android:id="@+id/hour_to_edit"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/edit_height"
+                android:background="@drawable/border"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:gravity="center"
+                android:importantForAutofill="no"
+                android:inputType="numberDecimal"
+                android:paddingStart="@dimen/small_padding"
+                android:paddingEnd="@dimen/small_padding"
+                android:textSize="@dimen/line_text_size"
+                tools:ignore="LabelFor" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+
+
+
+
+
+
+
+    <TextView
+        android:id="@+id/date_to"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/duration_time"
+        android:textSize="@dimen/line_text_size"
+        android:layout_marginTop="@dimen/task_changer_label_margin"
+        app:layout_constraintStart_toStartOf="@+id/duration_edit"
+        app:layout_constraintTop_toBottomOf="@+id/three_fields" />
+
+    <EditText
+        android:id="@+id/duration_edit"
+        android:layout_width="100dp"
+        android:layout_height="@dimen/edit_height"
+        android:background="@drawable/border"
+        android:gravity="center"
+        android:importantForAutofill="no"
+        android:inputType="numberDecimal"
+        android:paddingStart="@dimen/small_padding"
+        android:paddingEnd="@dimen/small_padding"
+        android:textSize="@dimen/line_text_size"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/date_to"
+        android:text="0"
+        tools:ignore="HardcodedText,LabelFor" />
+
+
+<!--
+<Spinner
+    android:id="@+id/check_category"
+    android:layout_width="230dp"
+    android:layout_height="wrap_content"
+    android:background="@drawable/border"
+    app:layout_constraintStart_toStartOf="@+id/category_edit"
+    app:layout_constraintTop_toTopOf="@+id/category_edit"
+    android:spinnerMode="dropdown"
+    />
+-->
+    <TextView
+        android:id="@+id/textCategory"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/task_changer_label_margin"
+        android:text="@string/category"
+        android:textSize="@dimen/line_text_size"
+        app:layout_constraintStart_toStartOf="@+id/name_edit"
+        app:layout_constraintTop_toBottomOf="@+id/name_edit" />
+
+    <LinearLayout
+    android:id="@+id/category_edit"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:textSize="@dimen/line_text_size"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="@+id/textCategory"
+    app:layout_constraintTop_toBottomOf="@+id/textCategory">
+
+    <LinearLayout
+        android:id="@+id/linear_color"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:background="@drawable/border"
+        android:gravity="center_vertical"
+        android:orientation="vertical">
+
+        <Spinner
+            android:id="@+id/check_category"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/color_line_with_margin"
+            android:layout_marginTop="0dp"
+            android:dropDownVerticalOffset="@dimen/color_line_with_margin"
+            android:gravity="center"
+            android:spinnerMode="dropdown"
+            android:textSize="@dimen/line_text_size"
+            android:background="@drawable/border"
+            android:popupBackground="@drawable/filled_border"
+            />
+
+
+    </LinearLayout>
+
+
+    <ImageButton
+        android:id="@+id/add_color"
+        android:layout_width="@dimen/edit_height"
+        android:layout_height="match_parent"
+        android:background="@drawable/border"
+        android:scaleType="fitCenter"
+        app:tint="@color/blue_gray"
+        app:srcCompat="@drawable/ic_edit"
+        android:padding="@dimen/small_padding"
+        tools:ignore="ContentDescription" />
+
+</LinearLayout>
+
+    <Button
+        android:id="@+id/delete_edit_button"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:background="@null"
+        android:contentDescription="@string/delete"
+        android:text="@string/delete"
+        android:backgroundTint="@color/red"
+        android:scaleType="fitCenter"
+        app:layout_constraintBottom_toBottomOf="@+id/duration_edit"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/date_to"
+        app:tint="@color/cardview_dark_background" />
+
+    <Button
+        android:id="@+id/cancel"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/red"
+        android:contentDescription="@string/delete"
+        android:scaleType="fitCenter"
+        android:text="@string/cancel"
+        android:textColor="?android:colorPrimary"
+        android:background="@color/transparent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/save"
+        app:tint="@color/cardview_dark_background" />
+
+    <Button
+        android:id="@+id/save"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/delete"
+        android:scaleType="fitCenter"
+        android:text="@string/save"
+        android:textColor="?android:colorPrimary"
+        android:background="@color/transparent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="35dp"
+        app:layout_constraintTop_toBottomOf="@+id/delete_edit_button"
+        />
+
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -104,8 +104,13 @@
                         android:layout_width="match_parent"
                         tools:layout="@layout/fragment_pie_chart"
                         class="com.voidsamurai.lordoftime.fragments.FragmentPieChart"/>
-                </LinearLayout>
 
+                </LinearLayout>
+                <View
+                    android:id="@+id/card2_click"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:elevation="12dp"/>
             </androidx.cardview.widget.CardView>
 
             <androidx.legacy.widget.Space
@@ -171,7 +176,9 @@
                     android:contentDescription="@string/edit"
                     android:foregroundGravity="center"
                     android:src="@drawable/ic_edit"
-                    android:tint="@color/white" />
+                    android:visibility="visible"
+                    android:tint="@color/task_color"
+                    />
 
             </androidx.cardview.widget.CardView>
 
@@ -267,7 +274,8 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/imageView3"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="ContentDescription" />
 
         <TextView
             android:id="@+id/startTaskLabel"
@@ -301,7 +309,8 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:textSize="@dimen/label_button"
-                    android:text=":"/>
+                    android:text=":"
+                    tools:ignore="HardcodedText" />
                 <TextSwitcher
                     android:id="@+id/switcher_minutes1"
                     android:layout_width="wrap_content"
@@ -321,7 +330,8 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:textSize="@dimen/label_button"
-                    android:text=":"/>
+                    android:text=":"
+                    tools:ignore="HardcodedText" />
                 <TextSwitcher
                     android:id="@+id/switcher_seconds1"
                     android:layout_width="wrap_content"

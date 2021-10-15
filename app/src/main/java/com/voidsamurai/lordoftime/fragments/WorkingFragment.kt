@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.Fragment
@@ -28,9 +29,13 @@ class WorkingFragment : Fragment() {
     private var currentOrder=Order.ASC
     private var currentSortBy=SortBy.DATE
     var currentArray:ArrayList<DataRowWithColor> = ArrayList()
-    private enum class Order(order:Int){
+    enum class Order(order:Int){
         ASC(1),
         DESC(2)
+    }
+    enum class SortBy(order:String){
+        DATE("R.string.date"),
+        PRIORITY("R.string.priority")
     }
     var deleteIcon:Drawable?=null
     var editIcon:Drawable?=null
@@ -126,10 +131,7 @@ class WorkingFragment : Fragment() {
 
     }
 
-    private enum class SortBy(order:String){
-        DATE("R.string.date"),
-        PRIORITY("R.string.category")
-    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -143,11 +145,18 @@ class WorkingFragment : Fragment() {
     override fun onStart() {
         super.onStart()
         (activity as MainActivity).getDataFromDB()
+        val (order,sort)=(activity as MainActivity).getWorkSorting()
+        Log.v("SORT", ""+order+" "+sort)
+        currentOrder= Order.valueOf(order)
+        currentSortBy= SortBy.valueOf(sort)
         setListData()
     }
     private fun setListData(){
         (workingFragmentBinding.taskList.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
-
+        fun  setAdapter(){
+            workingFragmentBinding.taskList.adapter=StartWorkAdapter(requireActivity() as MainActivity,(activity as MainActivity).getQueryArrayByDate().value!!,lifecycleOwner = viewLifecycleOwner)
+            workingFragmentBinding.taskList.layoutManager=LinearLayoutManager(requireContext())
+        }
         // (activity as MainActivity).getQueryArrayByDate().removeObservers(viewLifecycleOwner)
         // (activity as MainActivity).getQueryArrayByPriority().removeObservers(viewLifecycleOwner)
         if(currentSortBy==SortBy.DATE) {
@@ -175,8 +184,8 @@ class WorkingFragment : Fragment() {
                 (activity as MainActivity).getQueryArrayByPriority().value!!.sortByDescending { dataRowWithColor ->dataRowWithColor.priority  }
 
             // (activity as MainActivity).getQueryArrayByPriority().observe(viewLifecycleOwner,{
-            currentArray=(activity as MainActivity).getQueryArrayByDate().value!!
-            workingFragmentBinding.taskList.adapter=StartWorkAdapter(requireActivity() as MainActivity,(activity as MainActivity).getQueryArrayByDate().value!!,lifecycleOwner = viewLifecycleOwner)
+            currentArray=(activity as MainActivity).getQueryArrayByPriority().value!!
+            workingFragmentBinding.taskList.adapter=StartWorkAdapter(requireActivity() as MainActivity,(activity as MainActivity).getQueryArrayByPriority().value!!,lifecycleOwner = viewLifecycleOwner)
             workingFragmentBinding.taskList.layoutManager=LinearLayoutManager(requireContext())
             //    })
         }
@@ -209,7 +218,6 @@ class WorkingFragment : Fragment() {
         else
             menu.findItem(R.id.order).icon=resources.getDrawable(R.drawable.ic_baseline_arrow_drop_down_24,null)
 
-        if (currentSortBy==SortBy.DATE)
             menu.findItem(R.id.category).title=resources.getString(when(currentSortBy){
                 SortBy.DATE->R.string.date
                 else ->R.string.priority
@@ -233,6 +241,7 @@ class WorkingFragment : Fragment() {
                     item.icon=resources.getDrawable(R.drawable.ic_baseline_arrow_drop_up_24,null)
                     Order.ASC
                 }
+                (activity as MainActivity).setSortInWorkFragment(currentOrder,currentSortBy)
                 sortList()
                 workingFragmentBinding.taskList.adapter!!.notifyDataSetChanged()
 
@@ -242,6 +251,7 @@ class WorkingFragment : Fragment() {
                     SortBy.DATE
                 else
                     SortBy.PRIORITY
+                (activity as MainActivity).setSortInWorkFragment(currentOrder,currentSortBy)
                 item.title=resources.getString(when(currentSortBy){
                     SortBy.DATE->R.string.date
                     else ->R.string.priority

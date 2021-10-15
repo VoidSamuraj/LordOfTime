@@ -9,7 +9,7 @@
     tools:context=".fragments.ManyChartsFragment"
     android:orientation="vertical">
 
-    <Space
+    <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/padding_elevation" />
 
@@ -46,7 +46,7 @@
 
     </androidx.cardview.widget.CardView>
 
-    <Space
+    <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/padding_elevation"
         />

@@ -24,10 +24,10 @@
         <action
             android:id="@+id/action_FirstFragment_to_workingFragment"
             app:destination="@id/workingFragment"
-            app:enterAnim="@anim/slide_in_left"
-            app:exitAnim="@anim/slide_out_right"
-            app:popEnterAnim="@anim/slide_in_right"
-            app:popExitAnim="@anim/slide_out_left" />
+            app:enterAnim="@anim/slide_in_left_long"
+            app:exitAnim="@anim/slide_out_right_long"
+            app:popEnterAnim="@anim/slide_in_right_long"
+            app:popExitAnim="@anim/slide_out_left_long" />
         <action
             android:id="@+id/action_FirstFragment_to_editList"
             app:destination="@id/editList"
@@ -38,6 +38,9 @@
         <action
             android:id="@+id/action_FirstFragment_to_settings"
             app:destination="@id/settings" />
+        <action
+            android:id="@+id/action_FirstFragment_to_calendarEditFragment"
+            app:destination="@id/calendarEditFragment" />
     </fragment>
     <fragment
         android:id="@+id/colorsFragment"
@@ -90,4 +93,25 @@
         android:name="com.voidsamurai.lordoftime.fragments.Settings"
         android:label="fragment_settings"
         tools:layout="@layout/fragment_settings" />
+    <fragment
+        android:id="@+id/calendarEditFragment"
+        android:name="com.voidsamurai.lordoftime.fragments.CalendarEditFragment"
+        android:label="fragment_calendar_edit"
+        tools:layout="@layout/fragment_calendar_edit" >
+        <action
+            android:id="@+id/action_calendarEditFragment_to_calendarDayEdit"
+            app:destination="@id/calendarDayEdit" />
+    </fragment>
+    <fragment
+        android:id="@+id/calendarDayEdit"
+        android:name="com.voidsamurai.lordoftime.fragments.CalendarDayEdit"
+        android:label="fragment_calendar_day_edit"
+        tools:layout="@layout/fragment_calendar_day_edit" >
+        <action
+            android:id="@+id/action_calendarDayEdit_to_colorsFragment"
+            app:destination="@id/colorsFragment" />
+        <argument
+            android:name="date"
+            app:argType="long" />
+    </fragment>
 </navigation>

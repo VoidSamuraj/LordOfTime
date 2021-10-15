@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.navigation.findNavController
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -21,6 +22,10 @@ class AuthActivity : AppCompatActivity() {
     lateinit var auth: FirebaseAuth
     lateinit var googleSignInClient: GoogleSignInClient
     private lateinit var intentAuth: Intent
+    private val SHARED_PREFERENCES:String="sharedPreferences"
+    fun setLoggedIn(){
+        getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE).edit().putBoolean("logged_in",true).apply()
+    }
     private val getResult =
         registerForActivityResult(
             ActivityResultContracts.StartActivityForResult()
@@ -36,7 +41,17 @@ class AuthActivity : AppCompatActivity() {
                 }
             }
         }
+    override fun onBackPressed() {
+        val nav=  findNavController(R.id.nav)
+        nav.currentDestination?.label.let {
+            when(it){
+                "ForgotPasswordFragment","fragment_register"->
+                    nav.popBackStack()
+                else -> super.onBackPressed()
+            }
 
+        }
+    }
 
     private fun firebaseAuthWithGoogle(acct: GoogleSignInAccount) {
         val credential = GoogleAuthProvider.getCredential(acct.idToken, null)
@@ -47,6 +62,7 @@ class AuthActivity : AppCompatActivity() {
 
                     val intent = Intent(this, MainActivity::class.java)
                     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    setLoggedIn()
                     startActivity(intent)
                     finish()
 
@@ -80,20 +96,5 @@ class AuthActivity : AppCompatActivity() {
         intentAuth=googleSignInClient.signInIntent
         getResult.launch(intentAuth)
     }
-    override fun onStart() {
-        super.onStart()
-        val currentUser = auth.currentUser
 
-
-
-        if(currentUser!=null){
-            val intent= Intent(this, MainActivity::class.java)
-            intent.flags= Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-            intent.putExtra("user_id",auth.uid)
-            intent.putExtra("user_name",auth.currentUser!!.displayName)
-            intent.putExtra("email_id",auth.currentUser!!.email)
-            startActivity(intent)
-            finish()
-        }
-    }
 }

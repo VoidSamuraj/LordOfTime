@@ -34,5 +34,7 @@
     <dimen name="settings_text">26sp</dimen>
     <dimen name="settings_margin">30dp</dimen>
     <dimen name="authLabel">30dp</dimen>
+    <dimen name="scroll">2500dp</dimen>
+    <dimen name="dialog_small_text">18sp</dimen>
 
 </resources>

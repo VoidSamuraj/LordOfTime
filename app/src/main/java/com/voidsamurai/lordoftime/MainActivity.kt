@@ -29,6 +29,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
@@ -55,6 +56,8 @@ import com.voidsamurai.lordoftime.bd.OldData
 
 import java.io.*
 import android.graphics.ImageDecoder
+import com.voidsamurai.lordoftime.charts_and_views.NTuple4
+import com.voidsamurai.lordoftime.fragments.WorkingFragment
 
 
 class MainActivity : AppCompatActivity() {
@@ -75,9 +78,20 @@ class MainActivity : AppCompatActivity() {
     private lateinit var inflater: LayoutInflater
     private lateinit var navController: NavController
     var showOutdated:Boolean =true
+    fun logout(){
+        getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE).edit().putBoolean("logged_in",false).apply()
+    }
     fun setOutdated(boolean: Boolean){
         showOutdated=boolean
         sharedPreferences.edit().putBoolean(SHOW_OUTDATED,boolean).apply()
+    }
+    fun setSortInWorkFragment(order:WorkingFragment.Order,sortBy:WorkingFragment.SortBy){
+        sharedPreferences.edit().putString("ORDER",order.name).putString("SORTBY",sortBy.name).apply()
+    }
+    fun getWorkSorting():Pair<String,String>{
+        val order=sharedPreferences.getString("ORDER","ASC")
+        val sort=sharedPreferences.getString("SORTBY","DATE")
+        return Pair(order!!,sort!!)
     }
     var isTaskStarted:Boolean=false
     var isFromEditFragment:Boolean=false
@@ -142,7 +156,8 @@ class MainActivity : AppCompatActivity() {
         }
 
     }
-    fun updateLocalTaskDB(data:ArrayList<DataRow>){
+
+    fun updateLocalTaskDB(dataFromFirebase:ArrayList<DataRow>){
         val localData:MutableList<DataRowWithColor> = queryArrayByDate.value!!
         fun DataRow.compareById(array: MutableList<DataRowWithColor>):Boolean{
             for(el in array)
@@ -152,11 +167,12 @@ class MainActivity : AppCompatActivity() {
         }
         fun DataRow.compareByRest(array: MutableList<DataRowWithColor>):Boolean{
             for(el in array)
-                if(el.name==this.name || el.category==this.category || el.date.time.time==this.date.time.time)
+                if(el.name==this.name && el.category==this.category && el.date.time.time==this.date.time.time)
                     return true
             return false
         }
-        for(row in data) {
+        for(row in dataFromFirebase) {
+
             if (row.compareById(localData)) {
                 if (row.compareByRest(localData)) {
                     oh.editTaskRow(
@@ -233,10 +249,15 @@ class MainActivity : AppCompatActivity() {
         bmp!!.compress(Bitmap.CompressFormat.JPEG, 100, stream)
         val byteArray = stream.toByteArray()
 
-        if(oh.isAvatarRowExist(userId))
-            oh.editAvatarRow(userId,byteArray)
-        else
-            oh.addAvatarRow(userId,byteArray)
+
+
+        try{
+            val fo=openFileOutput(userId+".jpeg", MODE_PRIVATE)
+            fo.write(byteArray)
+            fo.close()
+        }catch (e:Exception){
+            Log.e("IMAGE_INTERNAL_SAVING", e.cause.toString())
+        }
 
         userImage=bmp
 
@@ -253,7 +274,14 @@ class MainActivity : AppCompatActivity() {
     }
     fun getAvatar(){
 
-        if(!oh.isAvatarRowExist(userId)) {
+        val f=File(userId+".jpeg")
+        var bitmap:Bitmap?=null
+        if(f.exists()) {
+            val fo = openFileInput(f.path)
+            bitmap = BitmapFactory.decodeStream(fo)
+        }
+
+        if(bitmap==null) {
             val file = File.createTempFile("template", ".jpg")
             storageReference.getFile(file).addOnSuccessListener {
 
@@ -264,14 +292,23 @@ class MainActivity : AppCompatActivity() {
 
                 mainFragmentBinding.navView.getHeaderView(0)
                     .findViewById<ImageView>(R.id.user_avatar).setImageBitmap(bmp)
+
+                try{
+                    val fo=openFileOutput(userId+".jpeg", MODE_PRIVATE)
+                    fo.write(stream.toByteArray())
+                    fo.close()
+                }catch (e:Exception){
+                    Log.e("IMAGE_INTERNAL_SAVING", e.cause.toString())
+                }
             }
-        } else{
-            val array = oh.getAvatarRow(userId)
-            val bmp = BitmapFactory.decodeByteArray(array, 0, array.size)
-            userImage=bmp
+
+
+        }else{
+            userImage=bitmap
             mainFragmentBinding.navView.getHeaderView(0)
-                .findViewById<ImageView>(R.id.user_avatar).setImageBitmap(bmp)
+                .findViewById<ImageView>(R.id.user_avatar).setImageBitmap(bitmap)
         }
+
     }
 
     fun setLanguage(language:String){
@@ -367,6 +404,8 @@ class MainActivity : AppCompatActivity() {
         appBarConfiguration = AppBarConfiguration(navController.graph, drawerLayout)
         setupActionBarWithNavController(navController, drawerLayout)
 
+
+
         CoroutineScope(Dispatchers.Default).launch {
             while (true) {
                 delay(1000)
@@ -375,6 +414,7 @@ class MainActivity : AppCompatActivity() {
 
         inflater = LayoutInflater.from(this)
         getAvatar()
+
 
     }
 
@@ -388,6 +428,7 @@ class MainActivity : AppCompatActivity() {
             navController.navigate(R.id.action_FirstFragment_to_settings)
             drawerLayout.closeDrawer(GravityCompat.START)
         }
+
     }
 
 
@@ -439,6 +480,7 @@ class MainActivity : AppCompatActivity() {
             when {
                 drawerLayout.isDrawerOpen(GravityCompat.START) -> drawerLayout.closeDrawer(GravityCompat.START)
                 it == "EditList" -> {
+                    isFromEditFragment=true
                     super.onBackPressed()
                 }
                 it == "WorkingFragment" -> {
@@ -561,6 +603,45 @@ class MainActivity : AppCompatActivity() {
         c.close()
         for (element in map)
             list.add(Triple(element.key,element.value.first,element.value.second))
+
+
+        return list
+
+    }
+
+    fun getOldDataWithColors(currentDay:Boolean):ArrayList<NTuple4<Calendar, Int, String, String>>{
+        val selectionQuery = "SELECT OLDSTATS.date_id, OLDSTATS.working_time, OLDSTATS.category, COLOR.color from OLDSTATS  JOIN COLOR ON OLDSTATS.category=COLOR.category_id"
+        val c: Cursor = db.rawQuery(selectionQuery, null)
+        val map:MutableMap<Calendar,Triple<Int,String,String>> = java.util.HashMap()
+        val list:ArrayList<NTuple4<Calendar, Int, String, String>> = arrayListOf()
+        val calC=Calendar.getInstance()
+        if(c.moveToFirst())
+            do {
+                val cal = Calendar.getInstance()
+                cal.time=Date(c.getLong(0))
+                if(!currentDay||(cal.get(Calendar.YEAR)==calC.get(Calendar.YEAR)&&cal.get(Calendar.MONTH)==calC.get(Calendar.MONTH)&&cal.get(Calendar.DAY_OF_MONTH)==calC.get(Calendar.DAY_OF_MONTH))) {
+                    cal.set(Calendar.HOUR, 0)
+                    cal.set(Calendar.MINUTE, 0)
+                    cal.set(Calendar.SECOND, 0)
+                    cal.set(Calendar.MILLISECOND, 0)
+                    map.putIfAbsent(
+                        cal,
+                        Triple(c.getInt(1), c.getString(2), c.getString(3))
+                    )?.let {
+                        map.replace(
+                            cal,
+                            Triple(
+                                it.first + c.getInt(1),
+                                c.getString(2),
+                                c.getString(3)
+                            )
+                        )
+                    }
+                }
+            }while (c.moveToNext())
+        c.close()
+        for (element in map)
+            list.add(NTuple4(element.key,element.value.first,element.value.second,element.value.third))
 
 
         return list

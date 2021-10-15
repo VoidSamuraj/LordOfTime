@@ -59,4 +59,8 @@
     <string name="avatar_changed">Zmieniono zdjęcie</string>
     <string name="uploading_image">Wysyłanie zdjęcia</string>
     <string name="avatar">Awatar</string>
+    <string name="email_sended">Wysłano email</string>
+    <string name="date_to">Do</string>
+    <string name="from_hour">From</string>
+    <string name="cancel">Anulij</string>
 </resources>

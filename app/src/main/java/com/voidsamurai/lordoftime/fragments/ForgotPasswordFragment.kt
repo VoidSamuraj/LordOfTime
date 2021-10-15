@@ -1,6 +1,7 @@
 package com.voidsamurai.lordoftime.fragments
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +10,14 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.voidsamurai.lordoftime.R
 import com.voidsamurai.lordoftime.databinding.FragmentForgotPasswordBinding
+import androidx.annotation.NonNull
+
+import com.google.android.gms.tasks.OnCompleteListener
+
+import com.google.firebase.auth.FirebaseAuth
+
+
+
 
 class ForgotPasswordFragment : Fragment() {
 
@@ -33,6 +42,19 @@ class ForgotPasswordFragment : Fragment() {
                 Toast.makeText(context,
                     resources.getString(R.string.no_data)+" "+resources.getString(R.string.email).lowercase(),
                     Toast.LENGTH_SHORT).show()
+            }else{
+
+                FirebaseAuth.getInstance().sendPasswordResetEmail(email.toString())
+                    .addOnCompleteListener { task ->
+                        if (task.isSuccessful)
+                            Toast.makeText(context,
+                                resources.getString(R.string.email_sended),
+                                Toast.LENGTH_SHORT).show()
+
+                    }.addOnFailureListener {
+                        Log.v("RESET ERROR", it.cause.toString())
+                    }
+
             }
 
         }

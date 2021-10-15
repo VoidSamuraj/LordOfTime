@@ -45,7 +45,7 @@ class StartWorkAdapter(private val activity: MainActivity, private var toDoData:
                 val textView = TextView(activity.applicationContext)
                 textView.setTextSize(
                     TypedValue.COMPLEX_UNIT_PX,
-                    activity.resources.getDimension(R.dimen.line_text_size)
+                    activity.resources.getDimension(R.dimen.small_line_text_size)
                 )
                 textView
             }

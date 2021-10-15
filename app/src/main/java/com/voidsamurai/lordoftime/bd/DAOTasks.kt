@@ -21,7 +21,7 @@ class DAOTasks(mActivity: MainActivity){
                 if (snapshot.exists()) {
                     val calendar = Calendar.getInstance()
                     for (child in snapshot.children){
-                        calendar.time = Date(child.key!!.toLong())
+                        calendar.time = Date(child.child("dateTime").value as Long)
                         data.add(
                             DataRow(
                                 child.key!!.toInt(),

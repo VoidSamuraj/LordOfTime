@@ -197,8 +197,6 @@ class EditTaskSelected : Fragment() ,DatePickerDialog.OnDateSetListener,TimePick
 
     private fun update(){
         (context as MainActivity).getDataFromDB()
-        //EditList.update()
-        //HomeFragment.fillViewsWithDatabaseData()
     }
     private fun setColorSpinner(){
         val list: Array<String> = (activity as MainActivity).getColors().value!!.keys.toTypedArray()

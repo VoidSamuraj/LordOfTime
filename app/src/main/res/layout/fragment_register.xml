@@ -35,7 +35,8 @@
                     android:layout_margin="10dp"
                     android:background="@drawable/circle_stroke"
                     android:padding="10dp"
-                    android:src="@drawable/ic_baseline_alternate_email_24" />
+                    android:src="@drawable/ic_baseline_alternate_email_24"
+                    tools:ignore="ContentDescription" />
 
                 <View
                     android:layout_width="match_parent"
@@ -47,7 +48,8 @@
                     android:layout_margin="10dp"
                     android:background="@drawable/circle_stroke"
                     android:padding="10dp"
-                    android:src="@drawable/ic__person" />
+                    android:src="@drawable/ic__person"
+                    tools:ignore="ContentDescription" />
 
                 <View
                     android:layout_width="match_parent"
@@ -59,7 +61,8 @@
                     android:layout_margin="10dp"
                     android:background="@drawable/circle_stroke"
                     android:padding="10dp"
-                    android:src="@drawable/ic_baseline_lock_24" />
+                    android:src="@drawable/ic_baseline_lock_24"
+                    tools:ignore="ContentDescription" />
 
                 <View
                     android:layout_width="match_parent"
@@ -72,7 +75,8 @@
                     android:layout_margin="10dp"
                     android:background="@drawable/circle_stroke"
                     android:padding="10dp"
-                    android:src="@drawable/ic_baseline_lock_24" />
+                    android:src="@drawable/ic_baseline_lock_24"
+                    tools:ignore="ContentDescription" />
 
 
             </LinearLayout>
@@ -84,26 +88,33 @@
                 android:gravity="center"
                 android:orientation="vertical">
                 <EditText
+                    android:inputType="textEmailAddress"
                     android:id="@+id/edit_email"
                     android:layout_width="match_parent"
                     android:layout_height="59dp"
                     android:background="@null"
                     android:maxLines="1"
+                    android:lines="1"
+                    android:singleLine="true"
                     android:hint="Email"
                     android:paddingStart="5dp"
-                    android:paddingEnd="5dp" />
+                    android:paddingEnd="5dp"
+                    tools:ignore="HardcodedText" />
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="2dp"
                     android:background="@color/lemon" />
                 <EditText
+                    android:inputType="text"
                     android:id="@+id/user_name"
                     android:layout_width="match_parent"
                     android:layout_height="59dp"
                     android:background="@null"
                     android:hint="@string/user_name"
                     android:maxLines="1"
+                    android:lines="1"
+                    android:singleLine="true"
                     android:paddingStart="5dp"
                     android:paddingEnd="5dp" />
 
@@ -118,6 +129,8 @@
                     android:background="@null"
                     android:hint="@string/password"
                     android:maxLines="1"
+                    android:lines="1"
+                    android:singleLine="true"
                     android:paddingStart="5dp"
                     android:paddingEnd="5dp"
                     android:inputType="textPassword"/>
@@ -133,6 +146,8 @@
                     android:layout_height="59dp"
                     android:background="@null"
                     android:maxLines="1"
+                    android:lines="1"
+                    android:singleLine="true"
                     android:hint="@string/repeat_password"
                     android:paddingStart="5dp"
                     android:paddingEnd="5dp"

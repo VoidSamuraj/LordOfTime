@@ -5,106 +5,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.DateChartFragment">
+    tools:context=".fragments.CalendarEditFragment">
 
-
-    <TextView
-        android:id="@+id/summary_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        tools:text="Produktywne dni: 10 dni. Wydajność: 80%"
-        app:layout_constraintBottom_toTopOf="@+id/materialButtonToggleGroup"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <LinearLayout
-        android:id="@+id/numberPicker"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/border"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:padding="@dimen/small_padding"
-        android:paddingStart="@dimen/current_colors_view_width"
-        android:paddingEnd="@dimen/current_colors_view_width"
-        android:layout_marginTop="2dp"
-        app:layout_constraintCircleRadius="@dimen/small_margin"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-
-        <TextView
-            android:id="@+id/textView7"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="10"
-            android:text="@string/aim"
-            android:textAlignment="viewEnd" />
-
-        <TextView
-            android:id="@+id/hours"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:text="6"/>
-
-        <TextView
-            android:id="@+id/textView9"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/h" />
-
-    </LinearLayout>
-
-    <com.google.android.material.button.MaterialButtonToggleGroup
-        android:id="@+id/materialButtonToggleGroup"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/edit_height"
-        android:weightSum="3"
-        android:layout_marginTop="2dp"
-        app:checkedButton="@+id/day_button"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/numberPicker"
-        app:singleSelection="true">
-
-        <Button
-            android:id="@+id/month_button"
-            style="@style/Widget.App.Button.OutlinedButton.IconOnly"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="@string/months" />
-
-        <Button
-            android:id="@+id/week_button"
-            style="@style/Widget.App.Button.OutlinedButton.IconOnly"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="@string/weeks"
-
-            />
-
-        <Button
-            android:id="@+id/day_button"
-            style="@style/Widget.App.Button.OutlinedButton.IconOnly"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="@string/days"
-
-            />
-    </com.google.android.material.button.MaterialButtonToggleGroup>
 
     <ImageButton
         android:id="@+id/date_back"
         android:layout_width="@dimen/calendar_button_width"
         android:layout_height="@dimen/calendar_button_height"
         android:background="@null"
+        android:contentDescription="@string/back"
         android:src="@drawable/ic_arrow_back_ios"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/materialButtonToggleGroup"
-        android:contentDescription="@string/back" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextSwitcher
         android:id="@+id/current_month_label"
@@ -113,7 +25,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/date_forward"
         app:layout_constraintEnd_toStartOf="@+id/date_forward"
         app:layout_constraintStart_toEndOf="@+id/date_back"
-        app:layout_constraintTop_toBottomOf="@+id/materialButtonToggleGroup">
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
             android:layout_width="match_parent"
@@ -136,10 +48,10 @@
         android:layout_width="@dimen/calendar_button_width"
         android:layout_height="@dimen/calendar_button_height"
         android:background="@null"
+        android:contentDescription="@string/next"
         android:src="@drawable/ic_arrow_forward_ios"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/materialButtonToggleGroup"
-        android:contentDescription="@string/next" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <LinearLayout
         android:id="@+id/date_layout"
