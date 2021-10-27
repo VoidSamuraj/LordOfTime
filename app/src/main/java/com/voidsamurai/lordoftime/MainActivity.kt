@@ -29,7 +29,6 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
@@ -123,10 +122,9 @@ class MainActivity : AppCompatActivity() {
     fun getQueryArrayByDuration()= queryArrayByDuration
     fun getColors()= colorsArray
     fun getDBOpenHelper():LOTDatabaseHelper= oh
-
     lateinit var auth: FirebaseAuth
     lateinit var googleSignInClient:GoogleSignInClient
-
+    var change:Triple<Boolean,Boolean,Boolean> = Triple(false, false, false)
 
 
 
@@ -144,15 +142,28 @@ class MainActivity : AppCompatActivity() {
         editor.putInt(MODE,style).putBoolean(SETTINGS_CHANGE,true).apply()
         newIntent()
     }
+    private fun refreshHomeFragmentAndDB(){
+        getDataFromDB()
+        if(change.first&&change.second&&change.third)
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.nav_host_fragment, HomeFragment()).commit()
+    }
+
     fun updateLocalColorDB(data:Map<String,String>){
         val localData:Map<String,String> = colorsArray.value!!
         for(row in data){
             if(localData.containsKey(row.key)){
-                if (localData[row.key]!=row.value)
-                    oh.editColorRow(row.key,row.key,row.value)
+                if (localData[row.key]!=row.value) {
+                    oh.editColorRow(row.key, row.key, row.value)
+                    change= Triple(true,change.second,change.third)
+                    refreshHomeFragmentAndDB()
+                }
             }
-            else
+            else{
                 oh.addColorRow(row.key,row.value)
+                change= Triple(true,change.second,change.third)
+                refreshHomeFragmentAndDB()
+            }
         }
 
     }
@@ -165,27 +176,36 @@ class MainActivity : AppCompatActivity() {
                     return true
             return false
         }
-        fun DataRow.compareByRest(array: MutableList<DataRowWithColor>):Boolean{
-            for(el in array)
-                if(el.name==this.name && el.category==this.category && el.date.time.time==this.date.time.time)
+        fun DataRow.compareByRestAndId(array: MutableList<DataRowWithColor>):Boolean{
+            for(el in array){
+                if(el.id==this.id && (el.name!=this.name || el.category!=this.category || el.date.time.time!=this.date.time.time)) {
+                    Log.v("warunki",""+" "+el.id+" "+id+" "+el.name+" "+this.name +" "+ el.category+" "+this.category +" "+ el.date.time.time+" "+this.date.time.time)
+
                     return true
+                }
+            }
             return false
         }
         for(row in dataFromFirebase) {
 
-            if (row.compareById(localData)) {
-                if (row.compareByRest(localData)) {
-                    oh.editTaskRow(
-                        row.id,
-                        row.category,
-                        row.name,
-                        row.date.time.time,
-                        row.workingTime.toInt(),
-                        row.priority,
-                        row.currentWorkingTime.toInt()
-                    )
-                }
-            } else{
+
+            if (row.compareByRestAndId(localData)) {
+                Log.v("editER",""+row.date.time.time)
+              /*  oh.editTaskRow(
+                    row.id,
+                    row.category,
+                    row.name,
+                    row.date.time.time,
+                    row.workingTime.toInt(),
+                    row.priority,
+                    row.currentWorkingTime.toInt()
+                )
+                change= Triple(change.first,true,change.third)
+                refreshHomeFragmentAndDB()
+*/
+            } else if(!row.compareById(localData)){
+                Log.v("addER",""+row.date.time.time)
+
                 row.let {
                     val id:Long=oh.addTaskRow(
                         it.category,
@@ -206,6 +226,8 @@ class MainActivity : AppCompatActivity() {
                             it.priority,
                             it.currentWorkingTime.toInt()
                         )
+                        change= Triple(change.first,true,change.third)
+                        refreshHomeFragmentAndDB()
                     }
                 }
 
@@ -219,22 +241,27 @@ class MainActivity : AppCompatActivity() {
         val localData:List<Triple<Long,Float,String>> = getOldData().map { Triple(it.first.time.time,it.second,it.third) }
         fun OldData.compareID(array: List<Triple<Long,Float,String>>):Boolean{
             for(el in array)
-                if(el.first.toInt()==this.date_id)
+                if(el.first==this.date_id)
                     return true
             return false
         }
-        fun OldData.compareTime(array: List<Triple<Long,Float,String>>):Boolean{
+        fun OldData.compareTimeWithId(array: List<Triple<Long,Float,String>>):Boolean{
             for(el in array)
-                if(el.second==this.workingTime)
+                if(el.first==this.date_id && el.second!=this.workingTime)
                     return true
             return false
         }
         for(row in data) {
-            if (row.compareID(localData))
-                if(row.compareTime(localData))
-                    oh.editOldstatRow(row.date_id.toLong(),row.date_id.toLong(),row.workingTime.toInt(),row.category)
-                else
-                    oh.addOldstatRow(row.date_id.toLong(),row.workingTime.toInt(),row.category)
+                if(row.compareTimeWithId(localData)){
+                    oh.editOldstatRow(row.date_id,row.date_id,row.workingTime.toInt(),row.category)
+                    change= Triple(change.first,change.second,true)
+                    refreshHomeFragmentAndDB()
+                }
+                else if(!row.compareID(localData)){
+                    oh.addOldstatRow(row.date_id, row.workingTime.toInt(), row.category)
+                    change= Triple(change.first,change.second,true)
+                    refreshHomeFragmentAndDB()
+                }
         }
 
     }
@@ -432,13 +459,6 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-
-
-
-    override fun onResume() {
-        super.onResume()
-    }
-
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return if ( navController.currentDestination?.label=="first_fragment_label"||
             item.itemId==R.id.category||
@@ -517,7 +537,8 @@ class MainActivity : AppCompatActivity() {
 
             if (c.moveToFirst())
                 do {
-                    val calendar: Calendar = Calendar.getInstance()
+                    val calendar: Calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
+
                     calendar.time = Date(c.getLong(3))
                     if (showOutdated)
                         query.add(
@@ -533,7 +554,7 @@ class MainActivity : AppCompatActivity() {
                             )
                         )
                     else
-                        if (!calendar.before(Calendar.getInstance()))
+                        if (!calendar.before(Calendar.getInstance(TimeZone.getTimeZone("UTC"))))
                             query.add(
                                 DataRowWithColor(
                                     c.getInt(0),
@@ -557,7 +578,7 @@ class MainActivity : AppCompatActivity() {
             c.close()
             colorsArray.value = array
             query.forEach { dataRowWithColor ->
-                if (dataRowWithColor.date.before(Calendar.getInstance()))
+                if (dataRowWithColor.date.before(Calendar.getInstance(TimeZone.getTimeZone("UTC"))))
                     dataRowWithColor.outdated = true
             }
             queryArrayByDate.value = query
@@ -591,7 +612,7 @@ class MainActivity : AppCompatActivity() {
         val list:ArrayList<Triple<Calendar,Float,String>> = arrayListOf()
         if(c.moveToFirst())
             do {
-                val cal = Calendar.getInstance()
+                val cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
                 cal.time=Date(c.getLong(0))
                 cal.set(Calendar.HOUR,0)
                 cal.set(Calendar.MINUTE,0)
@@ -614,10 +635,10 @@ class MainActivity : AppCompatActivity() {
         val c: Cursor = db.rawQuery(selectionQuery, null)
         val map:MutableMap<Calendar,Triple<Int,String,String>> = java.util.HashMap()
         val list:ArrayList<NTuple4<Calendar, Int, String, String>> = arrayListOf()
-        val calC=Calendar.getInstance()
+        val calC=Calendar.getInstance(TimeZone.getTimeZone("UTC"))
         if(c.moveToFirst())
             do {
-                val cal = Calendar.getInstance()
+                val cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
                 cal.time=Date(c.getLong(0))
                 if(!currentDay||(cal.get(Calendar.YEAR)==calC.get(Calendar.YEAR)&&cal.get(Calendar.MONTH)==calC.get(Calendar.MONTH)&&cal.get(Calendar.DAY_OF_MONTH)==calC.get(Calendar.DAY_OF_MONTH))) {
                     cal.set(Calendar.HOUR, 0)

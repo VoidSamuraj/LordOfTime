@@ -35,7 +35,7 @@ class DateChartFragment : Fragment() {
     private var productivePer:Float=0f
     private lateinit var weeks1:Array<RecyclerView>
     private lateinit var weeks2:Array<RecyclerView>
-    private var date:Calendar= Calendar.getInstance()
+    private var date:Calendar= Calendar.getInstance(TimeZone.getTimeZone("UTC"))
     @SuppressLint("SimpleDateFormat")
     private val ydf= SimpleDateFormat("YYYY")
     @SuppressLint("SimpleDateFormat")
@@ -59,8 +59,8 @@ class DateChartFragment : Fragment() {
         weeks1 = arrayOf( binding.firstWeek,binding.secondWeek,binding.thirdWeek,binding.fourthWeek,binding.fifthWeek,binding.sixthWeek)
         weeks2 = arrayOf( binding.firstWeek2,binding.secondWeek2,binding.thirdWeek2,binding.fourthWeek2,binding.fifthWeek2,binding.sixthWeek2)
 
-        createDaysCalendarChart(Calendar.getInstance(),true, weeks1)
-        createDaysCalendarChart(Calendar.getInstance(),true, weeks2)
+        createDaysCalendarChart(Calendar.getInstance(TimeZone.getTimeZone("UTC")),true, weeks1)
+        createDaysCalendarChart(Calendar.getInstance(TimeZone.getTimeZone("UTC")),true, weeks2)
 
         fun fillLabels(){
             productivePer= (productivePer * 100).roundToInt().toFloat()/100
@@ -146,7 +146,7 @@ class DateChartFragment : Fragment() {
 
         binding.monthButton.setOnClickListener{
 
-            date= Calendar.getInstance()
+            date= Calendar.getInstance(TimeZone.getTimeZone("UTC"))
             slideNone()
             binding.currentMonthLabel.setText(ydf.format(date.time))
             if (binding.dateLayout.visibility==View.VISIBLE)
@@ -181,7 +181,7 @@ class DateChartFragment : Fragment() {
         }
 
         binding.weekButton.setOnClickListener{
-            date= Calendar.getInstance()
+            date= Calendar.getInstance(TimeZone.getTimeZone("UTC"))
             slideNone()
             binding.currentMonthLabel.setText(mdf.format(date.time))
             if (binding.dateLayout.visibility==View.VISIBLE)
@@ -219,7 +219,7 @@ class DateChartFragment : Fragment() {
         }
 
         binding.dayButton.setOnClickListener{
-            date= Calendar.getInstance()
+            date= Calendar.getInstance(TimeZone.getTimeZone("UTC"))
             slideNone()
             binding.currentMonthLabel.setText(mdf.format(date.time))
             if (binding.dateLayout.visibility==View.VISIBLE)
@@ -323,7 +323,7 @@ class DateChartFragment : Fragment() {
         val nextMonthData:Map<Calendar,Float> =allData.filter { entry ->
             (monthCalendar.get(Calendar.YEAR)==entry.key.get(Calendar.YEAR)) &&((monthCalendar.get(Calendar.MONTH)+1)==entry.key.get(Calendar.MONTH))
         }
-        val c:Calendar= Calendar.getInstance()
+        val c:Calendar= Calendar.getInstance(TimeZone.getTimeZone("UTC"))
         c.set(2021, 11, 1, 12, 6,0)
 
         val daysData:MutableMap<Int,Float> = TreeMap()
@@ -351,7 +351,7 @@ class DateChartFragment : Fragment() {
         val firstMonthDay:Int = calendar.get(Calendar.DAY_OF_WEEK)
 
 
-        val lastMonth: Calendar = Calendar.getInstance()
+        val lastMonth: Calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
         lastMonth.set(Calendar.MONTH,monthCalendar.get(Calendar.MONTH)-1)
         var lastMonthDays=lastMonth.getActualMaximum(Calendar.DAY_OF_MONTH)-(firstMonthDay-1)
         var nextMonthDays=1
@@ -443,7 +443,7 @@ class DateChartFragment : Fragment() {
         val calendar:Calendar= monthCalendar
         calendar.set(Calendar.DAY_OF_MONTH,1)
 
-        val lastMonth:Calendar=Calendar.getInstance()
+        val lastMonth:Calendar=Calendar.getInstance(TimeZone.getTimeZone("UTC"))
         lastMonth.set(Calendar.MONTH,monthCalendar.get(Calendar.MONTH)-1)
 
         fun setWeekAdapter(recyclerView:RecyclerView,arrayList:ArrayList<NTuple5<Int,Float,Boolean,Int,Int?>?> ) {

@@ -65,5 +65,6 @@
     <string name="date_to">To</string>
     <string name="from_hour">From</string>
     <string name="cancel">Cancel</string>
+    <string name="time_occupied">To selected time is already assigned task</string>
 
 </resources>

@@ -61,6 +61,7 @@
     <string name="avatar">Awatar</string>
     <string name="email_sended">Wysłano email</string>
     <string name="date_to">Do</string>
-    <string name="from_hour">From</string>
+    <string name="from_hour">Od</string>
     <string name="cancel">Anulij</string>
+    <string name="time_occupied">Do wybranego czasu jest już przypisane zadanie</string>
 </resources>

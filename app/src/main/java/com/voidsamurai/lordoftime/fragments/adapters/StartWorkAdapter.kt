@@ -203,8 +203,8 @@ class StartWorkAdapter(private val activity: MainActivity, private var toDoData:
             activity.tasks.add( id = id,
                 category = toDoData[position].category, name = toDoData[position].name, dateTime = toDoData[position].date.time.time, workingTime = toDoData[position].workingTime.toInt(), toDoData[position].priority, time)
 
-            oh.addOldstatRow(Calendar.getInstance().time.time,activity.getCurrentWorkingTime().value!!,toDoData[position].category)
-            activity.oldTasks.add(dateTime = Calendar.getInstance().time.time,currentWorkingTime = activity.getCurrentWorkingTime().value!!,category =toDoData[position].category )
+            oh.addOldstatRow(Calendar.getInstance(TimeZone.getTimeZone("UTC")).time.time,activity.getCurrentWorkingTime().value!!,toDoData[position].category)
+            activity.oldTasks.add(dateTime = Calendar.getInstance(TimeZone.getTimeZone("UTC")).time.time,currentWorkingTime = activity.getCurrentWorkingTime().value!!,category =toDoData[position].category )
         }
 
         toDoData[position].currentWorkingTime=time.toFloat()

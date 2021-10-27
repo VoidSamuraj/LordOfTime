@@ -86,43 +86,43 @@ class HomeFragment : Fragment() {
             textView.textSize=40f
             return textView
         }
-
+/*
         homeFragmentBinding.switcherHour.setFactory{factory()}
         homeFragmentBinding.switcherMinutes1.setFactory{factory()}
         homeFragmentBinding.switcherMinutes2.setFactory{factory()}
         homeFragmentBinding.switcherSeconds1.setFactory{factory()}
         homeFragmentBinding.switcherSeconds2.setFactory{factory()}
-
-        homeFragmentBinding.switcherHour.setText("0")
-        homeFragmentBinding.switcherMinutes1.setText("0")
-        homeFragmentBinding.switcherMinutes2.setText("0")
-        homeFragmentBinding.switcherSeconds1.setText("0")
-        homeFragmentBinding.switcherSeconds2.setText("0")
+*/
+        homeFragmentBinding.switcherHour.text = "0"
+        homeFragmentBinding.switcherMinutes1.text = "0"
+        homeFragmentBinding.switcherMinutes2.text = "0"
+        homeFragmentBinding.switcherSeconds1.text = "0"
+        homeFragmentBinding.switcherSeconds2.text = "0"
 
         (activity as MainActivity).getCurrentWorkingTime().observe(viewLifecycleOwner,{
             var currentFormatedTime=((it-(it%3600))/3600)
             if(currentFormatedTime!=hours) {
-                homeFragmentBinding.switcherHour.setText(currentFormatedTime.toString())
+                homeFragmentBinding.switcherHour.text = currentFormatedTime.toString()
                 hours=currentFormatedTime
             }
             currentFormatedTime=((it-(it%60))/60)%60
             if(currentFormatedTime!=minutes) {
                 if(minutes-(minutes%10)!=currentFormatedTime-(currentFormatedTime%10)){
-                    homeFragmentBinding.switcherMinutes1.setText(((currentFormatedTime-(currentFormatedTime%10))/10).toString())
-                    homeFragmentBinding.switcherMinutes2.setText((currentFormatedTime%10).toString())
+                    homeFragmentBinding.switcherMinutes1.text = ((currentFormatedTime-(currentFormatedTime%10))/10).toString()
+                    homeFragmentBinding.switcherMinutes2.text = (currentFormatedTime%10).toString()
                 }
                 else
-                    homeFragmentBinding.switcherMinutes2.setText((currentFormatedTime%10).toString())
+                    homeFragmentBinding.switcherMinutes2.text = (currentFormatedTime%10).toString()
                 minutes=currentFormatedTime
             }
             currentFormatedTime=it%60
             if(currentFormatedTime!=seconds) {
                 if(seconds-(seconds%10)!=currentFormatedTime-(currentFormatedTime%10)) {
-                    homeFragmentBinding.switcherSeconds1.setText(((currentFormatedTime-(currentFormatedTime%10)) / 10).toString())
-                    homeFragmentBinding.switcherSeconds2.setText((currentFormatedTime % 10).toString())
+                    homeFragmentBinding.switcherSeconds1.text = ((currentFormatedTime-(currentFormatedTime%10)) / 10).toString()
+                    homeFragmentBinding.switcherSeconds2.text = (currentFormatedTime % 10).toString()
                 }
                 else
-                    homeFragmentBinding.switcherSeconds2.setText((currentFormatedTime % 10).toString())
+                    homeFragmentBinding.switcherSeconds2.text = (currentFormatedTime % 10).toString()
 
                 seconds=currentFormatedTime
             }
@@ -450,4 +450,6 @@ class HomeFragment : Fragment() {
             return abs(paramFloat - 1f)
         }
     }
+
+
 }

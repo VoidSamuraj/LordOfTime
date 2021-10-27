@@ -297,11 +297,12 @@
                 android:orientation="horizontal"
                 android:gravity="center_horizontal">
 
-                <TextSwitcher
+                <TextView
                     android:id="@+id/switcher_hour"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
+                    android:textSize="@dimen/label_button"
                     android:inAnimation="@anim/slide_in_down"
                     android:outAnimation="@anim/slide_out_down"/>
                 <TextView
@@ -311,18 +312,20 @@
                     android:textSize="@dimen/label_button"
                     android:text=":"
                     tools:ignore="HardcodedText" />
-                <TextSwitcher
+                <TextView
                     android:id="@+id/switcher_minutes1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
+                    android:textSize="@dimen/label_button"
                     android:inAnimation="@anim/slide_in_down"
                     android:outAnimation="@anim/slide_out_down"/>
-                <TextSwitcher
+                <TextView
                     android:id="@+id/switcher_minutes2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
+                    android:textSize="@dimen/label_button"
                     android:inAnimation="@anim/slide_in_down"
                     android:outAnimation="@anim/slide_out_down"/>
                 <TextView
@@ -332,18 +335,20 @@
                     android:textSize="@dimen/label_button"
                     android:text=":"
                     tools:ignore="HardcodedText" />
-                <TextSwitcher
+                <TextView
                     android:id="@+id/switcher_seconds1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
+                    android:textSize="@dimen/label_button"
                     android:inAnimation="@anim/slide_in_down"
                     android:outAnimation="@anim/slide_out_down"/>
-                <TextSwitcher
+                <TextView
                     android:id="@+id/switcher_seconds2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
+                    android:textSize="@dimen/label_button"
                     android:inAnimation="@anim/slide_in_down"
                     android:outAnimation="@anim/slide_out_down"/>
             </LinearLayout>

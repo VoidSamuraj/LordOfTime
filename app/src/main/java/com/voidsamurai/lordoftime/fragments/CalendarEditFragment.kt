@@ -2,6 +2,7 @@ package com.voidsamurai.lordoftime.fragments
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -32,7 +33,7 @@ class CalendarEditFragment : Fragment() {
     private var productivePer:Float=0f
     private lateinit var weeks1:Array<RecyclerView>
     private lateinit var weeks2:Array<RecyclerView>
-    private var date: Calendar = Calendar.getInstance()
+    private var date: Calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
     @SuppressLint("SimpleDateFormat")
     private val mdf= SimpleDateFormat("MM/yy")
 
@@ -52,8 +53,8 @@ class CalendarEditFragment : Fragment() {
         weeks1 = arrayOf( binding.firstWeek,binding.secondWeek,binding.thirdWeek,binding.fourthWeek,binding.fifthWeek,binding.sixthWeek)
         weeks2 = arrayOf( binding.firstWeek2,binding.secondWeek2,binding.thirdWeek2,binding.fourthWeek2,binding.fifthWeek2,binding.sixthWeek2)
 
-        createDaysCalendarChart(Calendar.getInstance(),true, weeks1)
-        createDaysCalendarChart(Calendar.getInstance(),true, weeks2)
+        createDaysCalendarChart(Calendar.getInstance(TimeZone.getTimeZone("UTC")),true, weeks1)
+        createDaysCalendarChart(Calendar.getInstance(TimeZone.getTimeZone("UTC")),true, weeks2)
 
         fun fillLabels(){
             productivePer= (productivePer * 100).roundToInt().toFloat()/100
@@ -70,7 +71,7 @@ class CalendarEditFragment : Fragment() {
         })
 
 
-        date= Calendar.getInstance()
+        date= Calendar.getInstance(TimeZone.getTimeZone("UTC"))
         binding.currentMonthLabel.setText(mdf.format(date.time))
         fun slideRight(){
             binding.currentMonthLabel.inAnimation= AnimationUtils.loadAnimation(context, R.anim.slide_in_right)
@@ -163,10 +164,11 @@ class CalendarEditFragment : Fragment() {
 
 
         val data=(activity as MainActivity).getQueryArrayByDate().value
+        var nr=1
         data?.let {
             for (x in it) {
-
-                val value=NTuple6(x.date,x.workingTime,x.priority,x.name,x.category,x.color)
+               // Log.v("DataRAW",""+nr+++" "+x.date.get(Calendar.MONTH)+"/"+x.date.get(Calendar.DAY_OF_MONTH)+" "+x.name+" "+x.id)
+                val value=NTuple6(x.date,x.workingTime/3600f,x.priority,x.name,x.category,x.color)
                 val rest= allData.putIfAbsent(x.date, arrayListOf(value))
                 if(rest!=null){
                     rest.add(value)
@@ -189,8 +191,14 @@ class CalendarEditFragment : Fragment() {
             (monthCalendar.get(Calendar.YEAR)==entry.key.get(Calendar.YEAR)) &&((monthCalendar.get(Calendar.MONTH)+1)==entry.key.get(Calendar.MONTH))
         }.mapKeys { it.key.get(Calendar.DAY_OF_MONTH)  }
 
-        val c:Calendar= Calendar.getInstance()
-        c.set(2021, 11, 1, 12, 6,0)
+       /*
+        for(x in allData.values){
+            for(y in x)
+                Log.v("Data",""+y.t1.get(Calendar.MONTH)+"/"+y.t1.get(Calendar.DAY_OF_MONTH)+" "+y.t4+" "+y.t5+" "+y.t6)
+        }*/
+
+       // val c:Calendar= Calendar.getInstance()
+        //c.set(2021, 11, 1, 12, 6,0)
 
         val list:ArrayList<ArrayList<ArrayList<NTuple6<Calendar,Float,Int, String, String,String>>?>> = arrayListOf()
         val calendar: Calendar = monthCalendar
@@ -198,7 +206,7 @@ class CalendarEditFragment : Fragment() {
         val firstMonthDay:Int = calendar.get(Calendar.DAY_OF_WEEK)
 
 
-        val lastMonth: Calendar = Calendar.getInstance()
+        val lastMonth: Calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
         lastMonth.set(Calendar.MONTH,monthCalendar.get(Calendar.MONTH)-1)
         var lastMonthDays=lastMonth.getActualMaximum(Calendar.DAY_OF_MONTH)-(firstMonthDay-1)
         var nextMonthDays=1
@@ -220,6 +228,7 @@ class CalendarEditFragment : Fragment() {
                             cal.set(Calendar.DAY_OF_MONTH,++lastMonthDays)
                             val row:ArrayList<NTuple6<Calendar,Float,Int, String, String,String>> = arrayListOf(NTuple6(cal,null,null,null,null,null))
                             val ldd=lastMonthData.get(lastMonthDays)?: row
+
                             localList.add(ldd)
                         }else {
                             //in month
@@ -228,8 +237,7 @@ class CalendarEditFragment : Fragment() {
                             val cal=date.clone() as Calendar
                             cal.set(Calendar.DAY_OF_MONTH,day)
                             val row:ArrayList<NTuple6<Calendar,Float,Int, String, String,String>> = arrayListOf(NTuple6(cal,null,null,null,null,null))
-                            monthData.get(day)?.let{
-                            }
+
                             val dd=monthData.get(day)?: row
                             localList.add(dd)
 
@@ -240,11 +248,11 @@ class CalendarEditFragment : Fragment() {
                         //after month
                         val cal=date.clone() as Calendar
                         cal.set(Calendar.MONTH,cal.get(Calendar.MONTH)+1)
-                        cal.set(Calendar.DAY_OF_MONTH,nextMonthDays++)
+                        cal.set(Calendar.DAY_OF_MONTH,nextMonthDays)
                         val row:ArrayList<NTuple6<Calendar,Float,Int, String, String,String>> = arrayListOf(NTuple6(cal,null,null,null,null,null))
-
-                        val ndd=nextMonthData[nextMonthDays]?:row
+                        val ndd=nextMonthData[nextMonthDays++]?:row
                         localList.add(ndd)
+
                     }
                 }
 

@@ -61,20 +61,25 @@ class CalendarEditAdapter (private val context: Context, private val dataSet: Ar
         dataSet.get(position)?.let {
             val date=calendarLinear.findViewById<TextView>(R.id.date)
 
-            if(context.getResources().getConfiguration().uiMode and
+            if(context.getResources().configuration.uiMode and
                     Configuration.UI_MODE_NIGHT_MASK==Configuration.UI_MODE_NIGHT_YES) {
                 date.setShadowLayer(10f,0f,0f,Color.BLACK)
             }
-            date.text=it[0]
-                .t1.get(Calendar.DAY_OF_MONTH).toString()
+            date.text=it[0].t1.get(Calendar.DAY_OF_MONTH).toString()
+
             if(it.size>0){
-                var dur=0f;
-                for(x in it){
-                    dur+=if(x.t2!=null) x.t2/3600f else 0f
+                var dur=0f
+                for(r in it){
+                    if(r.t2!=null)
+                        Log.v("DANE","day:"+r.t1.get(Calendar.DAY_OF_MONTH)+" dzas:"+r.t2+" "+r.t3+" "+r.t4+" "+r.t5+" "+r.t6)
+                    dur+= r.t2 ?: 0f
                 }
                 if(dur>0) {
+                    if(dur>18f)
+                        dur=18f
                     val color =
-                        Color.rgb((255f * dur / 18f).toInt(), (255f - 255f * dur / 18f).toInt(), 0)
+                        Color.rgb((255f * dur / 18f).toInt(), (255f - (255f * dur / 18f)).toInt(), 0)
+                    Log.v("color",""+dur+" size:"+it.size)
                     date.setBackgroundColor(color)
                 }
             }

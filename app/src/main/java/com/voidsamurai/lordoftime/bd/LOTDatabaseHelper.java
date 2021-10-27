@@ -14,12 +14,13 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 
 
 public class LOTDatabaseHelper extends SQLiteOpenHelper {
     private static final String DB_NAME = "LOT";
 
-    private static final int DB_VERSION = 5;
+    private static final int DB_VERSION = 10;
     private static SQLiteDatabase db;
 
     public LOTDatabaseHelper(@Nullable Context context) {
@@ -69,7 +70,7 @@ public class LOTDatabaseHelper extends SQLiteOpenHelper {
                     Log.v("TABLES",c.toString());
                 }while (c.moveToNext());
             c.close();*/
-        Calendar cal = Calendar.getInstance();
+        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
         cal.set(2021, 11, 1, 12, 6,0);
         cal.set(Calendar.MILLISECOND,0);
         fillTestData("Książki", "Ludzie bezdomni", cal.getTime().getTime(),(int)(2.3*3600) ,3,(int)(1.2*3600));
@@ -172,8 +173,8 @@ public class LOTDatabaseHelper extends SQLiteOpenHelper {
     public DataRowWithColor getTaskRow(int id){
         Cursor c=db.rawQuery("SELECT TASKTABLE._id, TASKTABLE.category, TASKTABLE.name, TASKTABLE.datetime, TASKTABLE.working_time, TASKTABLE.priority, TASKTABLE.current_work_time, COLOR.color FROM TASKTABLE JOIN COLOR ON TASKTABLE.category=COLOR.category_id WHERE TASKTABLE._id=?",new String[]{String.valueOf(id)});
         if(c.moveToFirst()){
-            Calendar cal=Calendar.getInstance();
-            Calendar now=Calendar.getInstance();
+            Calendar cal=Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+            Calendar now=Calendar.getInstance(TimeZone.getTimeZone("UTC"));
             cal.setTime(new Date(c.getLong(3)));
             try {
                 return new DataRowWithColor(
@@ -193,8 +194,8 @@ public class LOTDatabaseHelper extends SQLiteOpenHelper {
             return null;
     }
     public ArrayList<DataRowWithColor> getTodayTasks(Long data){
-        Calendar start=Calendar.getInstance();
-        Calendar end=Calendar.getInstance();
+        Calendar start=Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+        Calendar end=Calendar.getInstance(TimeZone.getTimeZone("UTC"));
         start.setTime(new Date(data));
         end.setTime(new Date(data));
         start.set(Calendar.HOUR_OF_DAY,0);
@@ -215,9 +216,9 @@ public class LOTDatabaseHelper extends SQLiteOpenHelper {
 
             ArrayList<DataRowWithColor> array = new ArrayList<>();
             do {
-                    Calendar cal = Calendar.getInstance();
+                    Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
                     cal.setTime(new Date(c.getLong(3)));
-                    Calendar now = Calendar.getInstance();
+                    Calendar now = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
                     array.add( new DataRowWithColor(
                             c.getInt(0),
                             c.getString(1),

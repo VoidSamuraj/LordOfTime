@@ -7,7 +7,6 @@ import android.app.TimePickerDialog
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.*
@@ -36,6 +35,7 @@ class EditTaskDialog(
             EDIT(2)
         }
     }
+
     private var fragment:Fragment?=null
     private lateinit var adapter: ArrayColorAdapter
     private lateinit var nameEdit:EditText
@@ -84,8 +84,8 @@ class EditTaskDialog(
             startHour.setText(time)
             endHour.setText(time)
         }else{
-            startHourCalendar= Calendar.getInstance()
-            endHourCalendar= Calendar.getInstance()
+            startHourCalendar= Calendar.getInstance(TimeZone.getTimeZone("UTC"))
+            endHourCalendar= Calendar.getInstance(TimeZone.getTimeZone("UTC"))
             dataRow=(activity as MainActivity).getDBOpenHelper().getTaskRow(id!!)
             if(dataRow!=null){
                 startHourCalendar= dataRow!!.date.clone() as Calendar
@@ -99,7 +99,7 @@ class EditTaskDialog(
                 startHour.setText(String.format("%02d:%02d", startHourCalendar.get(Calendar.HOUR_OF_DAY),startHourCalendar.get(Calendar.MINUTE)))
                 endHour.setText(String.format("%02d:%02d", endHourCalendar.get(Calendar.HOUR_OF_DAY),endHourCalendar.get(Calendar.MINUTE)))
                 nameEdit.setText(dataRow!!.name)
-                durationEdit.setText(dataRow!!.workingTime.toString())
+                durationEdit.setText(String.format("%.1f",dataRow!!.workingTime))
                 priority.setText(dataRow!!.priority.toString())
                 category.setSelection(adapter.getPosition(Pair(dataRow!!.category,dataRow!!.color)))
 
@@ -116,6 +116,7 @@ class EditTaskDialog(
         cancelButton.setOnClickListener {
             dismiss()
         }
+
         saveButton.setOnClickListener {
             if(mode==MODE.SAVE){
                 val color=resources.getColor(R.color.blue_gray,null)
@@ -136,32 +137,32 @@ class EditTaskDialog(
                 if(canSave) {
                         if(durationEdit.text.isNullOrEmpty())
                             setDuration()
-                    val id=addRow(
+                    val (id,dur)=addRow(
                         (category.selectedItem as Pair<*, *>).first.toString (),
                         nameEdit.text.toString(),
-                        startTime!!.time.time,
+                        startHourCalendar.time.time,
                         durationEdit.text.toString(),
                         priority.text.toString().toInt()
-                    ).toInt()
+                    )
 
-                    if(id!=-1) {
-                        val _category = (category.selectedItem as Pair<*, *>).first.toString()
+                    if(id!=-1L) {
+                        val category = (category.selectedItem as Pair<*, *>).first.toString()
                         val drwc = DataRowWithColor(
                             name = nameEdit.text.toString(),
-                            category = _category,
+                            category = category,
                             date = startHourCalendar,
-                            workingTime = durationEdit.text.toString().toFloat(),
+                            workingTime = dur,
                             currentWorkingTime = 0f,
-                            outdated = startTime.time.time < Calendar.getInstance().time.time,
-                            color = (activity as MainActivity).getColors().value!![_category]!!,
+                            outdated = startHourCalendar.time.time < Calendar.getInstance(TimeZone.getTimeZone("UTC")).time.time,
+                            color = (activity as MainActivity).getColors().value!![category]!!,
                             priority = priority.text.toString().toInt(),
-                            id =id
+                            id =id.toInt()
 
                         )
+                        // add to layout
                         (fragment as CalendarDayEdit).addElement(
                             drwc,
-                            margin?.toInt() ?: 1,
-                            durationEdit.text.toString().toFloat()
+                            margin?.toInt() ?: 1
                         )
                     }
 
@@ -170,7 +171,6 @@ class EditTaskDialog(
                 }
 
             }else{
-
                 updateRow((activity as MainActivity).getDBOpenHelper().getTaskRow(id!!))
                 dismiss()
             }
@@ -191,12 +191,13 @@ class EditTaskDialog(
         startHour.setOnClickListener{
             val tp =  TimePickerDialog(
                 requireContext(),
-                { view, hourOfDay, minute ->
+                { _, hourOfDay, minute ->
                     startHourCalendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
                     startHourCalendar.set(Calendar.MINUTE, minute)
                     startHourCalendar.set(Calendar.SECOND, 0)
                     startHourCalendar.set(Calendar.MILLISECOND, 0)
                     startHour.setText(String.format("%02d:%02d", hourOfDay,minute))//(if (hourOfDay < 10) "0" else "") + hourOfDay.toString() + ":" + if (minute < 10) "0" else "" + minute.toString())
+                    setDuration()
 
                 },
                 startHourCalendar.get(Calendar.HOUR_OF_DAY),
@@ -209,7 +210,7 @@ class EditTaskDialog(
         endHour.setOnClickListener{
             val tp =  TimePickerDialog(
                 requireContext(),
-                { view, hourOfDay, minute ->
+                { _, hourOfDay, minute ->
                     endHourCalendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
                     endHourCalendar.set(Calendar.MINUTE, minute)
                     endHourCalendar.set(Calendar.SECOND, 0)
@@ -228,7 +229,7 @@ class EditTaskDialog(
 
 
         durationEdit.addTextChangedListener{
-            if(it!!.length>0) {
+            if(it!!.isNotEmpty()) {
 
                 val dur = (60f * it.toString().toFloat()).toInt()
                 val minute = dur % 60
@@ -255,14 +256,11 @@ class EditTaskDialog(
 
         return builder.create()
     }
-    fun setDuration(){
+    private fun setDuration(){
         val hoursInFloat=endHourCalendar.get(Calendar.HOUR_OF_DAY)-startHourCalendar.get(Calendar.HOUR_OF_DAY)+((endHourCalendar.get(Calendar.MINUTE)-startHourCalendar.get(Calendar.MINUTE)).toFloat()/60f)
         durationEdit.setText(hoursInFloat.toString())
     }
-    override fun onResume() {
-        super.onResume()
 
-    }
 
     private fun setColorSpinner(){
         val list: Array<String> = (activity as MainActivity).getColors().value!!.keys.toTypedArray()
@@ -275,41 +273,56 @@ class EditTaskDialog(
 
 
     private fun updateRow(data:DataRowWithColor) {
-        if(durationEdit.text.isNullOrEmpty())
             setDuration()
 
+        var dur =  (durationEdit.text.toString().toFloat())
+        val (hour,min)=(startHour.text.toString().split(":"))
+      //  val hour=(startHour.text.toString().toFloat())
+        val start = hour.toFloat()+min.toFloat()/100
+        val m=(fragment as CalendarDayEdit).getStartMargin(start,dur,data.id)
+        if(m==-1)
+            {
+            Toast.makeText(context,resources.getText(R.string.time_occupied),Toast.LENGTH_SHORT).show()
+            return
+        }
+        m.let{
+            dur=(fragment as CalendarDayEdit).getMaxDur(it, (fragment as CalendarDayEdit).getHeight(dur),data.id)
+        }
+        //edit element in layout
         (fragment as CalendarDayEdit).editElement(
             DataRowWithColor(
                 data.id,
                 (category.selectedItem as Pair<*, *>).first.toString (),
                 nameEdit.text.toString(),
-                startTime!!,
-                (durationEdit.text.toString().toFloat()*3600),
+                startHourCalendar.clone() as Calendar,
+                dur,
                 priority.text.toString().toInt(),
                 0f,
                 (category.selectedItem as Pair<*, *>).second.toString (),
                 null
                 )
         )
-
+        dur*=3600
         (activity as MainActivity).getDBOpenHelper().editTaskRow(
             data.id,
             (category.selectedItem as Pair<*, *>).first.toString (),
             nameEdit.text.toString(),
-            startTime.time.time,
-            (durationEdit.text.toString().toFloat()*3600).toInt(),
+            startHourCalendar.time.time,
+            dur.toInt(),
             priority.text.toString().toInt(),
             0)
+        //edit firebase row
         (activity as MainActivity).tasks.add  ( id=data.id,
             category = (category.selectedItem as Pair<*, *>).first.toString (),
             name = nameEdit.text.toString(),
-            dateTime = startTime.time.time,
-            workingTime = (durationEdit.text.toString().toFloat()*3600).toInt(),
+            dateTime = startHourCalendar.time.time,
+            workingTime = dur.toInt(),
             priority = priority.text.toString().toInt(),
             currentWorkingTime = 0)
         (context as MainActivity).getDataFromDB()
 
     }
+
 
     private fun addRow(
         category: String,
@@ -317,23 +330,23 @@ class EditTaskDialog(
         startDateTime: Long,
         hours: String,
         priority: Int
-    ):Long {
+    ):Pair<Long,Float> {
         var dur = hours.toFloat()*3600
-
+        var d=0f
         margin?.let{
-            val d=(fragment as CalendarDayEdit).getMaxDur(it.toInt(), (fragment as CalendarDayEdit).getHeight(hours.toFloat()))
-           dur= d*3600
-            durationEdit.setText(d.toString())
+            d=(fragment as CalendarDayEdit).getMaxDur(it.toInt(), (fragment as CalendarDayEdit).getHeight(hours.toFloat()))
+           dur= d*3600f
         }
         val id=(activity as MainActivity).getDBOpenHelper().addTaskRow(category, name, startDateTime,dur.toInt(), priority,0)
         if(id!=-1L)
             (activity as MainActivity).tasks.add  ( id=id.toInt(),category = category, name=name, dateTime = startDateTime, workingTime =dur.toInt(), priority = priority,currentWorkingTime = 0)
         (context as MainActivity).getDataFromDB()
-        return id
+        return Pair(id,d)
     }
-    private fun deleteRow(
-        id:Int
-    ):Int {
+
+
+    private fun deleteRow(id:Int):Int {
+
         (activity as MainActivity).getDBOpenHelper().deleteTaskRow(id)
         (activity as MainActivity).tasks.delete (id.toString())
         (context as MainActivity).getDataFromDB()

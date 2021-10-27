@@ -1,5 +1,6 @@
 package com.voidsamurai.lordoftime.bd
 
+import android.util.Log
 import com.google.firebase.database.*
 import com.voidsamurai.lordoftime.MainActivity
 import java.util.*
@@ -18,10 +19,12 @@ class DAOTasks(mActivity: MainActivity){
         vel=object:ValueEventListener{
 
             override fun onDataChange(snapshot: DataSnapshot) {
+                Log.v("BD","\nbd\n|\n")
                 if (snapshot.exists()) {
-                    val calendar = Calendar.getInstance()
+                    val calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
                     for (child in snapshot.children){
                         calendar.time = Date(child.child("dateTime").value as Long)
+                        Log.v("OnlineDB",""+child.key+" "+calendar.time)
                         data.add(
                             DataRow(
                                 child.key!!.toInt(),
@@ -55,6 +58,7 @@ class DAOTasks(mActivity: MainActivity){
         ref.child("priority").setValue(priority)
         ref.child("currentWorkingTime").setValue(currentWorkingTime)
     }
+
     fun add(data: DataRowWithColor){
         val ref=dbReference.child(data.id.toString())
         ref.child("category").setValue(data.category)

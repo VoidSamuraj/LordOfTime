@@ -19,14 +19,14 @@ class DAOOldTasks (mActivity: MainActivity) {
 
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()) {
-                    val calendar = Calendar.getInstance()
+                    val calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
 
                     for (child in snapshot.children){
                         val id = child.key!!.toLong()
                         calendar.time = Date(id)
                         data.add(
                             OldData(
-                                date_id = id.toInt(),
+                                date_id = id,
                                 child.child("category").value.toString(),
                                 (child.child("currentWorkingTime").value as Long).toFloat(),
                             )

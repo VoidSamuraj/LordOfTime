@@ -26,7 +26,7 @@ data class DataRow(
 
 @Parcelize
 data class OldData(
-    var date_id: Int,
+    var date_id: Long,
     var category: String,
     var workingTime:Float
 ):Parcelable

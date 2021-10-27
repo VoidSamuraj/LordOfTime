@@ -61,7 +61,7 @@ class EditTaskSelected : Fragment() ,DatePickerDialog.OnDateSetListener,TimePick
             binding.dateEdit.setText(dateFormat.format(data!!.date.time))
             binding.durationEdit.setText((data!!.workingTime/3600).toString())
             binding.hourEdit.setText(String.format("%s:%s",data!!.date.get(Calendar.HOUR),data!!.date.get(Calendar.MINUTE)))
-            newDate= Calendar.getInstance()
+            newDate= Calendar.getInstance(TimeZone.getTimeZone("UTC"))
             data!!.date.let {newDate.set(
                 it.get(Calendar.YEAR),
                 it.get(Calendar.MONTH),
@@ -84,7 +84,7 @@ class EditTaskSelected : Fragment() ,DatePickerDialog.OnDateSetListener,TimePick
                 it.findNavController().navigateUp()
             }
         }else{
-            newDate= Calendar.getInstance()
+            newDate= Calendar.getInstance(TimeZone.getTimeZone("UTC"))
             newDate.set(Calendar.SECOND, 0)
             newDate.set(Calendar.MILLISECOND, 0)
             binding.dateEdit.setText(dateFormat.format(newDate.time))
