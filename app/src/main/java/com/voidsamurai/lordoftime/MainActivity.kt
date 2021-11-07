@@ -1,5 +1,10 @@
 package com.voidsamurai.lordoftime
 
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.ClipDescription
+import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.os.Bundle
@@ -55,21 +60,41 @@ import com.voidsamurai.lordoftime.bd.OldData
 
 import java.io.*
 import android.graphics.ImageDecoder
+import androidx.core.app.NotificationCompat
 import com.voidsamurai.lordoftime.charts_and_views.NTuple4
 import com.voidsamurai.lordoftime.fragments.WorkingFragment
+import android.widget.RemoteViews
+
+
+
 
 
 class MainActivity : AppCompatActivity() {
 
+    companion object{
+        val SHARED_PREFERENCES:String="sharedPreferences"
+        fun String.formatToFloat():Float{
+            return toString()
+                .replace(',','.')
+                .replace('-','.')
+                .toFloat()
+        }
+
+    }
+
     private lateinit var firebaseDB:FirebaseDatabase
     private lateinit var analytics: FirebaseAnalytics
     private lateinit var storageReference:StorageReference
-
+   // private lateinit var notification:Notification
+   // private lateinit var  contentView:RemoteViews
+  //  private lateinit var notificationManager:NotificationManager
+    //val jobSchedulerName get()=JOB_SCHEDULER_SERVICE
+   // private val WIDGET_ID:String="1"
+  //  private val WIDGET_NAME="LOTR"
     private val LANGUAGE:String="Language"
     private val SHOW_OUTDATED:String="showOutdated"
     private val SETTINGS_CHANGE:String="changeColor"
     private val MODE:String="Mode"
-    private val SHARED_PREFERENCES:String="sharedPreferences"
     private var _mainFragmentBinding: ActivityMainBinding?=null
     private val mainFragmentBinding get()=_mainFragmentBinding!!
     private lateinit var drawerLayout: DrawerLayout
@@ -87,11 +112,61 @@ class MainActivity : AppCompatActivity() {
     fun setSortInWorkFragment(order:WorkingFragment.Order,sortBy:WorkingFragment.SortBy){
         sharedPreferences.edit().putString("ORDER",order.name).putString("SORTBY",sortBy.name).apply()
     }
+    fun setMainChartRange(range:Int=24){
+        sharedPreferences.edit().putInt("MAIN_CHART_RANGE",range).apply()
+    }
+
+    fun getMainChartRange():Int{
+        return sharedPreferences.getInt("MAIN_CHART_RANGE",24)
+    }
+    fun setCurrentTaskId(id:Int){
+        sharedPreferences.edit().putInt("TASK_ID",id).apply()
+    }
+
+    fun getCurrentTaskId():Int{
+        return sharedPreferences.getInt("TASK_ID",-1)
+    }
+    fun setIsRunningTask(isRunning: Boolean){
+        sharedPreferences.edit().putBoolean("IS_RUNNING_TASK",isRunning).apply()
+    }
+
+    fun getTimeToAdd():Int{
+        return sharedPreferences.getInt("TIME_TO_ADD",0)
+    }
+    fun setTimeToAdd(timeToAdd: Int){
+        sharedPreferences.edit().putInt("TIME_TO_ADD",timeToAdd).apply()
+    }
+    fun getStartTime():Long{
+        return sharedPreferences.getLong("START_TIME",Calendar.getInstance(TimeZone.getTimeZone("UTC")).time.time)
+    }
+    fun setStartTime(startTime: Long){
+        sharedPreferences.edit().putLong("START_TIME",startTime).apply()
+    }
+
+    fun getIsRunningTask():Boolean{
+        return sharedPreferences.getBoolean("IS_RUNNING_TASK",false)
+    }
+    fun setMainChartAuto():Boolean{
+        val state=getMainChartAuto().not()
+        sharedPreferences.edit().putBoolean("MAIN_CHART_AUTO",state).apply()
+        return state
+    }
+    fun getMainChartAuto():Boolean{
+        return sharedPreferences.getBoolean("MAIN_CHART_AUTO",false)
+    }
+    fun setCalendarChartRange(range:Int){
+        sharedPreferences.edit().putInt("CALENDAR_CHART_RANGE",range).apply()
+    }
+    fun getCalendarChartRange():Int{
+        return sharedPreferences.getInt("CALENDAR_CHART_RANGE",8)
+    }
     fun getWorkSorting():Pair<String,String>{
         val order=sharedPreferences.getString("ORDER","ASC")
         val sort=sharedPreferences.getString("SORTBY","DATE")
         return Pair(order!!,sort!!)
     }
+
+    var notificationService:BackgroundTimeService=BackgroundTimeService()
     var isTaskStarted:Boolean=false
     var isFromEditFragment:Boolean=false
     var isFromWorkFragment:Boolean=false
@@ -178,34 +253,28 @@ class MainActivity : AppCompatActivity() {
         }
         fun DataRow.compareByRestAndId(array: MutableList<DataRowWithColor>):Boolean{
             for(el in array){
-                if(el.id==this.id && (el.name!=this.name || el.category!=this.category || el.date.time.time!=this.date.time.time)) {
-                    Log.v("warunki",""+" "+el.id+" "+id+" "+el.name+" "+this.name +" "+ el.category+" "+this.category +" "+ el.date.time.time+" "+this.date.time.time)
-
+                if(el.id==this.id && (el.name!=this.name || el.category!=this.category || el.date.time.time!=this.date.time.time))
                     return true
-                }
+
             }
             return false
         }
         for(row in dataFromFirebase) {
-
-
             if (row.compareByRestAndId(localData)) {
-                Log.v("editER",""+row.date.time.time)
-              /*  oh.editTaskRow(
-                    row.id,
-                    row.category,
-                    row.name,
-                    row.date.time.time,
-                    row.workingTime.toInt(),
-                    row.priority,
-                    row.currentWorkingTime.toInt()
-                )
-                change= Triple(change.first,true,change.third)
-                refreshHomeFragmentAndDB()
-*/
-            } else if(!row.compareById(localData)){
-                Log.v("addER",""+row.date.time.time)
 
+                  oh.editTaskRow(
+                      row.id,
+                      row.category,
+                      row.name,
+                      row.date.time.time,
+                      row.workingTime.toInt(),
+                      row.priority,
+                      row.currentWorkingTime.toInt()
+                  )
+                  change= Triple(change.first,true,change.third)
+                  refreshHomeFragmentAndDB()
+
+            } else if(!row.compareById(localData)){
                 row.let {
                     val id:Long=oh.addTaskRow(
                         it.category,
@@ -238,12 +307,26 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun updateLocalOldTaskDB(data:ArrayList<OldData>){
+
+        val data2=data.map {
+            val cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
+            cal.time=Date(it.date_id)
+            cal.set(Calendar.HOUR,0)
+            cal.set(Calendar.MINUTE,0)
+            cal.set(Calendar.SECOND,0)
+            cal.set(Calendar.MILLISECOND,0)
+            OldData(cal.time.time,it.category,it.workingTime)
+        } as ArrayList<*>
+
         val localData:List<Triple<Long,Float,String>> = getOldData().map { Triple(it.first.time.time,it.second,it.third) }
         fun OldData.compareID(array: List<Triple<Long,Float,String>>):Boolean{
-            for(el in array)
-                if(el.first==this.date_id)
-                    return true
-            return false
+            var isGood=false
+            for(el in array) {
+                if (el.first == this.date_id)
+                    isGood = true
+             //   Log.v("Testy",""+el.first+" "+this.date_id+" "+isGood)
+            }
+            return isGood
         }
         fun OldData.compareTimeWithId(array: List<Triple<Long,Float,String>>):Boolean{
             for(el in array)
@@ -251,17 +334,18 @@ class MainActivity : AppCompatActivity() {
                     return true
             return false
         }
-        for(row in data) {
-                if(row.compareTimeWithId(localData)){
-                    oh.editOldstatRow(row.date_id,row.date_id,row.workingTime.toInt(),row.category)
-                    change= Triple(change.first,change.second,true)
-                    refreshHomeFragmentAndDB()
-                }
-                else if(!row.compareID(localData)){
-                    oh.addOldstatRow(row.date_id, row.workingTime.toInt(), row.category)
-                    change= Triple(change.first,change.second,true)
-                    refreshHomeFragmentAndDB()
-                }
+        for(row in data2) {
+            row as OldData
+            if(row.compareTimeWithId(localData)){
+                oh.editOldstatRow(row.date_id,row.date_id,row.workingTime.toInt(),row.category)
+                change= Triple(change.first,change.second,true)
+                refreshHomeFragmentAndDB()
+            }
+            else if(!row.compareID(localData)){
+                oh.addOldstatRow(row.date_id, row.workingTime.toInt(), row.category)
+                change= Triple(change.first,change.second,true)
+                refreshHomeFragmentAndDB()
+            }
         }
 
     }
@@ -371,6 +455,10 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
+       // notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        //createNotificationChannel("Opis")
+
+
 
         val gso = GoogleSignInOptions
             .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -402,12 +490,30 @@ class MainActivity : AppCompatActivity() {
         storageReference=FirebaseStorage.getInstance().reference.child("profileImages").child(userId!!+".jpg")
 
         sharedPreferences=getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE)
+
+
+            Log.v("TESTSTART",""+getIsRunningTask()+" "+getCurrentTaskId()+" "+getTimeToAdd())
+        if(getIsRunningTask()){
+            if(getCurrentTaskId()!=-1&&getTimeToAdd()!=0){
+                isTaskStarted=true
+                currentTaskId=getCurrentTaskId()
+                workingTime.value=getTimeToAdd()
+            }
+
+        }
         showOutdated= sharedPreferences.getBoolean(SHOW_OUTDATED,true)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
+       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
             AppCompatDelegate.setDefaultNightMode(sharedPreferences.getInt(MODE,-1 ))
         super.onCreate(savedInstanceState)
         oh = LOTDatabaseHelper(this)
         db = oh.readableDatabase
+
+        if(getIsRunningTask()){
+            val startTime=getStartTime()
+            val time=getTimeToAdd()
+            val id=getCurrentTaskId()
+            oh.addOldstatRow(startTime,time,id)
+        }
 
         getDataFromDB()
         colors.addListeners()
@@ -668,5 +774,41 @@ class MainActivity : AppCompatActivity() {
         return list
 
     }
+
+
+/*
+    fun createNotificationChannel(descript: String){
+        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.O){
+            val importance=NotificationManager.IMPORTANCE_HIGH
+            val channel =NotificationChannel(WIDGET_ID,WIDGET_NAME,importance).apply {
+                description=descript
+            }
+            notificationManager?.createNotificationChannel(channel)
+        }
+    }
+    fun displayNotification(){
+        contentView = RemoteViews(packageName, R.layout.widget_layout)
+        contentView.setTextViewText(R.id.hour,String.format("%d:%d",1,1))
+        val mBuilder: NotificationCompat.Builder = NotificationCompat.Builder(this,WIDGET_ID)
+            .setContent(contentView)
+            .setContentTitle("Tytul")
+            .setContentText("TekstZawartosci")
+            .setSmallIcon(android.R.drawable.ic_dialog_info)
+            .setAutoCancel(true)
+            .setSilent(true)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+        notification = mBuilder.build()
+        notificationManager.notify(WIDGET_ID.toInt(), notification)
+
+    }
+    fun updateNotification(hours:Int,minutes:Int,seconds:Int){
+            contentView.setTextViewText(R.id.hour,String.format("%d:%d:%d",hours,minutes,seconds))
+            notificationManager.notify(WIDGET_ID.toInt(), notification)
+
+
+    }
+    fun removeNotification(){
+        notificationManager.cancel(WIDGET_ID.toInt())
+    }*/
 
 }

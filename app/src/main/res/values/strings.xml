@@ -66,5 +66,7 @@
     <string name="from_hour">From</string>
     <string name="cancel">Cancel</string>
     <string name="time_occupied">To selected time is already assigned task</string>
+    <string name="chart">Main chart</string>
+    <string name="manually">Manual</string>
 
 </resources>

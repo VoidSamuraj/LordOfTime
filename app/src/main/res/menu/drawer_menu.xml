@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view"
     >
-        <item android:id="@+id/editList" android:title="@string/tasks" />
         <item android:id="@+id/colorsFragment"  android:title="@string/categories" />
 
 

@@ -6,9 +6,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.widget.NumberPicker
 import androidx.appcompat.app.AppCompatDialogFragment
+import com.voidsamurai.lordoftime.MainActivity
 import com.voidsamurai.lordoftime.R
 
-class NumberPicker(private var value: Int)  : AppCompatDialogFragment() {
+class NumberPicker(private var value: Int,private val onSave:(np:NumberPicker)->Unit)  : AppCompatDialogFragment() {
 
 
 
@@ -25,8 +26,7 @@ class NumberPicker(private var value: Int)  : AppCompatDialogFragment() {
         np.wrapSelectorWheel = true
         builder.setView(view)
         builder.setPositiveButton("Zapisz") { _, _ ->
-            (parentFragment as DateChartFragment).dayAimH.value=np.value+1
-
+           onSave(np)
         }
         return  builder.create()
     }

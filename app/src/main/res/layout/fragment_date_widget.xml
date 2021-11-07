@@ -9,50 +9,53 @@
 
 
     <TextView
-        android:id="@+id/summary_text"
+        android:id="@+id/productive_days"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:text="Produktywne dni: 10 dni. Wydajność: 80%"
-        app:layout_constraintBottom_toTopOf="@+id/materialButtonToggleGroup"
+        android:padding="3dp"
+        android:paddingStart="10dp"
+        tools:text="Produktywne dni: 10 dni."
+        android:textSize="@dimen/small_text_size"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/productive_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="3dp"
+        android:paddingTop="0dp"
+        android:paddingStart="10dp"
+        tools:text="Wydajność: 80%"
+        android:textSize="@dimen/small_text_size"
+        app:layout_constraintBottom_toTopOf="@+id/materialButtonToggleGroup"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/productive_days" />
 
     <LinearLayout
         android:id="@+id/numberPicker"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginTop="2dp"
         android:background="@drawable/border"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:padding="@dimen/small_padding"
         android:paddingStart="@dimen/current_colors_view_width"
         android:paddingEnd="@dimen/current_colors_view_width"
-        android:layout_marginTop="2dp"
+        app:layout_constraintBottom_toBottomOf="@+id/productive_label"
         app:layout_constraintCircleRadius="@dimen/small_margin"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
 
         <TextView
-            android:id="@+id/textView7"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="10"
-            android:text="@string/aim"
-            android:textAlignment="viewEnd" />
-
-        <TextView
+            android:textSize="@dimen/normal_text_size"
             android:id="@+id/hours"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:text="6"/>
+            tools:text="Aim" />
 
-        <TextView
-            android:id="@+id/textView9"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/h" />
 
     </LinearLayout>
 
@@ -64,7 +67,7 @@
         android:layout_marginTop="2dp"
         app:checkedButton="@+id/day_button"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/numberPicker"
+        app:layout_constraintTop_toBottomOf="@id/productive_label"
         app:singleSelection="true">
 
         <Button

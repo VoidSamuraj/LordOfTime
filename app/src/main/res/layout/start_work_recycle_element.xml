@@ -21,9 +21,9 @@
                 android:id="@+id/work_label"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/small_margin"
+                android:layout_marginTop="10dp"
                 android:layout_marginStart="@dimen/small_margin"
-                android:textSize="@dimen/settings_text"
+                android:textSize="@dimen/main_header"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 android:singleLine="true"
@@ -36,8 +36,8 @@
                 android:id="@+id/category_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/small_margin"
-                android:textSize="@dimen/small_line_text_size"
+                android:layout_marginTop="10dp"
+                android:textSize="@dimen/normal_text_size"
                 app:layout_constraintStart_toStartOf="@+id/work_label"
                 app:layout_constraintTop_toBottomOf="@+id/work_label"
                 tools:text="category" />
@@ -46,12 +46,11 @@
                 android:id="@+id/progress_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/small_margin"
-                android:textSize="@dimen/small_line_text_size"
-                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginTop="8dp"
+                android:text="@string/left"
+                android:textSize="@dimen/normal_text_size"
                 app:layout_constraintStart_toStartOf="@+id/category_name"
-                app:layout_constraintTop_toBottomOf="@+id/category_name"
-                android:text="@string/left" />
+                app:layout_constraintTop_toBottomOf="@+id/category_name" />
 
             <TextSwitcher
                 android:id="@+id/progressPercent"
@@ -60,6 +59,7 @@
                 android:inAnimation="@anim/slide_in_down"
                 android:outAnimation="@anim/slide_out_down"
                 android:layout_marginStart="10dp"
+                android:textSize="@dimen/normal_text_size"
                 app:layout_constraintBottom_toBottomOf="@+id/progress_label"
                 app:layout_constraintStart_toEndOf="@+id/progress_label"
                 app:layout_constraintTop_toTopOf="@+id/progress_label" />

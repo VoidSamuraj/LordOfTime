@@ -15,6 +15,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import com.voidsamurai.lordoftime.MainActivity
+import com.voidsamurai.lordoftime.MainActivity.Companion.formatToFloat
 import com.voidsamurai.lordoftime.R
 import com.voidsamurai.lordoftime.bd.DataRowWithColor
 import com.voidsamurai.lordoftime.fragments.adapters.ArrayColorAdapter
@@ -231,7 +232,7 @@ class EditTaskDialog(
         durationEdit.addTextChangedListener{
             if(it!!.isNotEmpty()) {
 
-                val dur = (60f * it.toString().toFloat()).toInt()
+                val dur = (60f * it.toString().formatToFloat()).toInt()
                 val minute = dur % 60
                 val hour = (dur - minute) / 60
                 endHourCalendar.set(Calendar.HOUR_OF_DAY,hour+startHourCalendar.get(Calendar.HOUR_OF_DAY))
@@ -275,9 +276,8 @@ class EditTaskDialog(
     private fun updateRow(data:DataRowWithColor) {
             setDuration()
 
-        var dur =  (durationEdit.text.toString().toFloat())
+        var dur =  (durationEdit.text.toString().formatToFloat())
         val (hour,min)=(startHour.text.toString().split(":"))
-      //  val hour=(startHour.text.toString().toFloat())
         val start = hour.toFloat()+min.toFloat()/100
         val m=(fragment as CalendarDayEdit).getStartMargin(start,dur,data.id)
         if(m==-1)

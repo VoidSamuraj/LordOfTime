@@ -29,7 +29,7 @@ class DateChartFragment : Fragment() {
 
     private var _binding: FragmentDateWidgetBinding?=null
     private val binding get()=_binding!!
-    var dayAimH:MutableLiveData<Int> = MutableLiveData(6)
+    var dayAimH:MutableLiveData<Int> = MutableLiveData(8)
     private var productiveDays:Int=0
     private var workPer:Float=0f
     private var productivePer:Float=0f
@@ -54,7 +54,7 @@ class DateChartFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        dayAimH.value=(activity as MainActivity).getCalendarChartRange()
         dayAim=binding.hours
         weeks1 = arrayOf( binding.firstWeek,binding.secondWeek,binding.thirdWeek,binding.fourthWeek,binding.fifthWeek,binding.sixthWeek)
         weeks2 = arrayOf( binding.firstWeek2,binding.secondWeek2,binding.thirdWeek2,binding.fourthWeek2,binding.fifthWeek2,binding.sixthWeek2)
@@ -66,10 +66,11 @@ class DateChartFragment : Fragment() {
             productivePer= (productivePer * 100).roundToInt().toFloat()/100
             workPer= (workPer * 100).roundToInt().toFloat()/100
             if (workPer>100)workPer=100f
-            binding.summaryText.text=String.format("Produktywne dni: %o dni. Wydajność: %.2f%%",productiveDays,workPer)
+            binding.productiveDays.text=String.format("Produktywne dni: %o ",productiveDays)
+            binding.productiveLabel.text=String.format("Wydajność: %.2f%%",workPer)
         }
         fun fillAim(){
-            dayAim.text=dayAimH.value.toString()
+            dayAim.text=getAimH(dayAimH.value.toString())
             fillLabels()
         }
         fun updateAfterAimChange(){
@@ -92,7 +93,7 @@ class DateChartFragment : Fragment() {
             fillLabels()
         }
         dayAimH.observe(viewLifecycleOwner, {
-            dayAim.text=it.toString()
+            dayAim.text=getAimH(it.toString())
             updateAfterAimChange()
         })
 
@@ -284,7 +285,10 @@ class DateChartFragment : Fragment() {
         fillAim()
 
         binding.numberPicker.setOnClickListener {
-            val fnp=NumberPicker(dayAimH.value!!)
+            val fnp=NumberPicker(dayAimH.value!!) {
+                dayAimH.value = it.value + 1
+                (activity as MainActivity).setCalendarChartRange(it.value + 1)
+            }
             // fnp.show(requireActivity().supportFragmentManager,"Hours")
             fnp.show(childFragmentManager,"Hours")
         }
@@ -566,7 +570,9 @@ class DateChartFragment : Fragment() {
         productivePer=(productiveDays.toFloat()/days*100)
     }
 
-
+    private fun getAimH(data:String):String{
+        return String.format("%s %s %s",resources.getString(R.string.aim),data,resources.getString(R.string.h))
+    }
 
 
     private fun setAdapterManager(recyclerView: RecyclerView, adapter:RecyclerView.Adapter<LinearViewHolder>, layoutManager: RecyclerView.LayoutManager){

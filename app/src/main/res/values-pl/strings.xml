@@ -64,4 +64,6 @@
     <string name="from_hour">Od</string>
     <string name="cancel">Anulij</string>
     <string name="time_occupied">Do wybranego czasu jest już przypisane zadanie</string>
+    <string name="chart">Główny wykres</string>
+    <string name="manually">Manual</string>
 </resources>

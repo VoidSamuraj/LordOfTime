@@ -1,6 +1,9 @@
 package com.voidsamurai.lordoftime.fragments.adapters
 
+
+import android.content.Intent
 import android.graphics.Color
+import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -13,9 +16,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.Navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
-import com.voidsamurai.lordoftime.LinearViewHolder
-import com.voidsamurai.lordoftime.MainActivity
-import com.voidsamurai.lordoftime.R
+import com.voidsamurai.lordoftime.*
 import com.voidsamurai.lordoftime.charts_and_views.ProgressCircle
 import com.voidsamurai.lordoftime.fragments.WorkingFragmentDirections
 import kotlinx.coroutines.CoroutineScope
@@ -26,6 +27,7 @@ import java.util.*
 
 class StartWorkAdapter(private val activity: MainActivity, private var toDoData: ArrayList<DataRowWithColor>, private val lifecycleOwner: LifecycleOwner):RecyclerView.Adapter<LinearViewHolder>() {
     private lateinit var layout:LinearLayout
+    private var changeFromObserverToEndObserver=false
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LinearViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.start_work_recycle_element,parent,false)
         return LinearViewHolder(view)
@@ -45,7 +47,7 @@ class StartWorkAdapter(private val activity: MainActivity, private var toDoData:
                 val textView = TextView(activity.applicationContext)
                 textView.setTextSize(
                     TypedValue.COMPLEX_UNIT_PX,
-                    activity.resources.getDimension(R.dimen.small_line_text_size)
+                    activity.resources.getDimension(R.dimen.normal_text_size)
                 )
                 textView
             }
@@ -53,7 +55,6 @@ class StartWorkAdapter(private val activity: MainActivity, private var toDoData:
         if (!activity.isTaskStarted)
             layout.findViewById<ImageButton>(R.id.imageButton)
                 .setImageResource(R.drawable.ic_baseline_play_arrow_24)
-
         else {
             if (activity.currentTaskId == toDoData[position].id){
                 activity.lastButton=layout.findViewById(R.id.imageButton)
@@ -92,44 +93,57 @@ class StartWorkAdapter(private val activity: MainActivity, private var toDoData:
                 if (pos != null && pos != position) {
 
                     updateDB(pos, activity.lastTaskId!!)
-                    activity.getCurrentWorkingTime().removeObservers(lifecycleOwner)
+                     deleteObservers()
+                    activity.setCurrentTaskId(toDoData[position].id)
                     activity.getDataFromDB()
-                    activity.lastTaskPositioon = position
-                    activity.lastTaskId = activity.currentTaskId
-                    activity.lastButton!!.setImageResource(R.drawable.ic_baseline_play_arrow_24)
-                    activity.lastButton=layout.findViewById(R.id.imageButton)
-                    notifyItemChanged(pos)
-                    notifyItemChanged(position)
-                    activity.getCurrentWorkingTime().value = 0
 
-                    setObserver(layout, todo, current, position, activity.currentTaskId!!)
+                    activity.setIsRunningTask(false)
 
-                    //for the same result as before
-                    activity.isTaskStarted = activity.isTaskStarted.not()
+                        activity.notificationService.setIsRunning(false)
+                        activity.lastTaskPositioon = position
+                        activity.lastTaskId = activity.currentTaskId
+                        activity.lastButton!!.setImageResource(R.drawable.ic_baseline_play_arrow_24)
+                        activity.lastButton = layout.findViewById(R.id.imageButton)
+                        notifyItemChanged(pos)
+                        notifyItemChanged(position)
+                        activity.getCurrentWorkingTime().value = 0
+                        activity.notificationService.setTime(0)
+                        activity.setTimeToAdd(0)
+                        activity.setStartTime(Calendar.getInstance(TimeZone.getTimeZone("UTC")).time.time)
+                        setObserver(layout, todo, current, position, activity.currentTaskId!!)
+                        activity.isTaskStarted = activity.isTaskStarted.not()
+
                 } else {
-
+                    activity.setIsRunningTask(false)
+                    activity.notificationService.setIsRunning(false)
                     updateDB(position, activity.currentTaskId!!)
+                    activity.notificationService.setTime(0)
+                    activity.getCurrentWorkingTime().value = 0
+                    activity.setTimeToAdd(0)
                     notifyItemChanged(position)
-                    activity.getCurrentWorkingTime().removeObservers(lifecycleOwner)
+                     deleteObservers()
                     activity.getDataFromDB()
                 }
             } else {
-
+                activity.setStartTime(Calendar.getInstance(TimeZone.getTimeZone("UTC")).time.time)
+                activity.setIsRunningTask(true)
+                activity.notificationService.setIsRunning(true)
+                activity.setCurrentTaskId(toDoData[position].id)
                 layout.findViewById<ImageButton>(R.id.imageButton)
                     .setImageResource(R.drawable.ic_baseline_stop_24)
                 activity.lastTaskPositioon = position
                 activity.lastTaskId = activity.currentTaskId
                 activity.lastButton=layout.findViewById(R.id.imageButton)
+                activity.notificationService.setTime(0)
+                activity.setTimeToAdd(0)
                 activity.getCurrentWorkingTime().value = 0
                 if(todo-current>0)
                     setObserver(layout, todo, current, position, activity.currentTaskId!!)
                 else
-                    setEndedObserver(layout, current)
+                    setEndedObserver(layout, current,true)
 
             }
             activity.isTaskStarted = activity.isTaskStarted.not()
-
-
         }
 
 
@@ -140,30 +154,29 @@ class StartWorkAdapter(private val activity: MainActivity, private var toDoData:
         }
         if(activity.isTaskStarted && position == activity.lastTaskPositioon )
             if ((todo - current) > 0){
+                activity.setIsRunningTask(true)
                 layout.findViewById<TextView>(R.id.progress_label).setText(R.string.left)
                 setObserver(layout, todo, current, position, activity.currentTaskId!!)
             }else {
+                activity.setIsRunningTask(true)
                 endStyle()
-                setEndedObserver(layout, current)
+                setEndedObserver(layout, current,!changeFromObserverToEndObserver)
+                changeFromObserverToEndObserver=false
             }
-        else if(todo-current<0)
+        else if(todo-current<=0)
             endStyle()
 
     }
-
-
 
 
     fun deleteItem(viewHolder: RecyclerView.ViewHolder) {
         val itemToRemove = toDoData[viewHolder.adapterPosition]
         val pos = viewHolder.adapterPosition
         val isStarted=activity.isTaskStarted
-
-        if(isStarted&&activity.taskId==toDoData[pos].id)
+        if(isStarted&&activity.currentTaskId==toDoData[pos].id)
         {
             updateDB(viewHolder.adapterPosition, activity.currentTaskId!!)
-            notifyItemChanged(viewHolder.adapterPosition)
-            activity.getCurrentWorkingTime().removeObservers(lifecycleOwner)
+            deleteObservers()
             activity.getDataFromDB()
             activity.isTaskStarted=false
             activity.getCurrentWorkingTime().value=0
@@ -174,6 +187,21 @@ class StartWorkAdapter(private val activity: MainActivity, private var toDoData:
         activity.getDataFromDB()
         toDoData.removeAt(pos)
         notifyItemRemoved(pos)
+
+        activity.setIsRunningTask(false)
+
+
+        val intent = Intent(activity, BackgroundTimeService::class.java).also {
+              //  activity.notificationService.setIntent(it)
+               // activity.startForegroundService(it)
+            activity.startService(it)
+
+        }
+        activity.stopService(intent)
+        activity.notificationService.removeNotification()
+
+
+
         Snackbar.make(viewHolder.itemView,"Usunięto "+itemToRemove.name,Snackbar.LENGTH_LONG).setAction("Cofnij"){
             val id=activity.getDBOpenHelper().addTaskRow(itemToRemove)
             activity.tasks.add(itemToRemove)
@@ -192,7 +220,7 @@ class StartWorkAdapter(private val activity: MainActivity, private var toDoData:
     }
     fun updateDB(position: Int,id:Int){
         if(activity.getCurrentWorkingTime().hasObservers())
-            activity.getCurrentWorkingTime().removeObservers(lifecycleOwner)
+           deleteObservers()
         val time=activity.getCurrentWorkingTime().value!! +toDoData[position].currentWorkingTime.toInt()
         if(time!=0) {
             val oh=activity.getDBOpenHelper()
@@ -216,7 +244,19 @@ class StartWorkAdapter(private val activity: MainActivity, private var toDoData:
 
     fun setObserver(layout: View, todo:Float, current:Int, position: Int, id: Int){
         if(activity.getCurrentWorkingTime().hasObservers())
-            activity.getCurrentWorkingTime().removeObservers(lifecycleOwner)
+           deleteObservers()
+        //activity. displayNotification()
+
+        activity.setIsRunningTask(true)
+        activity.notificationService.setIsRunning(true)
+        activity.notificationService.setTime(0)
+        Intent(activity,BackgroundTimeService::class.java).also {
+           // activity.notificationService.setIntent(it)
+          //  activity.startForegroundService(it)
+            activity.startService(it)
+
+        }
+
         activity.getCurrentWorkingTime().observe(lifecycleOwner,{
             val curr=it.toFloat()+current
             val left =(todo - curr) / 3600
@@ -230,43 +270,75 @@ class StartWorkAdapter(private val activity: MainActivity, private var toDoData:
             }
             else{
                 updateDB( position, id)
-                activity.getCurrentWorkingTime().removeObservers(lifecycleOwner)
+                deleteObservers()
+                changeFromObserverToEndObserver=true
                 activity.getCurrentWorkingTime().value=0
                 notifyItemChanged(position)
             }
-
         })
     }
-    fun setEndedObserver(layout:View,current:Int){
+    fun deleteObservers(stopService: Boolean=true){
+
+        if(stopService){
+            val intent=Intent(activity,BackgroundTimeService::class.java).also {
+                //activity.notificationService.setIntent(it)
+               // activity.startForegroundService(it)
+                activity.startService(it)
+            }
+           activity.stopService(intent)
+           activity.notificationService.removeNotification()
+            /*
+            activity.notificationService
+                .getIntent()
+                .let{
+                    it?.let {
+                        activity.stopService(it)
+
+                    }
+                }*/
+            //activity.notificationService.setTime(0)                       //
+
+        }
+        activity.getCurrentWorkingTime().removeObservers(lifecycleOwner)
+    }
+
+    fun setEndedObserver(layout:View,current:Int,cleanStart:Boolean=false){
         layout.findViewById<ProgressCircle>(R.id.progressCircle).fillData(1f, 1f)
         if(activity.getCurrentWorkingTime().hasObservers())
-            activity.getCurrentWorkingTime().removeObservers(lifecycleOwner)
+           deleteObservers()
+
+        val t=if(cleanStart)
+            0
+        else
+            current
+        Log.v("TIMETOADD",""+t)
+        activity.setIsRunningTask(true)
+        activity.notificationService.setIsRunning(true)
+        activity.notificationService.setTime(t)
+        activity.setTimeToAdd(t)
+        Intent(activity,BackgroundTimeService::class.java).also {
+          //  activity.notificationService.setIntent(it)
+          //  activity.startForegroundService(it)
+            activity.startService(it)
+
+        }
+
         activity.getCurrentWorkingTime().value=0
         activity.getCurrentWorkingTime().observe(lifecycleOwner,{
             val curr=it.toFloat()+current
             CoroutineScope(Dispatchers.Main).launch {
                 layout.findViewById<TextSwitcher>(R.id.progressPercent)
                     .setCurrentText(String.format("%2.2f", curr/3600) + "h")
-
             }
         })
+
     }
 
 
 
     override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
         super.onDetachedFromRecyclerView(recyclerView)
-        activity.getCurrentWorkingTime().removeObservers(lifecycleOwner)
-        /*activity.getCurrentWorkingTime().value?.let {
-            if(it+current!!!=0){
-            activity.getDBOpenHelper().editTaskRow(activity.currentTaskId!!,null,null,null,0,0,
-                it+current!!)
-                Log.v("wartosci","time:"+it+" cur:"+current)
-            }else
-                Log.v("brak wartosci","")
-
-
-        }*/
+         deleteObservers(false)
     }
 
     override fun getItemCount(): Int =toDoData.size

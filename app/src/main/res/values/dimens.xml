@@ -17,21 +17,22 @@
     <dimen name="calendar_button_width">100dp</dimen>
     <dimen name="calendar_button_height">60dp</dimen>
     <dimen name="color_line_with_margin">60dp</dimen>
-    <dimen name="edit_buttons_size">75dp</dimen>
+    <dimen name="edit_buttons_size">60dp</dimen>
     <dimen name="half_color_edit">180dp</dimen>
     <dimen name="color_list_height">600dp</dimen>
     <dimen name="button_group_width">100dp</dimen>
 
 
     <dimen name="chart_description">12sp</dimen>
-    <dimen name="small_line_text_size">16sp</dimen>
+    <dimen name="small_text_size">14sp</dimen>
+    <dimen name="normal_text_size">16sp</dimen>
     <dimen name="line_text_size">20sp</dimen>
-    <dimen name="main_header">22sp</dimen>
+    <dimen name="main_header">20sp</dimen>
     <dimen name="drawer_title">30sp</dimen>
     <dimen name="work_text_label">35sp</dimen>
-    <dimen name="label_button">40sp</dimen>
+    <dimen name="label_button">35sp</dimen>
     <dimen name="button_half_sphere_width">50dp</dimen>
-    <dimen name="settings_text">26sp</dimen>
+    <dimen name="settings_text">22sp</dimen>
     <dimen name="settings_margin">30dp</dimen>
     <dimen name="authLabel">30dp</dimen>
     <dimen name="scroll">2500dp</dimen>

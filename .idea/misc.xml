@@ -4,7 +4,9 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/drawable/background_circle.xml" value="0.3848958333333333" />
+        <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/drawable/blue_gradient.xml" value="0.5708333333333333" />
         <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/drawable/border.xml" value="0.3848958333333333" />
+        <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/drawable/border_gray.xml" value="0.5708333333333333" />
         <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/drawable/button.xml" value="0.5708333333333333" />
         <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/drawable/button_fancy.xml" value="0.3848958333333333" />
         <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/drawable/button_rounded.xml" value="0.47708333333333336" />
@@ -42,6 +44,7 @@
         <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/drawable/spinner_rect.xml" value="0.25833333333333336" />
         <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/drawable/square.xml" value="0.4734375" />
         <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/drawable/thumb1.xml" value="0.5619791666666667" />
+        <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/drawable/thumb2.xml" value="0.5708333333333333" />
         <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/drawable/track1.xml" value="0.5619791666666667" />
         <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/drawable/underline.xml" value="0.5619791666666667" />
         <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/layout/activity_auth.xml" value="0.5458333333333333" />
@@ -85,9 +88,11 @@
         <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/layout/login_fragment.xml" value="0.3333333333333333" />
         <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/layout/register_fragment.xml" value="0.22" />
         <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/layout/settings_activity.xml" value="0.5458333333333333" />
+        <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/layout/spinner_item.xml" value="0.5546875" />
         <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/layout/start_work_recycle_element.xml" value="0.4466666666666667" />
         <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/layout/todo_edit_element.xml" value="0.44429347826086957" />
         <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/layout/todo_element.xml" value="0.44429347826086957" />
+        <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/layout/widget_layout.xml" value="0.5546875" />
         <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/menu/drawer_menu.xml" value="0.5461538461538461" />
         <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/menu/menu_main.xml" value="0.4083333333333333" />
         <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/menu/settings_menu.xml" value="0.4083333333333333" />

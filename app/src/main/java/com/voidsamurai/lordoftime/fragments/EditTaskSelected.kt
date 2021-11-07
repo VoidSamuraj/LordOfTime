@@ -13,6 +13,7 @@ import android.widget.TimePicker
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import com.voidsamurai.lordoftime.MainActivity
+import com.voidsamurai.lordoftime.MainActivity.Companion.formatToFloat
 import com.voidsamurai.lordoftime.R
 import com.voidsamurai.lordoftime.databinding.FragmentTaskEditBinding
 import com.voidsamurai.lordoftime.fragments.adapters.ArrayColorAdapter
@@ -146,14 +147,14 @@ class EditTaskSelected : Fragment() ,DatePickerDialog.OnDateSetListener,TimePick
             (binding.checkCategory.selectedItem as Pair<*, *>).first.toString (),
             binding.nameEdit.text.toString(),
             newDate.time.time,
-            (binding.durationEdit.text.toString().toFloat()*3600).toInt(),
+            (binding.durationEdit.text.toString().formatToFloat()*3600).toInt(),
             binding.priorityEdit.text.toString().toInt(),
             0)
         (activity as MainActivity).tasks.add  ( id=data!!.id,
             category = (binding.checkCategory.selectedItem as Pair<*, *>).first.toString (),
             name = binding.nameEdit.text.toString(),
             dateTime = newDate.time.time,
-            workingTime = (binding.durationEdit.text.toString().toFloat()*3600).toInt(),
+            workingTime = (binding.durationEdit.text.toString().formatToFloat()*3600).toInt(),
             priority = binding.priorityEdit.text.toString().toInt(),
             currentWorkingTime = 0)
     }

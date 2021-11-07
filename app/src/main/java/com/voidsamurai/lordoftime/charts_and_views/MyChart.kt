@@ -42,7 +42,7 @@ class MyChart(context: Context?, attributeSet: AttributeSet ):
 
         side = if (width > height)
             height * 7 / 10
-         else
+        else
             width * 7 / 10
 
         drawPie(canvas)
@@ -55,12 +55,19 @@ class MyChart(context: Context?, attributeSet: AttributeSet ):
             var dur =0.0f
             var width:Float
             data?.let {
-            for (item in it){
-                dur+=item.second
-                width=scale*item.second
-                drawArc1(canvas!!,startAngle,width,item.first,item.second)
-                startAngle+=width
-            }
+                for (item in it){
+                    dur+=item.second
+                }
+                if(maxVal==null||dur>maxVal!!.toFloat())
+                    maxVal=-1
+                dur =0.0f
+                for (item in it){
+                    dur+=item.second
+                    width=scale*item.second
+                    drawArc1(canvas!!,startAngle,width,item.first,item.second)
+                    startAngle+=width
+                }
+
             }
             return dur
         }
@@ -68,7 +75,7 @@ class MyChart(context: Context?, attributeSet: AttributeSet ):
         paint.style=Paint.Style.FILL
         val duration:Float
         if(data!=null&&canvas!=null){
-            if(maxVal!=null){
+            if(maxVal!=null&&maxVal!=-1){
                 paint.setShadowLayer(15f,0f,0f,Color.BLACK)
                 drawArc1(canvas,0.0f,360.0f,fillColorDefault?:Color.WHITE)
                 paint.setShadowLayer(0f,0f,0f,Color.BLACK)
@@ -77,7 +84,9 @@ class MyChart(context: Context?, attributeSet: AttributeSet ):
 
 
             }else{
-
+                paint.setShadowLayer(15f,0f,0f,Color.BLACK)
+                drawArc1(canvas,0.0f,360.0f,fillColorDefault?:Color.WHITE)
+                paint.setShadowLayer(0f,0f,0f,Color.BLACK)
                 var dur =0.0f
                 for (item in data!!)
                     dur += item.second
@@ -175,6 +184,6 @@ class MyChart(context: Context?, attributeSet: AttributeSet ):
 
         }
     }
-   
+
 
 }

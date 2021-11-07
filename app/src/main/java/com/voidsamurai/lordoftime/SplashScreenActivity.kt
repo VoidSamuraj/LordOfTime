@@ -1,5 +1,6 @@
 package com.voidsamurai.lordoftime
 
+import android.Manifest
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -7,6 +8,8 @@ import android.os.Handler
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -20,6 +23,7 @@ class SplashScreenActivity : AppCompatActivity(), Animation.AnimationListener {
     lateinit var auth: FirebaseAuth
 
     private val SHARED_PREFERENCES:String="sharedPreferences"
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,7 +60,7 @@ class SplashScreenActivity : AppCompatActivity(), Animation.AnimationListener {
 
     override fun onStart() {
         super.onStart()
-        val animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.logo_enter)
+        val animation = AnimationUtils.loadAnimation(applicationContext, R.anim.logo_enter)
         animation.setAnimationListener(this)
         findViewById<ImageView>(R.id.logo).startAnimation(animation)
 
@@ -66,6 +70,8 @@ class SplashScreenActivity : AppCompatActivity(), Animation.AnimationListener {
 
 
     }
+
+
 
     override fun onAnimationStart(animation: Animation?) {
 

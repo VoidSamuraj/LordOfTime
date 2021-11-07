@@ -24,13 +24,12 @@ class DAOTasks(mActivity: MainActivity){
                     val calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
                     for (child in snapshot.children){
                         calendar.time = Date(child.child("dateTime").value as Long)
-                        Log.v("OnlineDB",""+child.key+" "+calendar.time)
                         data.add(
                             DataRow(
                                 child.key!!.toInt(),
                                 child.child("category").value.toString(),
                                 child.child("name").value.toString(),
-                                calendar,
+                                calendar.clone() as Calendar,
                                 (child.child("workingTime").value as Long).toFloat(),
                                 (child.child("priority").value as Long).toInt(),
                                 (child.child("currentWorkingTime").value as Long).toFloat(),

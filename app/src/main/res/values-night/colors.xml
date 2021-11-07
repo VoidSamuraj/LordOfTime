@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="settings_switch">#B2FFFFFF</color>
     <color name="logout_button">#323740</color>
     <color name="background">#FF1B1E23</color>
     <color name="text">#FFFFFF</color>

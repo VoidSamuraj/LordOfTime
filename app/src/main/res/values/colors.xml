@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="thumb">#6C7077</color>
+    <color name="switch_back">#8DFFFFFF</color>
+    <color name="settings_switch">#FFFFFF</color>
     <color name="logout_button">#E6E8EC</color>
     <color name="background">#FFFFFF</color>
     <color name="text">#000000</color>

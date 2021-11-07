@@ -157,8 +157,7 @@ class WorkingFragment : Fragment() {
             workingFragmentBinding.taskList.adapter=StartWorkAdapter(requireActivity() as MainActivity,(activity as MainActivity).getQueryArrayByDate().value!!,lifecycleOwner = viewLifecycleOwner)
             workingFragmentBinding.taskList.layoutManager=LinearLayoutManager(requireContext())
         }
-        // (activity as MainActivity).getQueryArrayByDate().removeObservers(viewLifecycleOwner)
-        // (activity as MainActivity).getQueryArrayByPriority().removeObservers(viewLifecycleOwner)
+
         if(currentSortBy==SortBy.DATE) {
 
             if(currentOrder==Order.ASC)
@@ -273,8 +272,5 @@ class WorkingFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         (activity as MainActivity).getDataFromDB()
-
-        // (activity as MainActivity).getQueryArrayByPriority().removeObservers(viewLifecycleOwner)
-        //  (activity as MainActivity).getQueryArrayByDate().removeObservers(viewLifecycleOwner)
     }
 }

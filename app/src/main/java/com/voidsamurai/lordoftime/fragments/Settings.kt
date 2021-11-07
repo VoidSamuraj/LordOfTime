@@ -3,7 +3,9 @@ package com.voidsamurai.lordoftime.fragments
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.graphics.BitmapFactory
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -55,6 +57,8 @@ class Settings : Fragment(), AdapterView.OnItemSelectedListener {
         super.onViewCreated(view, savedInstanceState)
         val mActivity=(activity as MainActivity)
 
+        settingsBinding.hours.text= String.format("%s %d %s",resources.getText(R.string.aim),(activity as MainActivity).getMainChartRange(),resources.getText(R.string.h))
+
         settingsBinding.imageEdit.setOnClickListener {
             val intent =Intent()
             intent.type = "image/*"
@@ -80,8 +84,8 @@ class Settings : Fragment(), AdapterView.OnItemSelectedListener {
             } while (!imageSet&&count<5)
         }
 
-        val adapter:ArrayAdapter<CharSequence> = ArrayAdapter.createFromResource(requireContext(),R.array.languages,android.R.layout.simple_spinner_item)
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        val adapter:ArrayAdapter<CharSequence> = ArrayAdapter.createFromResource(requireContext(),R.array.languages,R.layout.spinner_item)
+        adapter.setDropDownViewResource(R.layout.spinner_item)
         settingsBinding.languages.adapter=adapter
         settingsBinding.languages.onItemSelectedListener=this
         settingsBinding.languages.setSelection(resources.getStringArray(R.array.languages).indexOf((activity as MainActivity).getLanguage()))
@@ -91,7 +95,6 @@ class Settings : Fragment(), AdapterView.OnItemSelectedListener {
             mActivity.setOutdated(settingsBinding.oldSwitch.isChecked)
             mActivity.getDataFromDB()
         }
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             when (mActivity.getMode()) {
                 -1 -> settingsBinding.toggleGroup.check(R.id.auto)
@@ -118,6 +121,37 @@ class Settings : Fragment(), AdapterView.OnItemSelectedListener {
         (activity as MainActivity).emailId.let {
             settingsBinding.email.text=it
         }
+        fun setChartStrings(state:Boolean){
+            settingsBinding.numberPicker.isClickable=state
+            if(!state) {
+                    settingsBinding.hours.setTextColor(Color.GRAY)
+                    settingsBinding.numberPicker.backgroundTintList= ColorStateList.valueOf(Color.GRAY)
+                }else {
+                    settingsBinding.hours.setTextColor(resources.getColor(R.color.text,null))
+                    settingsBinding.numberPicker.backgroundTintList= ColorStateList.valueOf(resources.getColor(R.color.blue_gray,null))
+                }
+        }
+        settingsBinding.chartSwitch.setOnClickListener {
+            val state=(activity as MainActivity).setMainChartAuto()
+                setChartStrings(state)
+        ///make text gray or something
+        }
+
+
+        settingsBinding.numberPicker.setOnClickListener {
+            val fnp=NumberPicker((activity as MainActivity).getMainChartRange()) {
+                settingsBinding.hours.text= String.format("%s %d %s",resources.getText(R.string.aim),it.value+1,resources.getText(R.string.h))
+                (activity as MainActivity).setMainChartRange(it.value+1)
+            }
+            // fnp.show(requireActivity().supportFragmentManager,"Hours")
+            fnp.show(childFragmentManager,"Hours")
+        }
+
+        val isChartSettingsActive=(activity as MainActivity).getMainChartAuto()
+       // settingsBinding.numberPicker.isClickable=!isChartSettingsActive
+        settingsBinding.chartSwitch.isChecked=!isChartSettingsActive
+        setChartStrings(isChartSettingsActive)
+
         settingsBinding.logout.setOnClickListener {
 
             AlertDialog.Builder(requireContext())

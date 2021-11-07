@@ -71,7 +71,8 @@ class HomeFragment : Fragment() {
 
         (activity as MainActivity).getQueryArrayByPriority().observe(viewLifecycleOwner,{
             setAdapterManager(todoRecyclerView
-                , ToDoAdapter(it)
+                , ToDoAdapter(ArrayList(it
+                    .subList(0,if(it.size>=10)10 else it.size ).toList()))
                 ,LinearLayoutManager(requireContext()))
         })
         (activity as MainActivity).getQueryArrayByDate().observe(viewLifecycleOwner,{

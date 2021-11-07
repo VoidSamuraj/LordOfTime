@@ -117,6 +117,35 @@ public class LOTDatabaseHelper extends SQLiteOpenHelper {
         cv.clear();
     }
 
+    public void addOldstatRow(Long date,int duration,int id){
+        Cursor c=db.rawQuery("SELECT TASKTABLE.category FROM TASKTABLE WHERE TASKTABLE._id=?",new String[]{String.valueOf(id)});
+        Cursor c2=db.rawQuery("SELECT OLDSTATS.date_id, OLDSTATS.working_time FROM OLDSTATS WHERE OLDSTATS.date_id=?",new String[]{String.valueOf(date)});
+        Long date2=0L;
+        int workingTime2=0;
+        if(c.moveToFirst()){
+            long startTime=date;
+
+            if(c2.moveToFirst()) {
+                date2=c2.getLong(0);
+                workingTime2=c2.getInt(1);
+            }
+            if(!date2.equals(date)) {
+                ContentValues cv = createOldstatValues(startTime, duration, c.getString(0));
+                long val = db.insert("OLDSTATS", null, cv);
+                Log.v("Insert", "" + val);
+                cv.clear();
+            }else if(workingTime2!=0&&workingTime2<duration){
+                ContentValues cv = createOldstatValues(startTime, duration, c.getString(0));
+                long val = db.update("OLDSTATS",cv, "date_id=?",new String[]{String.valueOf(date)});
+                cv.clear();
+            }
+
+
+        }
+
+
+    }
+
     /**
      *
      * @param date set only Y,M,D rest need to be 0, also milliseconds

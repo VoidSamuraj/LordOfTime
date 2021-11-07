@@ -2,6 +2,7 @@ package com.voidsamurai.lordoftime.fragments.adapters
 
 import android.annotation.SuppressLint
 import android.graphics.Color
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.LinearLayout
@@ -11,6 +12,8 @@ import com.voidsamurai.lordoftime.LinearViewHolder
 import com.voidsamurai.lordoftime.R
 import com.voidsamurai.lordoftime.bd.DataRowWithColor
 import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
 
 class ToDoDateAdapter(private val dataSet: ArrayList<DataRowWithColor>): RecyclerView.Adapter<LinearViewHolder>() {
 
@@ -36,8 +39,15 @@ class ToDoDateAdapter(private val dataSet: ArrayList<DataRowWithColor>): Recycle
             }
         }
 
-        val sdf= SimpleDateFormat("dd/MM/yy  HH:mm")
-        layout.findViewById<TextView>(R.id.todo_date).text = sdf.format(dataSet[position].date.time)
+        val cal =dataSet[position].date.clone() as  Calendar
+        Log.v("Timne",""+ cal.get(Calendar.HOUR_OF_DAY)
+            +" "+ cal.get(Calendar.MINUTE))
+       // val sdf= SimpleDateFormat("dd/MM/yy HH:mm")
+        layout.findViewById<TextView>(R.id.todo_date).text = String.format("%02d/%02d  %02d:%02d"
+            , cal.get(Calendar.DAY_OF_MONTH)
+            , cal.get(Calendar.MONTH)
+            , cal.get(Calendar.HOUR_OF_DAY)
+            , cal.get(Calendar.MINUTE))
 
     }
 

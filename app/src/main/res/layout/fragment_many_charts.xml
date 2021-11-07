@@ -1,11 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    tools:context=".fragments.ManyChartsFragment"
+    android:scrollbars="none"
+    android:orientation="vertical">
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     tools:context=".fragments.ManyChartsFragment"
     android:orientation="vertical">
 
@@ -33,6 +39,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/small_margin"
+                android:layout_marginBottom="@dimen/small_margin"
                 android:text="@string/chart_header"
                 android:textSize="@dimen/main_header" />
 
@@ -68,9 +76,14 @@
             android:layout_height="wrap_content"/>
 
     </androidx.cardview.widget.CardView>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/padding_elevation"
+        />
 
 
 
 
 
 </LinearLayout>
+</ScrollView>

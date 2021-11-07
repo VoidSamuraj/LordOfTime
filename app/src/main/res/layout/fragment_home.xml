@@ -8,6 +8,12 @@
     android:isScrollContainer="true"
     tools:context=".fragments.HomeFragment">
 
+    <ScrollView
+        android:id="@+id/scroll"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:scrollbars="none">
     <RelativeLayout
         android:id="@+id/relativeLayout"
         android:layout_width="match_parent"
@@ -48,6 +54,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="@dimen/small_margin"
+
                         android:text="@string/newest_tasks_header"
                         android:textSize="@dimen/main_header" />
 
@@ -96,6 +104,8 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
                         android:text="@string/chart_header"
+                        android:layout_marginTop="@dimen/small_margin"
+                        android:layout_marginBottom="@dimen/small_margin"
                         android:textSize="@dimen/main_header" />
 
                     <fragment
@@ -113,13 +123,13 @@
                     android:elevation="12dp"/>
             </androidx.cardview.widget.CardView>
 
-            <androidx.legacy.widget.Space
-                android:id="@+id/space3"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/padding_elevation"
-                android:layout_below="@+id/card2"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentEnd="true" />
+        <androidx.legacy.widget.Space
+            android:id="@+id/space3"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/padding_elevation"
+            android:layout_below="@+id/card2"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true" />
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardView3"
@@ -141,6 +151,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/small_margin"
                         android:layout_gravity="center_horizontal"
                         android:text="@string/priority_header"
                         android:textSize="@dimen/main_header" />
@@ -155,7 +166,7 @@
                         android:nestedScrollingEnabled="true"
                         android:overScrollMode="ifContentScrolls"
                         android:paddingStart="@dimen/small_padding"
-                        android:paddingTop="@dimen/small_padding"
+                        android:paddingTop="@dimen/task_changer_label_margin"
                         android:paddingBottom="@dimen/task_changer_label_margin"
                         android:scrollbarAlwaysDrawVerticalTrack="true"
                         android:scrollbars="vertical"
@@ -182,6 +193,13 @@
 
             </androidx.cardview.widget.CardView>
 
+        <androidx.legacy.widget.Space
+            android:id="@+id/space4"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/padding_elevation"
+            android:layout_below="@+id/cardView3"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true" />
             <View
                 android:id="@+id/circle_anim"
                 android:layout_width="@dimen/fab_size"
@@ -198,13 +216,14 @@
 
 
     </RelativeLayout>
+    </ScrollView>
 
     <View
         android:id="@+id/view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        tools:layout_editor_absoluteX="6dp"
+        tools:layout_editor_absoluteY="352dp" />
 
     <ImageView
         android:id="@+id/corner1bg"
@@ -228,7 +247,7 @@
         android:layout_height="200dp"
         android:layout_width="@dimen/button_group_width"
         android:alpha="0.8"
-        app:layout_constraintBottom_toBottomOf="@+id/relativeLayout"
+        app:layout_constraintBottom_toBottomOf="@+id/scroll"
         app:layout_constraintStart_toStartOf="parent">
         <!-- @dimen/button_group_width  -->
         <ImageView

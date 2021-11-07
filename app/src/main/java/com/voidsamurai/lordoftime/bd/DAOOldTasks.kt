@@ -20,7 +20,7 @@ class DAOOldTasks (mActivity: MainActivity) {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()) {
                     val calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
-
+/*
                     for (child in snapshot.children){
                         val id = child.key!!.toLong()
                         calendar.time = Date(id)
@@ -31,7 +31,7 @@ class DAOOldTasks (mActivity: MainActivity) {
                                 (child.child("currentWorkingTime").value as Long).toFloat(),
                             )
                         )
-                    }
+                    }*/
                     mActivity.updateLocalOldTaskDB(data)
                 }
 

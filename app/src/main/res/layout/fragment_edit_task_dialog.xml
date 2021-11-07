@@ -16,7 +16,7 @@ android:paddingEnd="@dimen/line_height">
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/task_changer_label_margin"
         android:text="@string/name"
-        android:textSize="@dimen/line_text_size"
+        android:textSize="@dimen/normal_text_size"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -28,7 +28,7 @@ android:paddingEnd="@dimen/line_height">
     android:inputType="textPersonName"
     android:paddingStart="@dimen/small_padding"
     android:paddingEnd="@dimen/small_padding"
-    android:textSize="@dimen/line_text_size"
+    android:textSize="@dimen/normal_text_size"
     app:layout_constraintStart_toStartOf="@+id/textName"
     app:layout_constraintTop_toBottomOf="@+id/textName"
     android:importantForAutofill="no"
@@ -56,7 +56,7 @@ android:paddingEnd="@dimen/line_height">
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/priority"
-                android:textSize="@dimen/dialog_small_text"
+                android:textSize="@dimen/normal_text_size"
                 android:layout_marginTop="@dimen/task_changer_label_margin" />
 
             <EditText
@@ -68,7 +68,7 @@ android:paddingEnd="@dimen/line_height">
                 android:inputType="number"
                 android:paddingStart="@dimen/small_padding"
                 android:paddingEnd="@dimen/small_padding"
-                android:textSize="@dimen/line_text_size"
+                android:textSize="@dimen/normal_text_size"
                 android:text="0"
                 android:importantForAutofill="no"
                 tools:ignore="HardcodedText,LabelFor" />
@@ -89,7 +89,7 @@ android:paddingEnd="@dimen/line_height">
                 android:layout_marginTop="@dimen/task_changer_label_margin"
 
                 android:text="@string/from_hour"
-                android:textSize="@dimen/dialog_small_text" />
+                android:textSize="@dimen/normal_text_size" />
 
             <EditText
                 android:id="@+id/hour_edit"
@@ -103,7 +103,7 @@ android:paddingEnd="@dimen/line_height">
                 android:minWidth="60dp"
                 android:paddingStart="@dimen/small_padding"
                 android:paddingEnd="@dimen/small_padding"
-                android:textSize="@dimen/line_text_size"
+                android:textSize="@dimen/normal_text_size"
                 tools:ignore="LabelFor,TextFields"
                 tools:text="12:00" />
 
@@ -121,7 +121,7 @@ android:paddingEnd="@dimen/line_height">
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/task_changer_label_margin"
                 android:text="@string/date_to"
-                android:textSize="@dimen/dialog_small_text" />
+                android:textSize="@dimen/normal_text_size" />
 
             <EditText
                 android:id="@+id/hour_to_edit"
@@ -135,7 +135,7 @@ android:paddingEnd="@dimen/line_height">
                 android:inputType="numberDecimal"
                 android:paddingStart="@dimen/small_padding"
                 android:paddingEnd="@dimen/small_padding"
-                android:textSize="@dimen/line_text_size"
+                android:textSize="@dimen/normal_text_size"
                 tools:ignore="LabelFor" />
 
         </LinearLayout>
@@ -155,7 +155,7 @@ android:paddingEnd="@dimen/line_height">
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/duration_time"
-        android:textSize="@dimen/line_text_size"
+        android:textSize="@dimen/normal_text_size"
         android:layout_marginTop="@dimen/task_changer_label_margin"
         app:layout_constraintStart_toStartOf="@+id/duration_edit"
         app:layout_constraintTop_toBottomOf="@+id/three_fields" />
@@ -170,7 +170,7 @@ android:paddingEnd="@dimen/line_height">
         android:inputType="numberDecimal"
         android:paddingStart="@dimen/small_padding"
         android:paddingEnd="@dimen/small_padding"
-        android:textSize="@dimen/line_text_size"
+        android:textSize="@dimen/normal_text_size"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/date_to"
         android:text="0"
@@ -194,7 +194,7 @@ android:paddingEnd="@dimen/line_height">
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/task_changer_label_margin"
         android:text="@string/category"
-        android:textSize="@dimen/line_text_size"
+        android:textSize="@dimen/normal_text_size"
         app:layout_constraintStart_toStartOf="@+id/name_edit"
         app:layout_constraintTop_toBottomOf="@+id/name_edit" />
 
@@ -226,7 +226,7 @@ android:paddingEnd="@dimen/line_height">
             android:dropDownVerticalOffset="@dimen/color_line_with_margin"
             android:gravity="center"
             android:spinnerMode="dropdown"
-            android:textSize="@dimen/line_text_size"
+            android:textSize="@dimen/normal_text_size"
             android:background="@drawable/border"
             android:popupBackground="@drawable/filled_border"
             />

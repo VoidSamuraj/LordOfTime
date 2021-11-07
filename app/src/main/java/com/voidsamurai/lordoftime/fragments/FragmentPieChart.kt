@@ -100,9 +100,13 @@ class FragmentPieChart : Fragment() {
             legendMap.add(Pair(row.t3,row.t4))
 
         }
+       var aim=(activity as MainActivity).getMainChartRange()
+       if(!(activity as MainActivity).getMainChartAuto())
+           aim=-1
+
         binding.myChart.fillData(
             chartMap.values.toList().sortedBy { pair ->-pair.second  },
-            24,
+            aim,
             fillColorDefault = Color.LTGRAY)
         binding.chartDescription.adapter= LinearChartAdapter(legendMap.toMap().toList().asReversed())
         binding.chartDescription.layoutManager=LinearLayoutManager(context)
