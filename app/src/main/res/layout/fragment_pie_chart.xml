@@ -6,6 +6,7 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:weightSum="7"
+    android:gravity="center"
     tools:context=".fragments.FragmentPieChart"
     >
 
@@ -14,12 +15,12 @@
     <com.voidsamurai.lordoftime.charts_and_views.MyChart
         android:id="@+id/my_chart"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="200dp"
         android:padding="@dimen/small_padding"
         android:layout_weight="4"
-        android:layout_marginTop="@dimen/padding_elevation"
-        android:layout_marginStart="@dimen/padding_elevation"
-        android:layout_marginBottom="@dimen/padding_elevation"/>
+        android:layout_marginTop="@dimen/small_margin"
+        android:layout_marginStart="@dimen/small_margin"
+        android:layout_marginBottom="@dimen/small_margin"/>
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/chart_description"
         android:layout_width="0dp"
@@ -27,7 +28,7 @@
         android:layout_weight="3"
         android:layout_gravity="center"
         tools:itemCount="4"
-        tools:listitem="@layout/chart_details_element">
+        tools:listitem="@layout/element_chart_details">
 
 
     </androidx.recyclerview.widget.RecyclerView>

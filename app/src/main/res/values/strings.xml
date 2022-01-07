@@ -68,5 +68,34 @@
     <string name="time_occupied">To selected time is already assigned task</string>
     <string name="chart">Main chart</string>
     <string name="manually">Manual</string>
+    <string name="edit_tasks">My schedule</string>
+    <string name="charts">Charts</string>
+    <string name="your_time">Time Left</string>
+    <string name="years">Years</string>
+    <string name="year">Year</string>
+    <string name="day">Day</string>
+    <string name="month">Month</string>
+    <string name="birthDate">Birth Date</string>
+    <string name="expected_life_time">Expected Life Time</string>
+    <string name="memento_mori" translatable="false">Memento Mori</string>
+    <string name="months2">Months</string>
+    <string name="show_completed">Show completed</string>
+    <string name="delete_completed">Delete completed</string>
+    <string name="confirm_delete">Are you sure to auto delete completed tasks?</string>
+    <string name="productive_days">Productive days</string>
+    <string name="productivity">Productivity</string>
+    <string name="is_finished">Finished</string>
+    <string name="hour">Hour</string>
+    <string name="is_repeating">Repeats</string>
+    <string name="repeat_task">Powtarzanie zadania</string>
+    <string name="monday">Monday</string>
+    <string name="tuesday">Tuesday</string>
+    <string name="wednesday">Wednesday</string>
+    <string name="thursday">Thursday</string>
+    <string name="friday">Friday</string>
+    <string name="saturday">Saturday</string>
+    <string name="sunday">Sunday</string>
+    <string name="hours">Hours</string>
+    <string name="select_hour">Add Hour</string>
 
 </resources>

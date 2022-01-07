@@ -17,6 +17,7 @@ import com.voidsamurai.lordoftime.MainActivity
 import com.voidsamurai.lordoftime.R
 import com.voidsamurai.lordoftime.bd.DataRowWithColor
 import com.voidsamurai.lordoftime.databinding.FragmentCalendarDayEditBinding
+import com.voidsamurai.lordoftime.fragments.dialogs.EditTaskDialog
 import java.util.*
 
 
@@ -35,23 +36,13 @@ class CalendarDayEdit : Fragment() {
         return calendarBinding.root
     }
 
-    /**
-     * Called immediately after [.onCreateView]
-     * has returned, but before any saved state has been restored in to the view.
-     * This gives subclasses a chance to initialize themselves once
-     * they know their view hierarchy has been completely created.  The fragment's
-     * view hierarchy is not however attached to its parent at this point.
-     * @param view The View returned by [.onCreateView].
-     * @param savedInstanceState If non-null, this fragment is being re-constructed
-     * from a previous saved state as given here.
-     */
     @SuppressLint("ClickableViewAccessibility")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         if(arguments!=null){
             val args= requireArguments().getLong("date")
-            daysData.time=Date(args)
+            daysData.timeInMillis=args
         }
         calendarBinding.scroll.setOnTouchListener { v, event ->
             var ret=false
@@ -68,7 +59,8 @@ class CalendarDayEdit : Fragment() {
                     c.set(Calendar.HOUR_OF_DAY,(sec/3600).toInt())
                     c.set(Calendar.SECOND,0)
                     c.set(Calendar.MILLISECOND,0)
-                    val etd=EditTaskDialog(R.layout.fragment_edit_task_dialog,EditTaskDialog.Companion.MODE.SAVE,c,event.y)
+                    val etd= EditTaskDialog(R.layout.dialog_edit_task,
+                        EditTaskDialog.Companion.MODE.SAVE,c,event.y.toInt())
                     etd.setFrag(this)
                     etd.show(requireActivity().supportFragmentManager,"Task")
                     ret=false
@@ -142,7 +134,8 @@ class CalendarDayEdit : Fragment() {
     private fun setButtonListener(button: Button, drwc: DataRowWithColor){
         button.width=calendarBinding.scroll.width-60
         button.setOnClickListener {
-            val etd=EditTaskDialog(R.layout.fragment_edit_task_dialog,EditTaskDialog.Companion.MODE.EDIT,daysData.clone() as Calendar,id = drwc.id)
+            val etd= EditTaskDialog(R.layout.dialog_edit_task,
+                EditTaskDialog.Companion.MODE.EDIT,daysData.clone() as Calendar,id = drwc.id)
             etd.setFrag(this)
             etd.show(requireActivity().supportFragmentManager,"Task")
         }
@@ -162,7 +155,7 @@ class CalendarDayEdit : Fragment() {
         return max.toFloat()/calendarBinding.scroll.height*24
     }
 
-    fun getStartMargin(nextStartHour:Float,duration:Float,id:Int):Int {
+        fun getStartMargin(nextStartHour:Float,duration:Float,id:Int):Int {
         var canBe=true
         val y=  (nextStartHour * calendarBinding.scroll.height / 24f).toInt()
         val dur=  (duration * calendarBinding.scroll.height / 24f).toInt()
@@ -170,8 +163,11 @@ class CalendarDayEdit : Fragment() {
         for(child in calendarBinding.parent.children){
             if(child is Button&&child.id!=id) {
                 val topCMargin = child.marginTop
-                if (!((topCMargin>y&&(topCMargin+child.height)>(y+dur))||(topCMargin<y&&(topCMargin+child.height)<(y+dur))))
+            //    if (!((topCMargin>y&&(topCMargin+child.height)>(y+dur))||(topCMargin<y&&(topCMargin+child.height)<(y+dur))))
+
+                if (!((topCMargin>y&&(topCMargin/*+child.height*/)>(y+dur))||((topCMargin)<y&&(topCMargin+child.height)<y)))
                     canBe = false
+
             }
         }
         return if(canBe)
@@ -179,7 +175,7 @@ class CalendarDayEdit : Fragment() {
         else
             -1
     }
-
+/*
     private fun getButtonY(y:Int, pref:Int, id:Int?=null):Int{
         var max:Int=calendarBinding.parent.height-y
         if (id != null)
@@ -199,5 +195,25 @@ class CalendarDayEdit : Fragment() {
                 }
             }
         return if(max<pref)max else pref
+    }*/
+    private fun getButtonY(y:Int, prefDuration:Int, id:Int?=null):Int{
+        var max:Int=calendarBinding.parent.height-y
+        if (id != null)
+            for(child in calendarBinding.parent.children){
+                if(child is Button&&id!=child.id) {
+                    val topC = child.marginTop
+                    if (topC>y&&(topC-y)<max)
+                        max = topC-y
+                }
+            }
+        else
+            for(child in calendarBinding.parent.children){
+                if(child is Button) {
+                    val topC = child.marginTop
+                    if (topC>y&&(topC-y)<max)
+                        max = topC-y
+                }
+            }
+        return if(max<prefDuration)max else if(prefDuration<=calendarBinding.parent.height) prefDuration else calendarBinding.parent.height
     }
 }

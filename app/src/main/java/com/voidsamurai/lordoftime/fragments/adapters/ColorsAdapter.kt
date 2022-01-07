@@ -9,14 +9,14 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
-import com.voidsamurai.lordoftime.fragments.ColorDialogFragment
+import com.voidsamurai.lordoftime.fragments.dialogs.ColorDialogFragment
 import com.voidsamurai.lordoftime.LinearViewHolder
 import com.voidsamurai.lordoftime.R
 
 class ColorsAdapter(val activity: FragmentActivity,private val dataSet: List<Pair<String,String>>) : RecyclerView.Adapter<LinearViewHolder>(){
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LinearViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.color_edit_element, parent, false)
+            .inflate(R.layout.element_color_edit, parent, false)
 
         return LinearViewHolder(view)
     }
@@ -27,7 +27,8 @@ class ColorsAdapter(val activity: FragmentActivity,private val dataSet: List<Pai
         layout.findViewById<TextView>(R.id.chart_text_block).text = dataSet[position].first
         Log.v("color","+"+  Color.parseColor(dataSet[position].second))
         layout.findViewById<LinearLayout>(R.id.colors_linear_layout).setOnClickListener{
-            val ft = ColorDialogFragment(R.layout.dialog_fragment_edit_color_category,ColorDialogFragment.EDIT ,dataSet[position].first,dataSet[position].second)
+            val ft = ColorDialogFragment(R.layout.dialog_fragment_edit_color_category,
+                ColorDialogFragment.EDIT ,dataSet[position].first,dataSet[position].second)
             ft.show(activity.supportFragmentManager,"EditCategory")
         }
     }

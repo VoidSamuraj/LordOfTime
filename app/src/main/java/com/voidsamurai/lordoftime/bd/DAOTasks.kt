@@ -1,5 +1,6 @@
 package com.voidsamurai.lordoftime.bd
 
+import android.app.PendingIntent
 import android.util.Log
 import com.google.firebase.database.*
 import com.voidsamurai.lordoftime.MainActivity
@@ -19,7 +20,6 @@ class DAOTasks(mActivity: MainActivity){
         vel=object:ValueEventListener{
 
             override fun onDataChange(snapshot: DataSnapshot) {
-                Log.v("BD","\nbd\n|\n")
                 if (snapshot.exists()) {
                     val calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
                     for (child in snapshot.children){
@@ -48,7 +48,7 @@ class DAOTasks(mActivity: MainActivity){
         }
     }
 
-    fun add(id:Int,category: String,name:String, dateTime:Long, workingTime:Int, priority:Int, currentWorkingTime:Int){
+    fun add(id:Int,category: String,name:String, dateTime:Long, workingTime:Int, priority:Int, currentWorkingTime:Int,finished: Int){
         val ref=dbReference.child(id.toString())
         ref.child("category").setValue(category)
         ref.child("name").setValue(name)
@@ -56,6 +56,7 @@ class DAOTasks(mActivity: MainActivity){
         ref.child("workingTime").setValue(workingTime)
         ref.child("priority").setValue(priority)
         ref.child("currentWorkingTime").setValue(currentWorkingTime)
+        ref.child("isFinished").setValue(finished)
     }
 
     fun add(data: DataRowWithColor){
@@ -66,10 +67,31 @@ class DAOTasks(mActivity: MainActivity){
         ref.child("workingTime").setValue(data.workingTime)
         ref.child("priority").setValue(data.priority)
         ref.child("currentWorkingTime").setValue(data.currentWorkingTime)
+        ref.child("isFinished").setValue(data.finished)
+
+    }
+    /**
+     * @param null-not changes attribute
+     * */
+    fun update(id:Int,category: String?=null,name:String?=null, dateTime:Long?=null, workingTime:Int?=null, priority:Int?=null, currentWorkingTime:Int?=null,finished: Int?=null){
+        val ref=dbReference.child(id.toString())
+        val childUpdates = hashMapOf<String, Any>()
+            category?.let { childUpdates.put("category",it) }
+            name?.let {childUpdates.put("name",it)  }
+            dateTime?.let { childUpdates.put("dateTime",it) }
+            workingTime?.let { childUpdates.put("workingTime",it) }
+            priority?.let { childUpdates.put("priority",it) }
+            currentWorkingTime?.let { childUpdates.put("currentWorkingTime",it) }
+            finished?.let { childUpdates.put("isFinished",it) }
+        ref.updateChildren(childUpdates)
+
     }
 
     fun delete(taskId: String){
         dbReference.child(taskId).removeValue()
+    }
+    fun delete(taskId: Int){
+        dbReference.child(taskId.toString()).removeValue()
     }
     fun addListeners(){
         dbReference.addListenerForSingleValueEvent(vel)

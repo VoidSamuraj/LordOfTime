@@ -1,4 +1,4 @@
-package com.voidsamurai.lordoftime.fragments
+package com.voidsamurai.lordoftime.fragments.dialogs
 
 import android.annotation.SuppressLint
 import android.app.AlertDialog
@@ -33,6 +33,7 @@ class ColorDialogFragment(
         const val EDIT=2
     }
 
+    private var newColor: Int? = null
     private lateinit var contentView: View
     private lateinit var colorPicker:ColorPickerView
     private lateinit var lightSlider:LightnessSlider
@@ -85,14 +86,16 @@ class ColorDialogFragment(
             }
         }
         else if(dialogType==2){
+            newColor=null
             colorPicker.addOnColorSelectedListener {
+                newColor=it
                 setColorToImageView(contentView, R.id.new_color, R.drawable.ic_circle_r, it)
             }
             lightSlider.setOnValueChangedListener {
                 setColorToImageView(contentView, R.id.new_color, R.drawable.ic_circle_r, colorPicker.selectedColor)
             }
             builder.setPositiveButton("Zapisz") { _, _ ->
-                if (oldCategory != null && oldColor != null) {
+                if (oldCategory != null && oldColor != null && newColor != null && newColor!=parseColor(oldColor)) {
                     (activity as MainActivity).getDBOpenHelper()
                         .editColorRow(oldCategory, getName(), getColor())
                     colors.add(getName(),getColor())
@@ -130,8 +133,8 @@ class ColorDialogFragment(
     private fun getName():String= contentView.findViewById<TextView>(R.id.category_name).text.toString()
     private fun getColor():String=String.format(
         "#%06X", 0xFFFFFF and
-                colorPicker.selectedColor
-    )
+                colorPicker.selectedColor)
+
     private fun update(){
         (context as MainActivity).getDataFromDB()
     }

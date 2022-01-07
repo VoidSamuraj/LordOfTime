@@ -4,11 +4,9 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
 import android.content.res.ColorStateList
-import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,6 +19,7 @@ import com.voidsamurai.lordoftime.AuthActivity
 import com.voidsamurai.lordoftime.MainActivity
 import com.voidsamurai.lordoftime.R
 import com.voidsamurai.lordoftime.databinding.FragmentSettingsBinding
+import com.voidsamurai.lordoftime.fragments.dialogs.NumberPicker
 import kotlinx.coroutines.*
 
 
@@ -95,6 +94,33 @@ class Settings : Fragment(), AdapterView.OnItemSelectedListener {
             mActivity.setOutdated(settingsBinding.oldSwitch.isChecked)
             mActivity.getDataFromDB()
         }
+
+        settingsBinding.completeSwitch.isChecked=mActivity.getIsShowingCompleted()
+        settingsBinding.completeSwitch.setOnClickListener {
+            mActivity.setIsShowingCompleted(settingsBinding.completeSwitch.isChecked)
+            mActivity.getDataFromDB()
+        }
+        settingsBinding.deleteSwitch.isChecked=mActivity.getIsDeletingCompleted()
+        settingsBinding.deleteSwitch.setOnClickListener {
+
+            if (settingsBinding.deleteSwitch.isChecked){
+                AlertDialog.Builder(requireContext())
+                    .setTitle(resources.getString(R.string.confirm))
+                    .setMessage(resources.getString(R.string.confirm_delete))
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .setPositiveButton(R.string.yes) { _, _ ->
+                        mActivity.setIsDeletingCompleted(true)
+                        mActivity.deleteCompleted()
+                        mActivity.getDataFromDB()
+                    }
+                    .setNegativeButton(R.string.no, {_,_ ->
+                        settingsBinding.deleteSwitch.isChecked=false
+                    }).setCancelable(false).show()
+        }else
+                mActivity.setIsDeletingCompleted(settingsBinding.deleteSwitch.isChecked)
+        }
+
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             when (mActivity.getMode()) {
                 -1 -> settingsBinding.toggleGroup.check(R.id.auto)
@@ -139,7 +165,7 @@ class Settings : Fragment(), AdapterView.OnItemSelectedListener {
 
 
         settingsBinding.numberPicker.setOnClickListener {
-            val fnp=NumberPicker((activity as MainActivity).getMainChartRange()) {
+            val fnp= NumberPicker((activity as MainActivity).getMainChartRange()) {
                 settingsBinding.hours.text= String.format("%s %d %s",resources.getText(R.string.aim),it.value+1,resources.getText(R.string.h))
                 (activity as MainActivity).setMainChartRange(it.value+1)
             }
@@ -147,7 +173,7 @@ class Settings : Fragment(), AdapterView.OnItemSelectedListener {
             fnp.show(childFragmentManager,"Hours")
         }
 
-        val isChartSettingsActive=(activity as MainActivity).getMainChartAuto()
+        val isChartSettingsActive=(activity as MainActivity).getIsMainChartManual()
        // settingsBinding.numberPicker.isClickable=!isChartSettingsActive
         settingsBinding.chartSwitch.isChecked=!isChartSettingsActive
         setChartStrings(isChartSettingsActive)

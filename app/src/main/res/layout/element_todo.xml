@@ -13,7 +13,7 @@
         android:id="@+id/imageView"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/line_height"
-        app:srcCompat="@drawable/ic_arrow_forward_ios"
+        app:srcCompat="@drawable/ic_baseline_radio_button_unchecked_24"
         android:layout_gravity="center"
         tools:ignore="ContentDescription" />
 

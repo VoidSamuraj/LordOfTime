@@ -4,7 +4,7 @@
     tools:viewBindingIgnore="true"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    tools:context=".fragments.NumberPicker">
+    tools:context=".fragments.dialogs.NumberPicker">
 
 <NumberPicker
     android:layout_gravity="center"

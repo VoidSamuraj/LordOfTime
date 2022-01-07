@@ -1,6 +1,10 @@
 package com.voidsamurai.lordoftime.fragments
 
 import android.annotation.SuppressLint
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -24,6 +28,7 @@ import com.voidsamurai.lordoftime.bd.DataRowWithColor
 
 class WorkingFragment : Fragment() {
 
+    private val resetReceiver = ResetBroadcast()
     private var _workingFragmentBinding : FragmentWorkingBinding?=null
     val workingFragmentBinding get() =_workingFragmentBinding!!
     private var currentOrder=Order.ASC
@@ -142,34 +147,32 @@ class WorkingFragment : Fragment() {
     }
 
 
-    override fun onStart() {
-        super.onStart()
+
+    override fun onResume() {
+        super.onResume()
         (activity as MainActivity).getDataFromDB()
         val (order,sort)=(activity as MainActivity).getWorkSorting()
-        Log.v("SORT", ""+order+" "+sort)
         currentOrder= Order.valueOf(order)
         currentSortBy= SortBy.valueOf(sort)
         setListData()
     }
+
+
+
     private fun setListData(){
         (workingFragmentBinding.taskList.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
-        fun  setAdapter(){
-            workingFragmentBinding.taskList.adapter=StartWorkAdapter(requireActivity() as MainActivity,(activity as MainActivity).getQueryArrayByDate().value!!,lifecycleOwner = viewLifecycleOwner)
-            workingFragmentBinding.taskList.layoutManager=LinearLayoutManager(requireContext())
-        }
 
         if(currentSortBy==SortBy.DATE) {
-
+            currentArray = (activity as MainActivity).getQueryArrayByDate().value!!.clone() as ArrayList<DataRowWithColor>
             if(currentOrder==Order.ASC)
-                (activity as MainActivity).getQueryArrayByDate().value!!.sortBy { dataRowWithColor ->dataRowWithColor.date  }
+                currentArray.sortBy { dataRowWithColor -> dataRowWithColor.date }
             else
-                (activity as MainActivity).getQueryArrayByDate().value!!.sortByDescending { dataRowWithColor ->dataRowWithColor.date  }
+                currentArray.sortByDescending { dataRowWithColor -> dataRowWithColor.date }
 
             //   (activity as MainActivity).getQueryArrayByDate().observe(viewLifecycleOwner, {
-            currentArray= (activity as MainActivity).getQueryArrayByDate().value!!
             workingFragmentBinding.taskList.adapter = StartWorkAdapter(
                 requireActivity() as MainActivity,
-                (activity as MainActivity).getQueryArrayByDate().value!!,
+                currentArray,
                 lifecycleOwner = viewLifecycleOwner
             )
             workingFragmentBinding.taskList.layoutManager =
@@ -177,14 +180,14 @@ class WorkingFragment : Fragment() {
 
             //  })
         }else{
+            currentArray= (activity as MainActivity).getQueryArrayByPriority().value!!.clone() as ArrayList<DataRowWithColor>
             if(currentOrder==Order.ASC)
-                (activity as MainActivity).getQueryArrayByPriority().value!!.sortBy { dataRowWithColor ->dataRowWithColor.priority  }
+                currentArray.sortBy { dataRowWithColor -> dataRowWithColor.priority }
             else
-                (activity as MainActivity).getQueryArrayByPriority().value!!.sortByDescending { dataRowWithColor ->dataRowWithColor.priority  }
+                currentArray.sortByDescending { dataRowWithColor -> dataRowWithColor.priority }
 
             // (activity as MainActivity).getQueryArrayByPriority().observe(viewLifecycleOwner,{
-            currentArray=(activity as MainActivity).getQueryArrayByPriority().value!!
-            workingFragmentBinding.taskList.adapter=StartWorkAdapter(requireActivity() as MainActivity,(activity as MainActivity).getQueryArrayByPriority().value!!,lifecycleOwner = viewLifecycleOwner)
+            workingFragmentBinding.taskList.adapter=StartWorkAdapter(requireActivity() as MainActivity,currentArray,lifecycleOwner = viewLifecycleOwner)
             workingFragmentBinding.taskList.layoutManager=LinearLayoutManager(requireContext())
             //    })
         }
@@ -195,15 +198,15 @@ class WorkingFragment : Fragment() {
     private fun sortList(){
         if(currentSortBy==SortBy.DATE) {
             if (currentOrder == Order.ASC)
-                (activity as MainActivity).getQueryArrayByDate().value!!.sortBy { dataRowWithColor -> dataRowWithColor.date }
+               currentArray.sortBy { dataRowWithColor -> dataRowWithColor.date }
             else
-                (activity as MainActivity).getQueryArrayByDate().value!!.sortByDescending { dataRowWithColor -> dataRowWithColor.date }
+                currentArray.sortByDescending { dataRowWithColor -> dataRowWithColor.date }
         }
         else{
             if(currentOrder==Order.ASC)
-                (activity as MainActivity).getQueryArrayByPriority().value!!.sortBy { dataRowWithColor ->dataRowWithColor.priority  }
+               currentArray.sortBy { dataRowWithColor ->dataRowWithColor.priority  }
             else
-                (activity as MainActivity).getQueryArrayByPriority().value!!.sortByDescending { dataRowWithColor ->dataRowWithColor.priority  }
+                currentArray.sortByDescending { dataRowWithColor ->dataRowWithColor.priority  }
 
         }
     }
@@ -229,8 +232,6 @@ class WorkingFragment : Fragment() {
     @SuppressLint("NotifyDataSetChanged", "UseCompatLoadingForDrawables")
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
 
-
-
         return when(item.itemId){
             R.id.order->{
                 currentOrder = if(currentOrder==Order.ASC) {
@@ -240,6 +241,7 @@ class WorkingFragment : Fragment() {
                     item.icon=resources.getDrawable(R.drawable.ic_baseline_arrow_drop_up_24,null)
                     Order.ASC
                 }
+
                 (activity as MainActivity).setSortInWorkFragment(currentOrder,currentSortBy)
                 sortList()
                 workingFragmentBinding.taskList.adapter!!.notifyDataSetChanged()
@@ -250,6 +252,7 @@ class WorkingFragment : Fragment() {
                     SortBy.DATE
                 else
                     SortBy.PRIORITY
+
                 (activity as MainActivity).setSortInWorkFragment(currentOrder,currentSortBy)
                 item.title=resources.getString(when(currentSortBy){
                     SortBy.DATE->R.string.date
@@ -265,12 +268,30 @@ class WorkingFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         deleteIcon=AppCompatResources.getDrawable(requireContext(),R.drawable.ic_delete)
         editIcon=AppCompatResources.getDrawable(requireContext(),R.drawable.ic_edit)
-
-
+        val iFilter=IntentFilter("RESET_COUNTER")
+        requireActivity().registerReceiver(resetReceiver,iFilter)
+        workingFragmentBinding.taskList.adapter?.notifyDataSetChanged()
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         (activity as MainActivity).getDataFromDB()
     }
+
+    inner class ResetBroadcast : BroadcastReceiver(){
+
+        override fun onReceive(context: Context?, intent: Intent?) {
+            intent?.let {intent ->
+                if(intent.action.equals("RESET_COUNTER"))
+                        activity?.let {
+                            (it as MainActivity).getCurrentWorkingTime().value=intent.getIntExtra("time",0)
+                            it.unregisterReceiver(resetReceiver)
+
+                        }
+            }
+
+        }
+
+    }
+
 }

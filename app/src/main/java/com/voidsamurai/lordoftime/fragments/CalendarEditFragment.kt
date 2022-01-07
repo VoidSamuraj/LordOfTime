@@ -146,75 +146,106 @@ class CalendarEditFragment : Fragment() {
 
     override fun onDestroyView() {
         dayAimH.removeObservers(viewLifecycleOwner)
+        _calendarViewBinding=null
         super.onDestroyView()
     }
-    override fun onDestroy() {
-        super.onDestroy()
-        _calendarViewBinding=null
-    }
-    private fun createDaysCalendarChart(monthCalendar: Calendar, isMondayFirstDay:Boolean=false, weeks:Array<RecyclerView>){
-        productiveDays=0
-        val hours=0f
-        if (isMondayFirstDay)
-            monthCalendar.firstDayOfWeek=Calendar.MONDAY
-        else
-            monthCalendar.firstDayOfWeek=Calendar.SUNDAY
+    /*
+     private fun setFirstDay(calendar: Calendar, isMondayFirstDay: Boolean){
+         if (isMondayFirstDay)
+             calendar.firstDayOfWeek=Calendar.MONDAY
+         else
+             calendar.firstDayOfWeek=Calendar.SUNDAY
+     }*/
+    private fun createDaysCalendarChart(monthCalendar: Calendar, isMondayFirstDay:Boolean=false, weeks:Array<RecyclerView>) {
+        productiveDays = 0
+        val hours = 0f
+        if (isMondayFirstDay) {
+            monthCalendar.firstDayOfWeek = Calendar.MONDAY
 
-        val allData:MutableMap<Calendar,ArrayList<NTuple6<Calendar, Float, Int, String, String, String>>> = mutableMapOf()
+            date.firstDayOfWeek = Calendar.MONDAY
+        } else {
+            monthCalendar.firstDayOfWeek = Calendar.SUNDAY
+            date.firstDayOfWeek = Calendar.SUNDAY
+
+        }
+        val allData: MutableMap<Calendar, ArrayList<NTuple6<Calendar, Float, Int, String, String, String>>> =
+            mutableMapOf()
 
 
-        val data=(activity as MainActivity).getQueryArrayByDate().value
-        var nr=1
+        val data = (activity as MainActivity).getQueryArrayByDate().value
         data?.let {
             for (x in it) {
-               // Log.v("DataRAW",""+nr+++" "+x.date.get(Calendar.MONTH)+"/"+x.date.get(Calendar.DAY_OF_MONTH)+" "+x.name+" "+x.id)
-                val value=NTuple6(x.date,x.workingTime/3600f,x.priority,x.name,x.category,x.color)
-                val rest= allData.putIfAbsent(x.date, arrayListOf(value))
-                if(rest!=null){
+                // Log.v("DataRAW",""+nr+++" "+x.date.get(Calendar.MONTH)+"/"+x.date.get(Calendar.DAY_OF_MONTH)+" "+x.name+" "+x.id)
+                val value =
+                    NTuple6(x.date, x.workingTime / 3600f, x.priority, x.name, x.category, x.color)
+                val rest = allData.putIfAbsent(x.date, arrayListOf(value))
+                if (rest != null) {
                     rest.add(value)
-                    allData.replace(x.date,rest)
+                    allData.replace(x.date, rest)
                 }
             }
         }
+        /**
+         * @param relativeMonth - is adding number to current month
+         * */
+        fun getMonthData(relativeMonth: Int): Map<Int, ArrayList<NTuple6<Calendar, Float, Int, String, String, String>>> {
+            val selectedCalendar=monthCalendar.clone() as Calendar
+            selectedCalendar.add(Calendar.MONTH,relativeMonth)
+            /*
+            var selectedMonth=monthCalendar.get(Calendar.MONTH)
+            if(selectedMonth)
+            val selectedYear=monthCalendar.get(Calendar.YEAR)
+            */
+            return allData.filter { entry ->
 
-        val monthData:Map<Int,ArrayList<NTuple6<Calendar, Float, Int, String, String, String>>> =allData.filter { entry ->
-            (monthCalendar.get(Calendar.YEAR)== entry.key.get(Calendar.YEAR))
-                    &&(monthCalendar.get(Calendar.MONTH)==entry.key.get(Calendar.MONTH))
-        }.mapKeys { it.key.get(Calendar.DAY_OF_MONTH)  }
+                //  setFirstDay( entry.key,isMondayFirstDay)
 
-        val lastMonthData:Map<Int,ArrayList<NTuple6<Calendar, Float, Int, String, String, String>>> = allData.filter { entry ->
-            (monthCalendar.get(Calendar.YEAR)==entry.key.get(Calendar.YEAR))
-                    &&((monthCalendar.get(Calendar.MONTH)-1)==entry.key.get(Calendar.MONTH))
-        }.mapKeys { it.key.get(Calendar.DAY_OF_MONTH)  }
+                (selectedCalendar.get(Calendar.YEAR) == entry.key.get(Calendar.YEAR))
+                        && (selectedCalendar.get(Calendar.MONTH) == entry.key.get(Calendar.MONTH))
+            }.mapKeys { it.key.get(Calendar.DAY_OF_MONTH) }
+        }
+        val monthData:Map<Int,ArrayList<NTuple6<Calendar, Float, Int, String, String, String>>> =getMonthData(0)
+        val lastMonthData:Map<Int,ArrayList<NTuple6<Calendar, Float, Int, String, String, String>>> =getMonthData(-1)
+        val nextMonthData:Map<Int,ArrayList<NTuple6<Calendar,Float, Int, String, String, String>>> =getMonthData(1)
 
-        val nextMonthData:Map<Int,ArrayList<NTuple6<Calendar,Float, Int, String, String, String>>> =allData.filter { entry ->
-            (monthCalendar.get(Calendar.YEAR)==entry.key.get(Calendar.YEAR)) &&((monthCalendar.get(Calendar.MONTH)+1)==entry.key.get(Calendar.MONTH))
-        }.mapKeys { it.key.get(Calendar.DAY_OF_MONTH)  }
+        /*
+         for(x in allData.values){
+             for(y in x)
+                 Log.v("Data",""+y.t1.get(Calendar.MONTH)+"/"+y.t1.get(Calendar.DAY_OF_MONTH)+" "+y.t4+" "+y.t5+" "+y.t6)
+         }*/
 
-       /*
-        for(x in allData.values){
-            for(y in x)
-                Log.v("Data",""+y.t1.get(Calendar.MONTH)+"/"+y.t1.get(Calendar.DAY_OF_MONTH)+" "+y.t4+" "+y.t5+" "+y.t6)
-        }*/
-
-       // val c:Calendar= Calendar.getInstance()
+        // val c:Calendar= Calendar.getInstance()
         //c.set(2021, 11, 1, 12, 6,0)
 
-        val list:ArrayList<ArrayList<ArrayList<NTuple6<Calendar,Float,Int, String, String,String>>?>> = arrayListOf()
-        val calendar: Calendar = monthCalendar
-        calendar.set(Calendar.DAY_OF_MONTH,1)
-        val firstMonthDay:Int = calendar.get(Calendar.DAY_OF_WEEK)
+        //  val list:ArrayList<ArrayList<ArrayList<NTuple6<Calendar,Float,Int, String, String,String>>?>> = arrayListOf()
+        val currentCalendar: Calendar = monthCalendar.clone() as Calendar
 
+        currentCalendar.set(Calendar.DAY_OF_MONTH,1)
+        val firstMonthDay:Int =
+            if(isMondayFirstDay)
+                if(currentCalendar.get(Calendar.DAY_OF_WEEK)==1)
+                    7
+                else
+                    currentCalendar.get(Calendar.DAY_OF_WEEK)-1
+            else
+                currentCalendar.get(Calendar.DAY_OF_WEEK)
 
+        Log.v("Monthdata", ""+monthData)
         val lastMonth: Calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
-        lastMonth.set(Calendar.MONTH,monthCalendar.get(Calendar.MONTH)-1)
+        // setFirstDay(lastMonth,isMondayFirstDay)
+        lastMonth.add(Calendar.MONTH,-1)
         var lastMonthDays=lastMonth.getActualMaximum(Calendar.DAY_OF_MONTH)-(firstMonthDay-1)
         var nextMonthDays=1
+      /*  if(isMondayFirstDay) {
+            ++lastMonthDays
+            ++nextMonthDays
 
-        val monthDays:Int= calendar.getActualMaximum(Calendar.DAY_OF_MONTH)
+        }*/
+        val monthDays:Int= currentCalendar.getActualMaximum(Calendar.DAY_OF_MONTH)
         var day=1
         var started=false
         var localList:ArrayList<ArrayList<NTuple6<Calendar,Float,Int, String, String,String>>?>
+
 
         for (week in weeks){
             localList= arrayListOf()
@@ -224,21 +255,24 @@ class CalendarEditFragment : Fragment() {
                         if (!started && (day < firstMonthDay)) {
                             //before month
                             val cal=date.clone() as Calendar
-                            cal.set(Calendar.MONTH,cal.get(Calendar.MONTH)-1)
-                            cal.set(Calendar.DAY_OF_MONTH,++lastMonthDays)
-                            val row:ArrayList<NTuple6<Calendar,Float,Int, String, String,String>> = arrayListOf(NTuple6(cal,null,null,null,null,null))
-                            val ldd=lastMonthData.get(lastMonthDays)?: row
 
+                            cal.add(Calendar.MONTH,-1)
+
+                            cal.set(Calendar.DAY_OF_MONTH,lastMonthDays)
+                            val row:ArrayList<NTuple6<Calendar,Float,Int, String, String,String>> = arrayListOf(NTuple6(cal,null,null,null,null,null))
+                            val ldd= lastMonthData[lastMonthDays++] ?: row
                             localList.add(ldd)
                         }else {
                             //in month
-                            if (!started)
+                            if (!started) {
                                 day = 1
+                              /*  if(isMondayFirstDay)
+                                    ++day*/
+                            }
                             val cal=date.clone() as Calendar
                             cal.set(Calendar.DAY_OF_MONTH,day)
                             val row:ArrayList<NTuple6<Calendar,Float,Int, String, String,String>> = arrayListOf(NTuple6(cal,null,null,null,null,null))
-
-                            val dd=monthData.get(day)?: row
+                            val dd= monthData[day] ?: row
                             localList.add(dd)
 
                             started = true
@@ -247,7 +281,7 @@ class CalendarEditFragment : Fragment() {
                     }else {
                         //after month
                         val cal=date.clone() as Calendar
-                        cal.set(Calendar.MONTH,cal.get(Calendar.MONTH)+1)
+                        cal.add(Calendar.MONTH,1)
                         cal.set(Calendar.DAY_OF_MONTH,nextMonthDays)
                         val row:ArrayList<NTuple6<Calendar,Float,Int, String, String,String>> = arrayListOf(NTuple6(cal,null,null,null,null,null))
                         val ndd=nextMonthData[nextMonthDays++]?:row
@@ -255,17 +289,21 @@ class CalendarEditFragment : Fragment() {
 
                     }
                 }
-
-            list.add(localList)
+            setAdapterManager(
+                week,
+                CalendarEditAdapter(requireContext(),localList),
+                LinearLayoutManager(context, RecyclerView.HORIZONTAL,false)
+            )
+            // list.add(localList)
         }
-
+/*
         weeks.forEachIndexed { weekDay, week ->
             setAdapterManager(
                 week,
                 CalendarEditAdapter(requireContext(),list[weekDay]),
                 LinearLayoutManager(context, RecyclerView.HORIZONTAL,false)
             )
-        }
+        }*/
 
         workPer=hours/( dayAimH.value!! * monthDays)
         productivePer=(productiveDays.toFloat()/monthDays*100)

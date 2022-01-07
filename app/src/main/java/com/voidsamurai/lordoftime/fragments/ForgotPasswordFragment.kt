@@ -9,19 +9,13 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.voidsamurai.lordoftime.R
-import com.voidsamurai.lordoftime.databinding.FragmentForgotPasswordBinding
-import androidx.annotation.NonNull
-
-import com.google.android.gms.tasks.OnCompleteListener
-
+import com.voidsamurai.lordoftime.databinding.AuthFragmentForgotPasswordBinding
 import com.google.firebase.auth.FirebaseAuth
-
-
 
 
 class ForgotPasswordFragment : Fragment() {
 
-    private lateinit var _passwordBinding:FragmentForgotPasswordBinding
+    private lateinit var _passwordBinding:AuthFragmentForgotPasswordBinding
     private val passwordBinding get() = _passwordBinding
 
 
@@ -29,7 +23,7 @@ class ForgotPasswordFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _passwordBinding= FragmentForgotPasswordBinding.inflate(inflater,container,false)
+        _passwordBinding= AuthFragmentForgotPasswordBinding.inflate(inflater,container,false)
         return passwordBinding.root
     }
 

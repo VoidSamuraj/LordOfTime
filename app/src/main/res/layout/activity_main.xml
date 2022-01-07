@@ -21,7 +21,7 @@
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
+                android:layout_height="@dimen/bar_height"
                 android:background="?attr/colorPrimary"
                 app:layout_constraintBaseline_toBaselineOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -84,12 +84,14 @@
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_marginEnd="@dimen/small_margin"
-                    android:src="@drawable/ic_settings"/>
+                    android:src="@drawable/ic_settings"
+                    app:tint="@color/drawer_text" />
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:ems="8"
                     android:textAppearance="@android:style/TextAppearance.Material.Widget.IconMenu.Item"
+                    android:textColor="@color/drawer_text"
                     android:text="@string/action_settings" />
 
             </LinearLayout>

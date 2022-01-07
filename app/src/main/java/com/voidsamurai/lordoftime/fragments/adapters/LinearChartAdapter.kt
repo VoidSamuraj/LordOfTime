@@ -14,7 +14,7 @@ class LinearChartAdapter(private val dataSet: List<Pair<String,String>>):Recycle
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LinearViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.chart_details_element, parent, false)
+            .inflate(R.layout.element_chart_details, parent, false)
 
         return LinearViewHolder(view)
     }

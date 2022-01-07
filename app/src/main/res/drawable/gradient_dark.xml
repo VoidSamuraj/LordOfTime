@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <!--
+
+  android:startColor="#000000"
+        android:endColor="#434343"
+
+
+#333333, #dd1818
+
+  android:startColor="#0f2027"
+        android:centerColor="#203a43"
+        android:endColor="#2c5364"
+
+
+        background-image: radial-gradient( circle farthest-corner at -4% -12.9%,
+        rgba(74,98,110,1) 0.3%, rgba(30,33,48,1) 90.2%
+         );
+
+
+    -->
+    <gradient
+        android:type="linear"
+        android:startColor="#4a626e"
+        android:endColor="#1e2130"
+        android:angle="45"
+        android:centerX="0.6"
+        android:centerY="0.3"
+
+        />
+
+</shape>

@@ -19,7 +19,7 @@ class CalendarAdapter(private val context: Context, private val dataSet: ArrayLi
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LinearViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.calendar_card_view, parent, false)
+            .inflate(R.layout.element_calendar_card, parent, false)
 
         return LinearViewHolder(view)
     }

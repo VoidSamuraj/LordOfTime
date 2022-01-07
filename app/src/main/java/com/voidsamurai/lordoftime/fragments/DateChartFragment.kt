@@ -19,6 +19,7 @@ import com.voidsamurai.lordoftime.R
 import com.voidsamurai.lordoftime.charts_and_views.NTuple5
 import com.voidsamurai.lordoftime.databinding.FragmentDateWidgetBinding
 import com.voidsamurai.lordoftime.fragments.adapters.CalendarAdapter
+import com.voidsamurai.lordoftime.fragments.dialogs.NumberPicker
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.roundToInt
@@ -65,9 +66,11 @@ class DateChartFragment : Fragment() {
         fun fillLabels(){
             productivePer= (productivePer * 100).roundToInt().toFloat()/100
             workPer= (workPer * 100).roundToInt().toFloat()/100
-            if (workPer>100)workPer=100f
-            binding.productiveDays.text=String.format("Produktywne dni: %o ",productiveDays)
-            binding.productiveLabel.text=String.format("Wydajność: %.2f%%",workPer)
+            if (workPer>100)
+                workPer=100f
+
+            binding.productiveDays.text=String.format(resources.getString(R.string.productive_days)+": %o ",productiveDays)
+            binding.productiveLabel.text=String.format(resources.getString(R.string.productivity)+": %.2f%%",workPer)
         }
         fun fillAim(){
             dayAim.text=getAimH(dayAimH.value.toString())
@@ -285,7 +288,7 @@ class DateChartFragment : Fragment() {
         fillAim()
 
         binding.numberPicker.setOnClickListener {
-            val fnp=NumberPicker(dayAimH.value!!) {
+            val fnp= NumberPicker(dayAimH.value!!) {
                 dayAimH.value = it.value + 1
                 (activity as MainActivity).setCalendarChartRange(it.value + 1)
             }
@@ -315,6 +318,10 @@ class DateChartFragment : Fragment() {
         else
             monthCalendar.firstDayOfWeek=Calendar.SUNDAY
 
+        val nextCalendar= monthCalendar.clone() as Calendar
+        val prevCalendar= monthCalendar.clone() as Calendar
+        nextCalendar.add(Calendar.MONTH,1)
+        prevCalendar.add(Calendar.MONTH,-1)
 
         val allData:Map<Calendar,Float> =(activity as MainActivity).getOldData().associate { Pair(it.first,it.second) }
         val monthData:Map<Calendar,Float> =allData.filter { entry ->
@@ -322,10 +329,10 @@ class DateChartFragment : Fragment() {
         }
 
         val lastMonthData:Map<Calendar,Float> =allData.filter { entry ->
-            (monthCalendar.get(Calendar.YEAR)==entry.key.get(Calendar.YEAR)) &&((monthCalendar.get(Calendar.MONTH)-1)==entry.key.get(Calendar.MONTH))
+            (prevCalendar.get(Calendar.YEAR)==entry.key.get(Calendar.YEAR)) &&(prevCalendar.get(Calendar.MONTH)==entry.key.get(Calendar.MONTH))
         }
         val nextMonthData:Map<Calendar,Float> =allData.filter { entry ->
-            (monthCalendar.get(Calendar.YEAR)==entry.key.get(Calendar.YEAR)) &&((monthCalendar.get(Calendar.MONTH)+1)==entry.key.get(Calendar.MONTH))
+            (nextCalendar.get(Calendar.YEAR)==entry.key.get(Calendar.YEAR)) &&(nextCalendar.get(Calendar.MONTH)==entry.key.get(Calendar.MONTH))
         }
         val c:Calendar= Calendar.getInstance(TimeZone.getTimeZone("UTC"))
         c.set(2021, 11, 1, 12, 6,0)
@@ -356,7 +363,15 @@ class DateChartFragment : Fragment() {
 
 
         val lastMonth: Calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
-        lastMonth.set(Calendar.MONTH,monthCalendar.get(Calendar.MONTH)-1)
+        val lm=monthCalendar.get(Calendar.MONTH)-1
+
+        lastMonth.set(Calendar.MONTH,
+            if(lm>=0)
+                lm
+            else
+                12
+        )
+
         var lastMonthDays=lastMonth.getActualMaximum(Calendar.DAY_OF_MONTH)-(firstMonthDay-1)
         var nextMonthDays=1
 
@@ -448,7 +463,14 @@ class DateChartFragment : Fragment() {
         calendar.set(Calendar.DAY_OF_MONTH,1)
 
         val lastMonth:Calendar=Calendar.getInstance(TimeZone.getTimeZone("UTC"))
-        lastMonth.set(Calendar.MONTH,monthCalendar.get(Calendar.MONTH)-1)
+        val lm=monthCalendar.get(Calendar.MONTH)-1
+        lastMonth.set(Calendar.MONTH,
+            if(lm>=0)
+                lm
+            else
+                12
+
+        )
 
         fun setWeekAdapter(recyclerView:RecyclerView,arrayList:ArrayList<NTuple5<Int,Float,Boolean,Int,Int?>?> ) {
             setAdapterManager(

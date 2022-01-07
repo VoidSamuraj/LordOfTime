@@ -3,7 +3,9 @@
     <color name="settings_switch">#B2FFFFFF</color>
     <color name="logout_button">#323740</color>
     <color name="background">#FF1B1E23</color>
-    <color name="text">#FFFFFF</color>
+    <color name="background2">#282B32</color>
+    <color name="text">#CCCCCC</color>
+    <color name="drawer_text">#FFFFFF</color>
     <color name="purple_200">#FFBB86FC</color>
     <color name="blue_gray">#2E6F95</color>
     <color name="gray_light">#202232</color>
@@ -31,4 +33,7 @@
     <color name="gold4">#FBF5B7</color>
     <color name="gold5">#AA771C</color>
     <color name="drawer_bg">#3F51B5</color>
+    <color name="chip_checked">#8BC34A</color>
+    <color name="chip_unchecked">#9C9C9C</color>
+    <color name="recycler_view_checked">#A0A0A0</color>
 </resources>

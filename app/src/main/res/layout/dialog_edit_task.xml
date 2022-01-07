@@ -4,11 +4,11 @@
 xmlns:android="http://schemas.android.com/apk/res/android"
 xmlns:app="http://schemas.android.com/apk/res-auto"
 xmlns:tools="http://schemas.android.com/tools"
-tools:context=".fragments.EditTaskDialog"
+tools:context=".fragments.dialogs.EditTaskDialog"
 android:layout_width="match_parent"
 android:layout_height="wrap_content"
-android:paddingStart="@dimen/line_height"
-android:paddingEnd="@dimen/line_height">
+android:paddingStart="@dimen/small_padding"
+android:paddingEnd="@dimen/small_padding">
 
     <TextView
         android:id="@+id/textName"
@@ -160,6 +160,24 @@ android:paddingEnd="@dimen/line_height">
         app:layout_constraintStart_toStartOf="@+id/duration_edit"
         app:layout_constraintTop_toBottomOf="@+id/three_fields" />
 
+
+    <CheckBox
+        android:id="@+id/isFinished"
+        android:layout_width="@dimen/task_edit_column"
+        android:layout_height="wrap_content"
+        android:text="@string/is_finished"
+        android:textSize="@dimen/small_text_size"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/date_to" />
+
+    <CheckBox
+        android:id="@+id/isRepeating"
+        android:layout_width="@dimen/task_edit_column"
+        android:layout_height="wrap_content"
+        android:text="@string/is_repeating"
+        android:textSize="@dimen/small_text_size"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/isFinished" />
     <EditText
         android:id="@+id/duration_edit"
         android:layout_width="100dp"
@@ -170,10 +188,10 @@ android:paddingEnd="@dimen/line_height">
         android:inputType="numberDecimal"
         android:paddingStart="@dimen/small_padding"
         android:paddingEnd="@dimen/small_padding"
-        android:textSize="@dimen/normal_text_size"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/date_to"
         android:text="0"
+        android:textSize="@dimen/normal_text_size"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/date_to"
         tools:ignore="HardcodedText,LabelFor" />
 
 
@@ -253,13 +271,13 @@ android:paddingEnd="@dimen/line_height">
         android:layout_width="100dp"
         android:layout_height="50dp"
         android:background="@null"
-        android:contentDescription="@string/delete"
-        android:text="@string/delete"
         android:backgroundTint="@color/red"
+        android:contentDescription="@string/delete"
         android:scaleType="fitCenter"
-        app:layout_constraintBottom_toBottomOf="@+id/duration_edit"
+        android:text="@string/delete"
+        android:layout_marginTop="35dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/date_to"
+        app:layout_constraintTop_toBottomOf="@+id/duration_edit"
         app:tint="@color/cardview_dark_background" />
 
     <Button
@@ -280,15 +298,14 @@ android:paddingEnd="@dimen/line_height">
         android:id="@+id/save"
         android:layout_width="100dp"
         android:layout_height="wrap_content"
+        android:background="@color/transparent"
         android:contentDescription="@string/delete"
         android:scaleType="fitCenter"
         android:text="@string/save"
-        android:textColor="?android:colorPrimary"
-        android:background="@color/transparent"
-        app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="35dp"
-        app:layout_constraintTop_toBottomOf="@+id/delete_edit_button"
-        />
+        android:textColor="?android:colorPrimary"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/delete_edit_button" />
 
 
 

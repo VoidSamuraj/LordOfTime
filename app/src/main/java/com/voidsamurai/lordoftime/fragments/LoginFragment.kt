@@ -14,19 +14,19 @@ import com.google.firebase.auth.FirebaseUser
 import com.voidsamurai.lordoftime.AuthActivity
 import com.voidsamurai.lordoftime.MainActivity
 import com.voidsamurai.lordoftime.R
-import com.voidsamurai.lordoftime.databinding.FragmentLoginBinding
+import com.voidsamurai.lordoftime.databinding.AuthFragmentLoginBinding
 
 
 class LoginFragment : Fragment() {
 
-    private lateinit var _loginBinding: FragmentLoginBinding
+    private lateinit var _loginBinding: AuthFragmentLoginBinding
     private val loginBinding get()=_loginBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _loginBinding = FragmentLoginBinding.inflate(inflater,container,false)
+        _loginBinding = AuthFragmentLoginBinding.inflate(inflater,container,false)
         return loginBinding.root
     }
 

@@ -14,20 +14,20 @@ import com.google.firebase.auth.FirebaseUser
 import com.voidsamurai.lordoftime.AuthActivity
 import com.voidsamurai.lordoftime.MainActivity
 import com.voidsamurai.lordoftime.R
-import com.voidsamurai.lordoftime.databinding.FragmentRegisterBinding
+import com.voidsamurai.lordoftime.databinding.AuthFragmentRegisterBinding
 import com.google.firebase.auth.UserProfileChangeRequest
 
 
 class RegisterFragment : Fragment() {
 
-    private lateinit var _registerBinding:FragmentRegisterBinding
+    private lateinit var _registerBinding:AuthFragmentRegisterBinding
     private val registerBinding get()=_registerBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _registerBinding= FragmentRegisterBinding.inflate(inflater,container,false)
+        _registerBinding= AuthFragmentRegisterBinding.inflate(inflater,container,false)
         return registerBinding.root
     }
 

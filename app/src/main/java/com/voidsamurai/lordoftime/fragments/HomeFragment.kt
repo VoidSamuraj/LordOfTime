@@ -5,6 +5,7 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.transition.TransitionInflater
+import android.util.Log
 import android.view.*
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.AnimationUtils
@@ -32,6 +33,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.math.abs
 
 
@@ -72,7 +75,7 @@ class HomeFragment : Fragment() {
         (activity as MainActivity).getQueryArrayByPriority().observe(viewLifecycleOwner,{
             setAdapterManager(todoRecyclerView
                 , ToDoAdapter(ArrayList(it
-                    .subList(0,if(it.size>=10)10 else it.size ).toList()))
+                    .subList(0,if(it.size>=10)10 else it.size ).toList()),activity as MainActivity)
                 ,LinearLayoutManager(requireContext()))
         })
         (activity as MainActivity).getQueryArrayByDate().observe(viewLifecycleOwner,{
@@ -81,12 +84,13 @@ class HomeFragment : Fragment() {
                     .subList(0,if(it.size>=3)3 else it.size ).toList()))
                 , LinearLayoutManager(requireContext()))
         })
-
+/*
         fun factory():TextView{
             val textView = TextView(requireContext())
             textView.textSize=40f
             return textView
         }
+        */
 /*
         homeFragmentBinding.switcherHour.setFactory{factory()}
         homeFragmentBinding.switcherMinutes1.setFactory{factory()}
@@ -100,34 +104,46 @@ class HomeFragment : Fragment() {
         homeFragmentBinding.switcherSeconds1.text = "0"
         homeFragmentBinding.switcherSeconds2.text = "0"
 
-        (activity as MainActivity).getCurrentWorkingTime().observe(viewLifecycleOwner,{
-            var currentFormatedTime=((it-(it%3600))/3600)
-            if(currentFormatedTime!=hours) {
-                homeFragmentBinding.switcherHour.text = currentFormatedTime.toString()
-                hours=currentFormatedTime
-            }
-            currentFormatedTime=((it-(it%60))/60)%60
-            if(currentFormatedTime!=minutes) {
-                if(minutes-(minutes%10)!=currentFormatedTime-(currentFormatedTime%10)){
-                    homeFragmentBinding.switcherMinutes1.text = ((currentFormatedTime-(currentFormatedTime%10))/10).toString()
-                    homeFragmentBinding.switcherMinutes2.text = (currentFormatedTime%10).toString()
-                }
-                else
-                    homeFragmentBinding.switcherMinutes2.text = (currentFormatedTime%10).toString()
-                minutes=currentFormatedTime
-            }
-            currentFormatedTime=it%60
-            if(currentFormatedTime!=seconds) {
-                if(seconds-(seconds%10)!=currentFormatedTime-(currentFormatedTime%10)) {
-                    homeFragmentBinding.switcherSeconds1.text = ((currentFormatedTime-(currentFormatedTime%10)) / 10).toString()
-                    homeFragmentBinding.switcherSeconds2.text = (currentFormatedTime % 10).toString()
-                }
-                else
-                    homeFragmentBinding.switcherSeconds2.text = (currentFormatedTime % 10).toString()
+        val updateIntervalSeconds=1*30
+        if((activity as MainActivity).isTaskStarted)
+            (activity as MainActivity).getCurrentWorkingTime().observe(viewLifecycleOwner,{
+                var currentFormatedTime=((it-(it%3600))/3600)
+               // if(currentFormatedTime!=hours) {
+                    homeFragmentBinding.switcherHour.text = currentFormatedTime.toString()
+                    hours=currentFormatedTime
+              //  }
+                currentFormatedTime=((it-(it%60))/60)%60
+             //   if(currentFormatedTime!=minutes) {
+                   // if(minutes-(minutes%10)!=currentFormatedTime-(currentFormatedTime%10)){
+                        homeFragmentBinding.switcherMinutes1.text = ((currentFormatedTime-(currentFormatedTime%10))/10).toString()
+                        homeFragmentBinding.switcherMinutes2.text = (currentFormatedTime%10).toString()
+                   // }
+                  /*  else
+                        homeFragmentBinding.switcherMinutes2.text = (currentFormatedTime%10).toString()*/
+                    minutes=currentFormatedTime
+             //   }
+                currentFormatedTime=it%60
+                //if(currentFormatedTime!=seconds) {
+                  //  if(seconds-(seconds%10)!=currentFormatedTime-(currentFormatedTime%10)) {
+                        homeFragmentBinding.switcherSeconds1.text = ((currentFormatedTime-(currentFormatedTime%10)) / 10).toString()
+                        homeFragmentBinding.switcherSeconds2.text = (currentFormatedTime % 10).toString()
+                  //  }
+                    /*else
+                        homeFragmentBinding.switcherSeconds2.text = (currentFormatedTime % 10).toString()
+    */
 
-                seconds=currentFormatedTime
-            }
-        })
+                if(it%updateIntervalSeconds==0&&it!=0){
+                    val wt=((Calendar.getInstance(TimeZone.getTimeZone("UTC")).timeInMillis-(activity as MainActivity).getStartTime())/1000).toInt()
+                    (activity as MainActivity).setStartTime(Calendar.getInstance(TimeZone.getTimeZone("UTC")).timeInMillis)
+                    Log.v("TIME",""+wt)
+                    (activity as MainActivity).updateOldstats(wt+((activity as MainActivity).getDBOpenHelper().getTaskRow((activity as MainActivity).getCurrentTaskId()).currentWorkingTime*3600).toInt(),updateIntervalSeconds)
+                    val myFragment: FragmentPieChart = childFragmentManager.findFragmentById(R.id.chart_frag) as FragmentPieChart
+                    myFragment.fillChartWithData((activity as MainActivity).getOldDataWithColors(true))
+
+                }
+                    seconds=currentFormatedTime
+               // }
+            })
 
 
         enterTransition=null
@@ -164,17 +180,19 @@ class HomeFragment : Fragment() {
         //settings for back navigation
         if((activity as MainActivity).isFromEditFragment){
 
-            requireActivity().window.setBackgroundDrawable(ColorDrawable(resources.getColor(R.color.task_color,null)))
+            //requireActivity().window.setBackgroundDrawable(ColorDrawable(resources.getColor(R.color.task_color,null)))
             homeFragmentBinding.buttonGroup.alpha=0f
             homeFragmentBinding.taskChangerFAB.alpha=0f
             val animator=getCircleValueAnimator(true)
             animator.start()
+            /*
             CoroutineScope(Dispatchers.Main).launch{
                 val color=resources.getColor(R.color.background,null)
                 homeFragmentBinding.relativeLayout.setBackgroundColor(color)
                 delay(510)
-                requireActivity().window.setBackgroundDrawable(ColorDrawable(color))
+               // requireActivity().window.setBackgroundDrawable(ColorDrawable(color))
             }
+            */
             (activity as MainActivity).isFromEditFragment=false
 
         }else if((activity as MainActivity).isFromWorkFragment&&false){
@@ -429,6 +447,7 @@ class HomeFragment : Fragment() {
     }
     override fun onResume() {
         super.onResume()
+        (activity as MainActivity).updateRutines()
         homeFragmentBinding.startTaskLabel.alpha=0f
         homeFragmentBinding.labelHour.alpha=0f
         isButtonHidden=true

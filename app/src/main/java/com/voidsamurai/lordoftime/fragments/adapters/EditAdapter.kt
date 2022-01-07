@@ -8,11 +8,10 @@ import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.core.graphics.drawable.toDrawable
-import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.voidsamurai.lordoftime.LinearViewHolder
 import com.voidsamurai.lordoftime.R
-import com.voidsamurai.lordoftime.fragments.EditListDirections
+//import com.voidsamurai.lordoftime.fragments.EditListDirections
 import com.voidsamurai.lordoftime.bd.DataRowWithColor
 import java.util.*
 
@@ -24,7 +23,7 @@ class EditAdapter(private val dataSet: ArrayList<DataRowWithColor>) :
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LinearViewHolder {
 
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.todo_edit_element, parent, false)
+            .inflate(R.layout.element_todo_edit, parent, false)
 
         return LinearViewHolder(view)
     }
@@ -44,9 +43,9 @@ class EditAdapter(private val dataSet: ArrayList<DataRowWithColor>) :
         layout.findViewById<RelativeLayout>(R.id.relative_edit).background =
             (0x7F000000 or (Color.parseColor(dataSet[position].color) and 0xFFFFFF)).toDrawable()
         layout.findViewById<RelativeLayout>(R.id.relative_edit).setOnClickListener { v: View? ->
-            val action: EditListDirections.ActionEditListToEditTaskSelected =
-                EditListDirections.actionEditListToEditTaskSelected().setDataColor(dataSet[position])
-            v?.findNavController()!!.navigate(action)
+          //  val action: EditListDirections.ActionEditListToEditTaskSelected =
+          //      EditListDirections.actionEditListToEditTaskSelected().setDataColor(dataSet[position])
+          //  v?.findNavController()!!.navigate(action)
 
         }
 

@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="thumb">#6C7077</color>
+    <color name="work_recycler_card_background">#9F000000</color>
     <color name="switch_back">#8DFFFFFF</color>
     <color name="settings_switch">#FFFFFF</color>
     <color name="logout_button">#E6E8EC</color>
     <color name="background">#FFFFFF</color>
-    <color name="text">#000000</color>
+    <color name="background2">#EBEBEB</color>
+    <color name="text">#EB222222</color>
+    <color name="drawer_text">#000000</color>
     <color name="purple_200">#FFBB86FC</color>
     <color name="blue_gray">#2E6F95</color>
     <color name="gray_light">#202232</color>
@@ -34,4 +37,8 @@
     <color name="gold5">#AA771C</color>
     <color name="drawer_bg">#3F51B5</color>
     <color name="transparent">#00F44336</color>
+    <color name="chip_checked">#8BC34A</color>
+    <color name="chip_unchecked">#9C9C9C</color>
+    <color name="recycler_view_checked">#A0A0A0</color>
+    <color name="blue_dark">#04151F</color>
 </resources>

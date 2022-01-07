@@ -2,7 +2,6 @@
 
     <style name="Widget.Theme.LordOfTime.ActionBar.Fullscreen" parent="Widget.AppCompat.ActionBar">
         <item name="android:background">@color/white</item>
-
         <!--   <item name="android:windowAnimationStyle">@style/CustomActivityAnimation</item>-->
     </style>
     <style name="CustomActivityAnimation" parent="@android:style/Animation.Activity">
@@ -44,5 +43,21 @@
         <item name="android:layout_marginEnd">50dp</item>
         <item name="android:textSize">20sp</item>
     </style>
-
 </resources>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

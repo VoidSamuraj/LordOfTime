@@ -43,7 +43,7 @@ class MyChart(context: Context?, attributeSet: AttributeSet ):
         side = if (width > height)
             height * 7 / 10
         else
-            width * 7 / 10
+            width * 6 / 10
 
         drawPie(canvas)
     }
