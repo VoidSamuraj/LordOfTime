@@ -40,6 +40,7 @@ class EditTaskDialog(
         }
     }
 
+
     private var fragment:Fragment?=null
     private lateinit var adapter: ArrayColorAdapter
     private lateinit var nameEdit:EditText
