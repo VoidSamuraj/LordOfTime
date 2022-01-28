@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view"
     >
-        <item android:id="@+id/workingFragment"  android:title="@string/start_task" android:icon="@drawable/ic_baseline_work_24"/>
+        <item android:id="@+id/workingFragment"  android:title="@string/start_task" android:icon="@drawable/ic_baseline_work_24" />
         <item android:id="@+id/calendarEditFragment"  android:title="@string/edit_tasks" android:icon="@drawable/ic_baseline_hourglass_bottom_24" />
         <item android:id="@+id/colorsFragment"  android:title="@string/categories" android:icon="@drawable/ic_baseline_color_lens_24" />
         <item android:id="@+id/manyCharts"  android:title="@string/charts" android:icon="@drawable/ic_baseline_pie_chart_24"/>
