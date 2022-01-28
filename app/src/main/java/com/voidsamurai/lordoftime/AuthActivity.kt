@@ -35,7 +35,11 @@ class AuthActivity : AppCompatActivity() {
 
                 val task = GoogleSignIn.getLastSignedInAccount(this)
                 try {
-                    task?.let { itt -> firebaseAuthWithGoogle(itt) }
+                    task?.let { itt -> firebaseAuthWithGoogle(itt)
+
+                        getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE).edit().putString("user_id",itt.id).apply()
+
+                    }
                 } catch (e: ApiException) {
                     Log.w("Login", "Google sign in failed", e)
                 }

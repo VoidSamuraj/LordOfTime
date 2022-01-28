@@ -98,7 +98,7 @@ class EditTaskDialog(
         }else{
             startHourCalendar= Calendar.getInstance(TimeZone.getTimeZone("UTC"))
             endHourCalendar= Calendar.getInstance(TimeZone.getTimeZone("UTC"))
-            dataRow=(activity as MainActivity).getDBOpenHelper().getTaskRow(id!!)
+            dataRow=(activity as MainActivity).getDBOpenHelper().getTaskRow(id!!,(activity as MainActivity).userId)
             if(dataRow!=null){
                 startHourCalendar= dataRow!!.date.clone() as Calendar
                 val cal  =dataRow!!.date.clone() as Calendar
@@ -151,7 +151,7 @@ class EditTaskDialog(
                     if (durationEdit.text.isNullOrEmpty())
                         setDuration()
 
-                    updateRow((activity as MainActivity).getDBOpenHelper().getTaskRow(id!!))
+                    updateRow((activity as MainActivity).getDBOpenHelper().getTaskRow(id!!,(activity as MainActivity).userId))
                 }
                 dismiss()
             }
@@ -475,7 +475,7 @@ class EditTaskDialog(
         val d=(fragment as CalendarDayEdit).getMaxDur((hours.toFloat()*resources.getDimension(R.dimen.scroll)/24f).toInt(), (fragment as CalendarDayEdit).getHeight(hours.toFloat()))
         // dur= d*3600f
 
-        val id=(activity as MainActivity).getDBOpenHelper().addTaskRow(category, name, startDateTime,dur.toInt(), priority,0)
+        val id=(activity as MainActivity).getDBOpenHelper().addTaskRow(category, name, startDateTime,dur.toInt(), priority,0,(activity as MainActivity).userId)
         if(id!=-1L)
             (activity as MainActivity).tasks.add  ( id=id.toInt(),category = category, name=name, dateTime = startDateTime, workingTime =dur.toInt(), priority = priority,currentWorkingTime = 0, finished = if(isFinished.isChecked)1 else 0)
         (context as MainActivity).getDataFromDB()

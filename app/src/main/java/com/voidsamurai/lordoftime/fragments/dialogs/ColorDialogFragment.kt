@@ -62,7 +62,7 @@ class ColorDialogFragment(
             }
 
         contentView.findViewById<ImageButton>(R.id.delete_color).setOnClickListener {
-            (activity as MainActivity).getDBOpenHelper().deleteColorRow(getName())
+            (activity as MainActivity).getDBOpenHelper().deleteColorRow(getName(),(activity as MainActivity).userId)
             colors.delete(getName())
             update()
             dismiss()
@@ -79,7 +79,7 @@ class ColorDialogFragment(
                 setColorToImageView(contentView, R.id.new_color, R.drawable.ic_circle_r, colorPicker.selectedColor)
             }
             builder.setPositiveButton("Zapisz") { _, _ ->
-                (activity as MainActivity).getDBOpenHelper().addColorRow(getName(), getColor())
+                (activity as MainActivity).getDBOpenHelper().addColorRow(getName(), getColor(),(activity as MainActivity).userId)
                 colors.add(getName(),getColor())
                 update()
 
@@ -97,7 +97,7 @@ class ColorDialogFragment(
             builder.setPositiveButton("Zapisz") { _, _ ->
                 if (oldCategory != null && oldColor != null && newColor != null && newColor!=parseColor(oldColor)) {
                     (activity as MainActivity).getDBOpenHelper()
-                        .editColorRow(oldCategory, getName(), getColor())
+                        .editColorRow(oldCategory, getName(), getColor(),(activity as MainActivity).userId)
                     colors.add(getName(),getColor())
                     update()
                 }

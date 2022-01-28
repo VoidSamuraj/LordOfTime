@@ -154,7 +154,7 @@ class Settings : Fragment(), AdapterView.OnItemSelectedListener {
                     settingsBinding.numberPicker.backgroundTintList= ColorStateList.valueOf(Color.GRAY)
                 }else {
                     settingsBinding.hours.setTextColor(resources.getColor(R.color.text,null))
-                    settingsBinding.numberPicker.backgroundTintList= ColorStateList.valueOf(resources.getColor(R.color.blue_gray,null))
+                    settingsBinding.numberPicker.backgroundTintList= ColorStateList.valueOf(resources.getColor(R.color.switch_track_stroke_selected,null))
                 }
         }
         settingsBinding.chartSwitch.setOnClickListener {

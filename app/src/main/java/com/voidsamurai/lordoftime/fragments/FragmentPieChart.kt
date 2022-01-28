@@ -114,7 +114,9 @@ class FragmentPieChart : Fragment() {
        if(chartMap.values.isEmpty()&&legendMap.isEmpty()) {
            binding.chartDescription.visibility = View.GONE
            binding.myChart.visibility = View.GONE
+           binding.none.visibility=View.VISIBLE
        }else {
+           binding.none.visibility=View.GONE
            binding.chartDescription.visibility = View.VISIBLE
            binding.myChart.visibility = View.VISIBLE
 

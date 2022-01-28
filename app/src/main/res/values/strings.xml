@@ -97,5 +97,6 @@
     <string name="sunday">Sunday</string>
     <string name="hours">Hours</string>
     <string name="select_hour">Add Hour</string>
+    <string name="nohour">0 hours</string>
 
 </resources>

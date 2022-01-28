@@ -95,10 +95,10 @@ class DateChartFragment : Fragment() {
                     createMonthCalendarChart(date,true,weeks2)
             fillLabels()
         }
-        dayAimH.observe(viewLifecycleOwner, {
-            dayAim.text=getAimH(it.toString())
+        dayAimH.observe(viewLifecycleOwner) {
+            dayAim.text = getAimH(it.toString())
             updateAfterAimChange()
-        })
+        }
 
         fun slideNone(){
             binding.currentMonthLabel.inAnimation= null

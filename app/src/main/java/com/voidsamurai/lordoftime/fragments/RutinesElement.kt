@@ -140,16 +140,17 @@ class RutinesElement(private val taskId:Int,private val type:Int,private val rut
                     .joinToString(separator = ",")
 
                     (activity as MainActivity).let {
+                        val uid=(activity as MainActivity).userId
                         when (type) {
                             0 -> {
-                                val id = it.getDBOpenHelper().addRutinesRow(taskId, daysRow, time)
+                                val id = it.getDBOpenHelper().addRutinesRow(taskId, daysRow, time,uid)
                                 if (id.toInt()!=-1) {
                                     it.rutines.add(id.toInt(), taskId, daysRow, time)
                                     it.repeatDialog.notifyItemInserted()
                                 }
                             }
                             1 -> {
-                                it.getDBOpenHelper().editRutinesRow(rutinesRowId!!, taskId, daysRow, time)
+                                it.getDBOpenHelper().editRutinesRow(rutinesRowId!!, taskId, daysRow, time,uid)
                                 if (id!=-1) {
                                     it.rutines.update(id, taskId, daysRow, time)
                                     it.repeatDialog.notifyItemChanged()

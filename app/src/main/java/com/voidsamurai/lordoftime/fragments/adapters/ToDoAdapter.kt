@@ -1,11 +1,13 @@
 package com.voidsamurai.lordoftime.fragments.adapters
 
 import android.graphics.Color
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.voidsamurai.lordoftime.LinearViewHolder
 import com.voidsamurai.lordoftime.MainActivity
@@ -30,12 +32,20 @@ class ToDoAdapter(private val dataSet: ArrayList<DataRowWithColor>, private val 
         val imageView=layout.findViewById<ImageView>(R.id.imageView)
         if(dataSet[position].finished==1||(dataSet[position].workingTime- dataSet[position].currentWorkingTime)<=0) {
 
-            imageView.setImageDrawable(
-                activity.resources.getDrawable(
-                    R.drawable.ic_baseline_check_circle_outline_24,
-                    null
-                )
+
+            val drawable=activity.resources.getDrawable(
+                R.drawable.ic_baseline_check_circle_outline_24,
+                null
             )
+
+            val typedValue = TypedValue()
+            activity.theme.resolveAttribute(R.attr.colorControlNormal, typedValue, true)
+            val color = ContextCompat.getColor(activity, typedValue.resourceId)
+
+
+            drawable.setTint(color)
+
+            imageView.setImageDrawable(drawable)
         }
         imageView.setOnClickListener {
             dataSet[position].let {

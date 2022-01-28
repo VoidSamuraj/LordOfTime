@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.util.AttributeSet
 import android.view.View
+import com.voidsamurai.lordoftime.R
 
 class CalendarElement(context: Context?, attributeSet: AttributeSet):
     View(context,attributeSet) {
@@ -44,11 +45,13 @@ class CalendarElement(context: Context?, attributeSet: AttributeSet):
         canvas?.let {drawElement(canvas) }
     }
     private fun drawElement(canvas: Canvas){
-        paint.setShadowLayer(15f,0f,0f,Color.BLACK)
+        paint.setShadowLayer(8f,0f,0f,Color.BLACK)
+        val calendarCircleColor=resources.getColor(R.color.calendar_circle,null)
+        val calendaroutColor=resources.getColor(R.color.calendar_out,null)
         if(color)
-            drawArc(canvas,0.0f,360.0f,Color.WHITE)
+            drawArc(canvas,0.0f,360.0f,calendarCircleColor)
         else
-            drawArc(canvas,0.0f,360.0f,Color.LTGRAY)
+            drawArc(canvas,0.0f,360.0f,calendaroutColor)
 
         paint.setShadowLayer(0f,0f,0f,Color.BLACK)
         paint.style= Paint.Style.FILL
@@ -57,9 +60,9 @@ class CalendarElement(context: Context?, attributeSet: AttributeSet):
         else
             drawArc(canvas,0f,duration*360/scale,Color.GRAY)
         if(color)
-            paint.color=Color.WHITE
+            paint.color=calendarCircleColor
         else
-            paint.color=Color.LTGRAY
+            paint.color=calendaroutColor
         canvas.drawCircle(width/2.0f,height/2.0f,side/4f,Paint(paint))
         paint.textAlign=Paint.Align.CENTER
         paint.color = Color.BLACK

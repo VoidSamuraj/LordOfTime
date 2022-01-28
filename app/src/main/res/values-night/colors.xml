@@ -5,7 +5,6 @@
     <color name="background">#FF1B1E23</color>
     <color name="background2">#282B32</color>
     <color name="text">#CCCCCC</color>
-    <color name="drawer_text">#FFFFFF</color>
     <color name="purple_200">#FFBB86FC</color>
     <color name="blue_gray">#2E6F95</color>
     <color name="gray_light">#202232</color>
@@ -20,20 +19,57 @@
     <color name="light_blue_900">#FF01579B</color>
     <color name="light_blue_A200">#FF40C4FF</color>
     <color name="light_blue_A400">#FF00B0FF</color>
+
     <color name="black_overlay">#66000000</color>
     <color name="black_tint">#6F000000</color>
-    <color name="task_color">#1C6193</color>
+    <color name="task_color">#B8DBD9</color><!--1C6193 -->
     <color name="colorAccent">#276495</color>
-    <color name="work_button_color">#FF039BE5</color>
+
+    <color name="work_button_color">#1976D2</color>
     <color name="work_button_icon_color">#FF01579B</color>
     <color name="working_progress_circle">#673AB7</color>
+    <color name="working_play_button">#673AB7</color>
+
     <color name="gold1">#BF953F</color>
     <color name="gold2">#FCF6BA</color>
     <color name="gold3">#B38728</color>
     <color name="gold4">#FBF5B7</color>
     <color name="gold5">#AA771C</color>
+
+    <color name="drawer_text">#1976D2</color>
     <color name="drawer_bg">#3F51B5</color>
+
     <color name="chip_checked">#8BC34A</color>
     <color name="chip_unchecked">#9C9C9C</color>
-    <color name="recycler_view_checked">#A0A0A0</color>
+
+    <color name="recycler_view_checked">#A0A0A0</color>\
+
+    <color name="bar_light">#414345</color>
+    <color name="bar_dark">#151616</color>
+
+    <color name="gradient_bg_light">#414345</color>
+    <color name="gradient_bg_dark">#232526</color>
+    <color name="gradient_drawer_light">#232526</color>
+    <color name="gradient_drawer_dark">#152915</color>
+    <color name="gradient_bg_img_light">#000000</color>
+    <color name="gradient_bg_img_dark">#70000000</color>
+    <color name="drawer_tint">#9E414345</color>
+
+    <color name="calendar_circle">#D5D5D5</color>
+    <color name="calendar_out">#9A9A9A</color>
+
+    <color name="toggle_button_selected">#1976D2</color>
+    <color name="toggle_button_unselected">#9A9A9A</color>
+
+    <color name="thumb_selected">#1976D2</color>
+    <color name="thumb_unselected">#7892AC</color><!--7892AC -->
+    <color name="switch_thumb_stroke_selected">#1F4F80</color>
+    <color name="switch_thumb_stroke_unselected">#8e8e8e8e</color>
+    <color name="switch_track_selected">#1F4F80</color><!--34C759 -->
+    <color name="switch_track_unselected">#8DFFFFFF</color> <!--8DFFFFFF -->
+    <color name="switch_track_stroke_selected">#1F4F80</color>
+
+    <color name="fab_settings_tint">#95B2B8  </color><!-- B8DBD9 -->
+
+
 </resources>

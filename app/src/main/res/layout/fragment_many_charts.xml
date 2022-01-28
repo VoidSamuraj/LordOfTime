@@ -8,6 +8,7 @@
     android:layout_height="match_parent"
     tools:context=".fragments.ManyChartsFragment"
     android:scrollbars="none"
+    style="@style/MyStyle.Background"
     android:orientation="vertical">
 <LinearLayout
     android:layout_width="match_parent"
@@ -30,6 +31,7 @@
         app:cardCornerRadius="@dimen/radius_card_view">
 
         <LinearLayout
+            android:background="@drawable/gradient_background"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
@@ -70,6 +72,7 @@
         >
 
         <androidx.fragment.app.FragmentContainerView
+            android:background="@drawable/gradient_background"
             android:id="@+id/date_chart_fragment"
             android:name="com.voidsamurai.lordoftime.fragments.DateChartFragment"
             android:layout_width="match_parent"

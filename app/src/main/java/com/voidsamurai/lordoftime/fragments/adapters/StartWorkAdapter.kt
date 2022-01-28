@@ -3,6 +3,7 @@ package com.voidsamurai.lordoftime.fragments.adapters
 
 import android.content.Intent
 import android.graphics.Color
+import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -22,6 +23,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import com.voidsamurai.lordoftime.bd.DataRowWithColor
+import kotlinx.coroutines.withContext
 import java.util.*
 
 class StartWorkAdapter(private val activity: MainActivity, private var toDoData: ArrayList<DataRowWithColor>, private val lifecycleOwner: LifecycleOwner):RecyclerView.Adapter<LinearViewHolder>() {
@@ -38,6 +40,7 @@ class StartWorkAdapter(private val activity: MainActivity, private var toDoData:
     override fun onBindViewHolder(holder: LinearViewHolder, position: Int) {
 
         holder.setIsRecyclable(false)
+
         layout = holder.layout
 
         layout.findViewById<TextView>(R.id.work_label).apply {
@@ -178,42 +181,49 @@ class StartWorkAdapter(private val activity: MainActivity, private var toDoData:
 
     }
 
-
+/*
     fun deleteItem(viewHolder: RecyclerView.ViewHolder) {
+
         val itemToRemove = toDoData[viewHolder.adapterPosition]
         val pos = viewHolder.adapterPosition
-        if(activity.isTaskStarted&&activity.currentTaskId==toDoData[pos].id)
-        {
-            updateDB(viewHolder.adapterPosition, activity.currentTaskId!!)
-            deleteObservers()
+        CoroutineScope(Dispatchers.Default).run {
+            if (activity.isTaskStarted && activity.currentTaskId == toDoData[pos].id) {
+                updateDB(viewHolder.adapterPosition, activity.currentTaskId!!)
+                deleteObservers()
+                setIsRunning(false)
+                setTime(0)
+            }
+            CoroutineScope(Dispatchers.IO).run {
+            val list = activity.getDBOpenHelper()
+                .deleteRutinesRowAssignedToTask(toDoData[viewHolder.adapterPosition].id)
+            list.forEach { activity.rutines.delete(it) }
+            activity.getDBOpenHelper().deleteTaskRow(toDoData[viewHolder.adapterPosition].id)
+            activity.tasks.delete(toDoData[viewHolder.adapterPosition].id.toString())
             activity.getDataFromDB()
-            setIsRunning(false)
-            setTime(0)
+            }
+
+            toDoData.removeAt(pos)
+            notifyItemRemoved(pos)
+
         }
 
 
-        val list=activity.getDBOpenHelper().deleteRutinesRowAssignedToTask(toDoData[viewHolder.adapterPosition].id)
-        list.forEach {  activity.rutines.delete(it) }
-        activity.getDBOpenHelper().deleteTaskRow(toDoData[viewHolder.adapterPosition].id)
-        activity.tasks.delete(toDoData[viewHolder.adapterPosition].id.toString())
-        activity.getDataFromDB()
-        toDoData.removeAt(pos)
-        notifyItemRemoved(pos)
-
-        setIsRunning(false)
-
+       // setIsRunning(false)
         Snackbar.make(viewHolder.itemView,"Usunięto "+itemToRemove.name,Snackbar.LENGTH_LONG).setAction("Cofnij"){
-            val id=activity.getDBOpenHelper().addTaskRow(itemToRemove)
-            activity.tasks.add(itemToRemove)
+            CoroutineScope(Dispatchers.IO).run {
+                val id = activity.getDBOpenHelper().addTaskRow(itemToRemove)
+                activity.tasks.add(itemToRemove)
 
-            activity.getDataFromDB()
-            itemToRemove.id=id.toInt()
-            toDoData.add(pos,itemToRemove)
-            notifyItemInserted(pos)
-
+                activity.getDataFromDB()
+                itemToRemove.id = id.toInt()
+                toDoData.add(pos, itemToRemove)
+                notifyItemInserted(pos)
+            }
         }.show()
-    }
 
+
+    }
+*/
     fun editItem(position: Int){
         val action: WorkingFragmentDirections.ActionWorkingFragmentToEditTaskSelected =
             WorkingFragmentDirections.actionWorkingFragmentToEditTaskSelected().setDataColor(toDoData[position])
@@ -236,7 +246,8 @@ class StartWorkAdapter(private val activity: MainActivity, private var toDoData:
             activity.getCurrentWorkingTime().value?.let {
                 oh.addOldstatRow(
                     Calendar.getInstance(TimeZone.getTimeZone("UTC")).time.time, it,
-                    toDoData[position].category
+                    toDoData[position].category,
+                    activity.userId
                 )
                 activity.oldTasks.add(
                     dateTime = Calendar.getInstance(TimeZone.getTimeZone("UTC")).time.time,

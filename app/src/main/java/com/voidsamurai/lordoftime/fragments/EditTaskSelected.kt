@@ -150,7 +150,7 @@ class EditTaskSelected : Fragment() ,DatePickerDialog.OnDateSetListener,TimePick
                         binding.priorityEdit.text.toString().toInt()
                     ).toInt()
                     update()
-                    it.findNavController().navigateUp()
+                   // it.findNavController().navigateUp()
                     if(id!=-1){
                         (activity as MainActivity).let {
                             it.repeatDialog = RepeatDialog(id,this)
@@ -206,11 +206,11 @@ class EditTaskSelected : Fragment() ,DatePickerDialog.OnDateSetListener,TimePick
         }
 
         isRutineChecked.observe(
-            viewLifecycleOwner,
-            {binding.isRepeating.isChecked=it
+            viewLifecycleOwner
+        ) {
+            binding.isRepeating.isChecked = it
 
-            }
-        )
+        }
         binding.isRepeating.setOnCheckedChangeListener { compoundButton, _ ->
             compoundButton.isChecked=isRutineChecked.value!!
         }
@@ -277,7 +277,7 @@ class EditTaskSelected : Fragment() ,DatePickerDialog.OnDateSetListener,TimePick
         hours: String,
         priority: Int
     ):Long {
-        val id=(activity as MainActivity).getDBOpenHelper().addTaskRow(category, name, startDateTime, (hours.toFloat()*3600).toInt(), priority,0)
+        val id=(activity as MainActivity).getDBOpenHelper().addTaskRow(category, name, startDateTime, (hours.toFloat()*3600).toInt(), priority,0,(activity as MainActivity).userId)
         if(id!=-1L)
             (activity as MainActivity).tasks.add  ( id=id.toInt(),category, name, startDateTime, (hours.toFloat()*3600).toInt(), priority,0, finished =if(binding.isFinished.isChecked)1 else 0 )
         //(activity as MainActivity).getDBOpenHelper().addOldstatRow(startDateTime,(hours.toFloat()*3600).toInt())

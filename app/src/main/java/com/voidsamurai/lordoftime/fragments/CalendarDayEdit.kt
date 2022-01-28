@@ -69,7 +69,7 @@ class CalendarDayEdit : Fragment() {
             return@setOnTouchListener ret
         }
         getView()?.post {
-            val tasks = (activity as MainActivity).getDBOpenHelper().getTodayTasks(daysData.time.time)
+            val tasks = (activity as MainActivity).getDBOpenHelper().getTodayTasks(daysData.time.time,(activity as MainActivity).userId)
             tasks?.let {
                 for (task in it)
                     addElement(task)

@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/gradient_background"
     android:paddingStart="@dimen/line_height"
     android:paddingEnd="@dimen/line_height">
 
@@ -167,7 +168,7 @@
             android:layout_height="match_parent"
             android:background="@drawable/border"
             android:scaleType="fitCenter"
-            app:tint="@color/blue_gray"
+            app:tint="@color/switch_track_stroke_selected"
             app:srcCompat="@drawable/ic_edit"
             android:padding="@dimen/small_padding"
             tools:ignore="ContentDescription" />
@@ -270,7 +271,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/ic_save"
-        app:tint="@color/lemon"
+        app:tint="@color/switch_track_stroke_selected"
         android:contentDescription="@string/save" />
 
 

@@ -9,11 +9,13 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
+import android.opengl.Visibility
 import android.os.Bundle
 import android.util.Log
 import android.view.*
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.Fragment
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -30,10 +32,12 @@ class WorkingFragment : Fragment() {
 
     private val resetReceiver = ResetBroadcast()
     private var _workingFragmentBinding : FragmentWorkingBinding?=null
+    private var fabVisible=true
     val workingFragmentBinding get() =_workingFragmentBinding!!
     private var currentOrder=Order.ASC
     private var currentSortBy=SortBy.DATE
     var currentArray:ArrayList<DataRowWithColor> = ArrayList()
+
     enum class Order(order:Int){
         ASC(1),
         DESC(2)
@@ -42,12 +46,12 @@ class WorkingFragment : Fragment() {
         DATE("R.string.date"),
         PRIORITY("R.string.priority")
     }
-    var deleteIcon:Drawable?=null
+    //var deleteIcon:Drawable?=null
     var editIcon:Drawable?=null
 
-    val swipeGesture=object : ItemTouchHelper.SimpleCallback(0,ItemTouchHelper.LEFT or  ItemTouchHelper.RIGHT){
+    val swipeGesture=object : ItemTouchHelper.SimpleCallback(0,ItemTouchHelper.LEFT/* or  ItemTouchHelper.RIGHT*/){
 
-        val colorSwipeDelete:ColorDrawable= ColorDrawable(Color.parseColor("#FF0000"))
+      //  val colorSwipeDelete:ColorDrawable= ColorDrawable(Color.parseColor("#FF0000"))
         val colorSwipeEdit:ColorDrawable= ColorDrawable(Color.parseColor("#00FF00"))
 
         override fun onMove(
@@ -62,9 +66,9 @@ class WorkingFragment : Fragment() {
             when(direction){
                 ItemTouchHelper.LEFT->
                     (workingFragmentBinding.taskList.adapter as StartWorkAdapter).editItem(viewHolder.adapterPosition)
-
+/*
                 ItemTouchHelper.RIGHT->
-                    (workingFragmentBinding.taskList.adapter as StartWorkAdapter).deleteItem(viewHolder)
+                    (workingFragmentBinding.taskList.adapter as StartWorkAdapter).deleteItem(viewHolder)*/
             }
         }
 
@@ -101,10 +105,10 @@ class WorkingFragment : Fragment() {
             val size =itemView.height/2
             val margin = (itemView.height- size)/2
 
-            if(dX.toInt()==itemView.right){
+            /*if(dX.toInt()==itemView.right){
                 hide(colorSwipeDelete)
 
-            }else if(dX.toInt()==itemView.left){
+            }else*/ if(dX.toInt()==itemView.left){
                 hide(colorSwipeEdit)
             }
             else if(dX<0){
@@ -117,7 +121,7 @@ class WorkingFragment : Fragment() {
                 c.clipRect(itemView.right+dX.toInt(),itemView.top,itemView.right,itemView.bottom)
                 editIcon!!.draw(c)
                 c.restore()
-            }else  if(dX>0){
+            }/*else  if(dX>0){
                 deleteIcon!!.setBounds(itemView.left+10,itemView.top+margin,itemView.left+ size+10,itemView.bottom-margin)
                 colorSwipeDelete.setBounds(itemView.left,itemView.top,dX.toInt(),itemView.bottom)
                 if(widthPart>=dX)
@@ -127,7 +131,7 @@ class WorkingFragment : Fragment() {
                 c.clipRect(itemView.left,itemView.top,dX.toInt(),itemView.bottom)
                 deleteIcon!!.draw(c)
                 c.restore()
-            }
+            }*/
             super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
 
         }
@@ -187,8 +191,12 @@ class WorkingFragment : Fragment() {
                 currentArray.sortByDescending { dataRowWithColor -> dataRowWithColor.priority }
 
             // (activity as MainActivity).getQueryArrayByPriority().observe(viewLifecycleOwner,{
-            workingFragmentBinding.taskList.adapter=StartWorkAdapter(requireActivity() as MainActivity,currentArray,lifecycleOwner = viewLifecycleOwner)
-            workingFragmentBinding.taskList.layoutManager=LinearLayoutManager(requireContext())
+            workingFragmentBinding.taskList.let{
+                it.adapter=StartWorkAdapter(requireActivity() as MainActivity,currentArray,lifecycleOwner = viewLifecycleOwner)
+                it.layoutManager=LinearLayoutManager(requireContext())
+                it.isNestedScrollingEnabled = false
+            }
+
             //    })
         }
         val touchListner=ItemTouchHelper(swipeGesture)
@@ -266,11 +274,39 @@ class WorkingFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        deleteIcon=AppCompatResources.getDrawable(requireContext(),R.drawable.ic_delete)
+       // deleteIcon=AppCompatResources.getDrawable(requireContext(),R.drawable.ic_delete)
         editIcon=AppCompatResources.getDrawable(requireContext(),R.drawable.ic_edit)
         val iFilter=IntentFilter("RESET_COUNTER")
         requireActivity().registerReceiver(resetReceiver,iFilter)
-        workingFragmentBinding.taskList.adapter?.notifyDataSetChanged()
+        workingFragmentBinding.taskList.let{
+            it.adapter?.notifyDataSetChanged()
+            it.setHasFixedSize(true)
+            it.setItemViewCacheSize(10)
+        }
+
+        workingFragmentBinding.add.setOnClickListener {
+            it.findNavController().navigate(R.id.action_workingFragment_to_editTaskSelected)
+        }
+        workingFragmentBinding.taskList.addOnScrollListener(object :RecyclerView.OnScrollListener(){
+
+
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                workingFragmentBinding.add.let{
+                    if(dy>0&&fabVisible/*&&it.visibility==View.VISIBLE*/){
+                       // it.visibility=View.GONE
+                           it.animate().alpha(0f).setDuration(500).withEndAction { it.hide() }. start()
+                    fabVisible=false
+                    }
+                    else if(dy<0&&(!fabVisible)/*&&it.visibility==View.GONE**/) {
+                        // it.visibility=View.VISIBLE
+                        it.animate().alpha(1f).setDuration(500).withEndAction { it.show() }.start()
+                        fabVisible=true
+                    }
+                }
+
+            }
+        })
     }
 
     override fun onDestroyView() {
@@ -281,8 +317,8 @@ class WorkingFragment : Fragment() {
     inner class ResetBroadcast : BroadcastReceiver(){
 
         override fun onReceive(context: Context?, intent: Intent?) {
-            intent?.let {intent ->
-                if(intent.action.equals("RESET_COUNTER"))
+            intent?.let {it ->
+                if(it.action.equals("RESET_COUNTER"))
                         activity?.let {
                             (it as MainActivity).getCurrentWorkingTime().value=intent.getIntExtra("time",0)
                             it.unregisterReceiver(resetReceiver)

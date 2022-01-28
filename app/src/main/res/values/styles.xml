@@ -1,9 +1,10 @@
 <resources>
-
+    <!--
     <style name="Widget.Theme.LordOfTime.ActionBar.Fullscreen" parent="Widget.AppCompat.ActionBar">
-        <item name="android:background">@color/white</item>
-        <!--   <item name="android:windowAnimationStyle">@style/CustomActivityAnimation</item>-->
+        <item name="android:background">@color/lemon</item>
+           <item name="android:windowAnimationStyle">@style/CustomActivityAnimation</item>
     </style>
+    -->
     <style name="CustomActivityAnimation" parent="@android:style/Animation.Activity">
         <item name="android:activityOpenEnterAnimation">@anim/slide_in_right</item>
         <item name="android:activityOpenExitAnimation">@anim/slide_out_right</item>
@@ -16,18 +17,31 @@
     </style>
 
 
-    <style name="Widget.App.Button.OutlinedButton.IconOnly"
+    <style name="MyStyle.CardView" parent="CardView.Light">
+        <item name="android:background">@drawable/gradient_background</item>
+    </style>
+    <style name="MyStyle.Background" parent="android:Theme">
+        <item name="android:background">@drawable/image_gradient_bg</item>
+    </style>
+    <style name="MyStyle.Background2" parent="android:Theme">
+        <item name="android:background">@drawable/gradient_background</item>
+    </style>
+    <style name="MyStyle.BackgroundWorking" parent="android:Theme">
+        <item name="android:background">@drawable/gradient_work_recycle_element</item>
+    </style>
+    <!--
+    gradient_work_recycle_element
+    -->
+    <style name="ToggleButtonText"
         parent="Widget.MaterialComponents.Button.OutlinedButton">
-        <item name="iconPadding">0dp</item>
+        <item name="android:textSize">12sp</item>
         <item name="android:insetTop">0dp</item>
         <item name="android:insetBottom">0dp</item>
-        <item name="android:paddingLeft">12dp</item>
-        <item name="android:paddingRight">12dp</item>
-        <item name="android:minWidth">48dp</item>
         <item name="android:minHeight">48dp</item>
+
     </style>
 
-    <style name="ToggleButtonWithIcon" parent="Widget.MaterialComponents.Button.OutlinedButton">
+    <style name="ToggleButtonWithText" parent="Widget.MaterialComponents.Button.OutlinedButton">
         <item name="iconPadding">0dp</item>
         <item name="android:insetTop">0dp</item>
         <item name="android:insetBottom">0dp</item>
@@ -43,6 +57,8 @@
         <item name="android:layout_marginEnd">50dp</item>
         <item name="android:textSize">20sp</item>
     </style>
+
+
 </resources>
 
 

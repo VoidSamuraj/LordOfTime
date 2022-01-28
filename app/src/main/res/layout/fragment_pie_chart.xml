@@ -28,9 +28,12 @@
         android:layout_weight="3"
         android:layout_gravity="center"
         tools:itemCount="4"
-        tools:listitem="@layout/element_chart_details">
-
-
-    </androidx.recyclerview.widget.RecyclerView>
-
+        tools:listitem="@layout/element_chart_details"/>
+    <TextView
+        android:id="@+id/none"
+        android:text="@string/nohour"
+        android:textSize="@dimen/normal_text_size"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
 </LinearLayout>

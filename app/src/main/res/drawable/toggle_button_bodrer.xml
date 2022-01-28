@@ -7,7 +7,7 @@
             <corners android:radius="5dp" />
             <stroke
                 android:width="2dp"
-                android:color="@color/switch_track_stroke_selected" />
+                android:color="@color/white" />
         </shape>
     </item>
     <item  android:state_checked="false"  >
@@ -16,7 +16,7 @@
             <corners android:radius="5dp" />
             <stroke
                 android:width="2dp"
-                android:color="@color/switch_track_stroke_selected" />
+                android:color="@color/red" />
         </shape>
     </item>
 

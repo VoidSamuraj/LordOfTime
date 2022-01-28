@@ -1,22 +1,17 @@
 package com.voidsamurai.lordoftime.fragments
 
+import android.animation.Animator
 import android.animation.ValueAnimator
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.transition.TransitionInflater
 import android.util.Log
 import android.view.*
-import android.view.animation.AccelerateInterpolator
-import android.view.animation.AnimationUtils
 import android.view.animation.AnticipateOvershootInterpolator
 import android.view.animation.Interpolator
-import android.widget.TextView
-import androidx.core.animation.doOnEnd
-import androidx.core.animation.doOnStart
+import androidx.core.graphics.drawable.toDrawable
+import androidx.core.view.drawToBitmap
 import androidx.fragment.app.Fragment
 import androidx.interpolator.view.animation.FastOutLinearInInterpolator
-import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
@@ -28,14 +23,9 @@ import com.voidsamurai.lordoftime.R
 import com.voidsamurai.lordoftime.databinding.FragmentHomeBinding
 import com.voidsamurai.lordoftime.fragments.adapters.ToDoAdapter
 import com.voidsamurai.lordoftime.fragments.adapters.ToDoDateAdapter
-import com.voidsamurai.lordoftime.startAnimation
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import java.util.*
-import kotlin.collections.ArrayList
 import kotlin.math.abs
+import kotlin.math.max
 
 
 class HomeFragment : Fragment() {
@@ -72,18 +62,26 @@ class HomeFragment : Fragment() {
 
         activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
 
-        (activity as MainActivity).getQueryArrayByPriority().observe(viewLifecycleOwner,{
-            setAdapterManager(todoRecyclerView
-                , ToDoAdapter(ArrayList(it
-                    .subList(0,if(it.size>=10)10 else it.size ).toList()),activity as MainActivity)
-                ,LinearLayoutManager(requireContext()))
-        })
-        (activity as MainActivity).getQueryArrayByDate().observe(viewLifecycleOwner,{
-            setAdapterManager(newestRecyclerView
-                , ToDoDateAdapter(ArrayList(it
-                    .subList(0,if(it.size>=3)3 else it.size ).toList()))
-                , LinearLayoutManager(requireContext()))
-        })
+        (activity as MainActivity).getQueryArrayByPriority().observe(viewLifecycleOwner) {
+            setAdapterManager(
+                todoRecyclerView, ToDoAdapter(
+                    ArrayList(
+                        it
+                            .subList(0, if (it.size >= 10) 10 else it.size).toList()
+                    ), activity as MainActivity
+                ), LinearLayoutManager(requireContext())
+            )
+        }
+        (activity as MainActivity).getQueryArrayByDate().observe(viewLifecycleOwner) {
+            setAdapterManager(
+                newestRecyclerView, ToDoDateAdapter(
+                    ArrayList(
+                        it
+                            .subList(0, if (it.size >= 3) 3 else it.size).toList()
+                    )
+                ), LinearLayoutManager(requireContext())
+            )
+        }
 /*
         fun factory():TextView{
             val textView = TextView(requireContext())
@@ -106,44 +104,63 @@ class HomeFragment : Fragment() {
 
         val updateIntervalSeconds=1*30
         if((activity as MainActivity).isTaskStarted)
-            (activity as MainActivity).getCurrentWorkingTime().observe(viewLifecycleOwner,{
-                var currentFormatedTime=((it-(it%3600))/3600)
-               // if(currentFormatedTime!=hours) {
-                    homeFragmentBinding.switcherHour.text = currentFormatedTime.toString()
-                    hours=currentFormatedTime
-              //  }
-                currentFormatedTime=((it-(it%60))/60)%60
-             //   if(currentFormatedTime!=minutes) {
-                   // if(minutes-(minutes%10)!=currentFormatedTime-(currentFormatedTime%10)){
-                        homeFragmentBinding.switcherMinutes1.text = ((currentFormatedTime-(currentFormatedTime%10))/10).toString()
-                        homeFragmentBinding.switcherMinutes2.text = (currentFormatedTime%10).toString()
-                   // }
-                  /*  else
-                        homeFragmentBinding.switcherMinutes2.text = (currentFormatedTime%10).toString()*/
-                    minutes=currentFormatedTime
-             //   }
-                currentFormatedTime=it%60
+            (activity as MainActivity).getCurrentWorkingTime().observe(viewLifecycleOwner) {
+                var currentFormatedTime = ((it - (it % 3600)) / 3600)
+                // if(currentFormatedTime!=hours) {
+                homeFragmentBinding.switcherHour.text = currentFormatedTime.toString()
+                hours = currentFormatedTime
+                //  }
+                currentFormatedTime = ((it - (it % 60)) / 60) % 60
+                //   if(currentFormatedTime!=minutes) {
+                // if(minutes-(minutes%10)!=currentFormatedTime-(currentFormatedTime%10)){
+                homeFragmentBinding.switcherMinutes1.text =
+                    ((currentFormatedTime - (currentFormatedTime % 10)) / 10).toString()
+                homeFragmentBinding.switcherMinutes2.text = (currentFormatedTime % 10).toString()
+                // }
+                /*  else
+                      homeFragmentBinding.switcherMinutes2.text = (currentFormatedTime%10).toString()*/
+                minutes = currentFormatedTime
+                //   }
+                currentFormatedTime = it % 60
                 //if(currentFormatedTime!=seconds) {
-                  //  if(seconds-(seconds%10)!=currentFormatedTime-(currentFormatedTime%10)) {
-                        homeFragmentBinding.switcherSeconds1.text = ((currentFormatedTime-(currentFormatedTime%10)) / 10).toString()
-                        homeFragmentBinding.switcherSeconds2.text = (currentFormatedTime % 10).toString()
-                  //  }
-                    /*else
-                        homeFragmentBinding.switcherSeconds2.text = (currentFormatedTime % 10).toString()
-    */
+                //  if(seconds-(seconds%10)!=currentFormatedTime-(currentFormatedTime%10)) {
+                homeFragmentBinding.switcherSeconds1.text =
+                    ((currentFormatedTime - (currentFormatedTime % 10)) / 10).toString()
+                homeFragmentBinding.switcherSeconds2.text = (currentFormatedTime % 10).toString()
+                //  }
+                /*else
+                    homeFragmentBinding.switcherSeconds2.text = (currentFormatedTime % 10).toString()
+*/
 
-                if(it%updateIntervalSeconds==0&&it!=0){
-                    val wt=((Calendar.getInstance(TimeZone.getTimeZone("UTC")).timeInMillis-(activity as MainActivity).getStartTime())/1000).toInt()
-                    (activity as MainActivity).setStartTime(Calendar.getInstance(TimeZone.getTimeZone("UTC")).timeInMillis)
-                    Log.v("TIME",""+wt)
-                    (activity as MainActivity).updateOldstats(wt+((activity as MainActivity).getDBOpenHelper().getTaskRow((activity as MainActivity).getCurrentTaskId()).currentWorkingTime*3600).toInt(),updateIntervalSeconds)
-                    val myFragment: FragmentPieChart = childFragmentManager.findFragmentById(R.id.chart_frag) as FragmentPieChart
-                    myFragment.fillChartWithData((activity as MainActivity).getOldDataWithColors(true))
+                if (it % updateIntervalSeconds == 0/*&&it!=0*/) {
+                    val wt =
+                        ((Calendar.getInstance(TimeZone.getTimeZone("UTC")).timeInMillis - (activity as MainActivity).getStartTime()) / 1000).toInt()
+                    (activity as MainActivity).setStartTime(
+                        Calendar.getInstance(
+                            TimeZone.getTimeZone(
+                                "UTC"
+                            )
+                        ).timeInMillis
+                    )
+                    Log.v("TIME", "" + wt)
+                    (activity as MainActivity).updateOldstats(
+                        wt + ((activity as MainActivity).getDBOpenHelper().getTaskRow(
+                            (activity as MainActivity).getCurrentTaskId(),
+                            (activity as MainActivity).userId
+                        ).currentWorkingTime * 3600).toInt(), updateIntervalSeconds
+                    )
+                    val myFragment: FragmentPieChart =
+                        childFragmentManager.findFragmentById(R.id.chart_frag) as FragmentPieChart
+                    myFragment.fillChartWithData(
+                        (activity as MainActivity).getOldDataWithColors(
+                            true
+                        )
+                    )
 
                 }
-                    seconds=currentFormatedTime
-               // }
-            })
+                seconds = currentFormatedTime
+                // }
+            }
 
 
         enterTransition=null
@@ -169,6 +186,7 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+
         if((activity as MainActivity).isTaskStarted) {
             homeFragmentBinding.statusImage.visibility=View.INVISIBLE
             homeFragmentBinding.analogClock.visibility=View.VISIBLE
@@ -177,82 +195,30 @@ class HomeFragment : Fragment() {
             homeFragmentBinding.statusImage.visibility=View.VISIBLE
             homeFragmentBinding.analogClock.visibility = View.INVISIBLE
         }
-        //settings for back navigation
-        if((activity as MainActivity).isFromEditFragment){
-
-            //requireActivity().window.setBackgroundDrawable(ColorDrawable(resources.getColor(R.color.task_color,null)))
-            homeFragmentBinding.buttonGroup.alpha=0f
-            homeFragmentBinding.taskChangerFAB.alpha=0f
-            val animator=getCircleValueAnimator(true)
-            animator.start()
-            /*
-            CoroutineScope(Dispatchers.Main).launch{
-                val color=resources.getColor(R.color.background,null)
-                homeFragmentBinding.relativeLayout.setBackgroundColor(color)
-                delay(510)
-               // requireActivity().window.setBackgroundDrawable(ColorDrawable(color))
-            }
-            */
-            (activity as MainActivity).isFromEditFragment=false
-
-        }else if((activity as MainActivity).isFromWorkFragment&&false){
-
-            homeFragmentBinding.statusImage.visibility = View.INVISIBLE
-            homeFragmentBinding.analogClock.visibility = View.INVISIBLE
-            homeFragmentBinding.view.visibility = View.VISIBLE
-            homeFragmentBinding.view.setBackgroundColor(
-                resources.getColor(
-                    R.color.work_button_color,
-                    null
-                )
-            )
-
-            val va = getWorkButtonClickAnimator(true)
-            va.doOnStart {
-                val cornersW = cornerWidth * 51
-                setCornersSize(homeFragmentBinding.buttonGroup, statusMaxWidth, Y = false)
-                setCornersSize(homeFragmentBinding.corner1, cornersW)
-                setCornersSize(homeFragmentBinding.corner1bg, cornersW)
-                homeFragmentBinding.corner1bg.visibility = View.VISIBLE
-                homeFragmentBinding.buttonGroup.alpha = 1f
-                homeFragmentBinding.view.visibility = View.INVISIBLE
-                homeFragmentBinding.view.setBackgroundColor(Color.TRANSPARENT)
-            }
-            va.doOnEnd {
-                setCornersSize(homeFragmentBinding.buttonGroup, hiddenWidth, Y = false)
-                setCornersSize(homeFragmentBinding.corner1, cornerWidth)
-                setCornersSize(homeFragmentBinding.corner1bg, cornerWidth)
-                homeFragmentBinding.corner1bg.visibility = View.INVISIBLE
-                if ((activity as MainActivity).isTaskStarted)
-                    homeFragmentBinding.analogClock.visibility = View.VISIBLE
-                else
-                    homeFragmentBinding.statusImage.visibility = View.VISIBLE
-                setCornersSize(homeFragmentBinding.corner2, cornerWidth)
-                homeFragmentBinding.buttonGroup.alpha = 0.8f
-
-            }
-            CoroutineScope(Dispatchers.Main).launch {
-                delay(resources.getInteger(R.integer.time_duration_normal).toLong())
-                va.reverse()
-            }
-            (activity as MainActivity).isFromWorkFragment = false
-
-        }
-
-
 
         todoRecyclerView=homeFragmentBinding.todoRecycleView
         newestRecyclerView=homeFragmentBinding.newestTasksRecycleView
         newestRecyclerView.addOnItemTouchListener(RecyclerViewDisabler())
 
-        homeFragmentBinding.taskChangerFAB.setOnClickListener {
-
-            homeFragmentBinding.circleAnim.visibility= View.VISIBLE
-
-            val valueAnimator=getCircleValueAnimator(false)
-            valueAnimator.start()
+        homeFragmentBinding.taskChangerFAB.setOnClickListener { it ->
 
 
+            val background=homeFragmentBinding.homeFrag
+            val intArray= IntArray(2)
+            homeFragmentBinding.taskChangerFAB.getLocationOnScreen(intArray)
+            intArray[0]= (intArray[0]+(resources.getDimension(R.dimen.fab_size)/2)/*resources.getDimension(R.dimen.fab_margin)+resources.getDimension(R.dimen.small_padding)*/).toInt()
+            intArray[1]= (intArray[1]-resources.getDimension(R.dimen.bar_height)).toInt()
+
+            (activity as MainActivity).let {
+                it.homeFabPosition.let { itt ->
+                    itt[0]=intArray[0]
+                    itt[1]=intArray[1]
+                }
+                it.homeDrawable=background.drawToBitmap().toDrawable(resources)
+
+            }
+
+            it.findNavController().navigate(R.id.action_FirstFragment_to_calendarEditFragment)
         }
 
         //chart listener
@@ -275,6 +241,29 @@ class HomeFragment : Fragment() {
         homeFragmentBinding.view.isClickable=false
         setWorkButtonListener()
 
+        (activity as MainActivity).let {
+            if(it.isFromCalendarFragment){
+
+                homeFragmentBinding.bg.background=it.homeDrawable
+                homeFragmentBinding.bg.visibility=View.VISIBLE
+                val viewTreeObserver = homeFragmentBinding.bg.viewTreeObserver
+
+                if (viewTreeObserver.isAlive) {
+                    viewTreeObserver.addOnGlobalLayoutListener(object :
+                        ViewTreeObserver.OnGlobalLayoutListener {
+                        override fun onGlobalLayout() {
+                            circularRevealBack()
+                            homeFragmentBinding.bg.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                        }
+                    })
+                }
+
+
+                it.isFromCalendarFragment=false
+            }
+        }
+
+
     }
     private fun setWorkButtonListener(){
         for(i in 0 until homeFragmentBinding.buttonGroup.childCount){
@@ -286,8 +275,8 @@ class HomeFragment : Fragment() {
                     homeFragmentBinding.view.isClickable=true
                     isButtonHidden = false
 
-                    for(i in 0 until homeFragmentBinding.buttonGroup.childCount)
-                        homeFragmentBinding.buttonGroup.getChildAt(i).setOnClickListener {
+                    for(j in 0 until homeFragmentBinding.buttonGroup.childCount)
+                        homeFragmentBinding.buttonGroup.getChildAt(j).setOnClickListener {
 
                             homeFragmentBinding.corner1bg.visibility = View.VISIBLE
 
@@ -347,96 +336,7 @@ class HomeFragment : Fragment() {
         return valAnim
     }
 
-    private fun getWorkButtonClickAnimator(isEnter:Boolean):ValueAnimator{
-        val lp=homeFragmentBinding.buttonGroup.layoutParams
-        val groupW=lp.width
-        val valAnim: ValueAnimator=
-            if (isEnter)
-                ValueAnimator.ofInt(120,1)
-            else
-                ValueAnimator.ofInt(1,120)
 
-        valAnim.addUpdateListener {
-            if (!isEnter)
-                lp.width=groupW*(20*(it.animatedValue as Int)/100)+groupW
-            else {
-                val minus=resources.getDimension(R.dimen.button_half_sphere_width)+resources.getDimension(R.dimen.padding_elevation)
-                // lp.width = hiddenWidth * (80 * ((it.animatedValue as Int) / 100)) + hiddenWidth
-                lp.width =cornerWidth * (39*(it.animatedValue as Int)/100) + cornerWidth+minus.toInt()
-            }
-
-            homeFragmentBinding.buttonGroup.layoutParams=lp
-
-            val cornerW =cornerWidth * (39*(it.animatedValue as Int)/100) + cornerWidth
-            setCornersSize(homeFragmentBinding.corner1bg,cornerW)
-            setCornersSize(homeFragmentBinding.corner1,cornerW)
-            setCornersSize(homeFragmentBinding.corner2,cornerW)
-
-        }
-
-        valAnim.duration=400
-
-        valAnim.interpolator=FastOutLinearInInterpolator()
-        if (isEnter){
-            valAnim.interpolator=ReverseInterpolator()
-        }
-        return valAnim
-    }
-    private fun getCircleValueAnimator(isEnter:Boolean):ValueAnimator{
-
-        homeFragmentBinding.buttonGroup.elevation=1f
-
-        val valueAnimator: ValueAnimator=
-            if (isEnter)
-                ValueAnimator.ofFloat(0f, 100f)
-            else
-                ValueAnimator.ofFloat(100f, 0f)
-
-            valueAnimator.addUpdateListener {
-                var alpha=(it.animatedValue as Float) /100f
-                if(isEnter){
-                    if (it.animatedValue as Float>96)
-                        alpha=100f
-                    else if(it.animatedValue as Float>10)
-                        alpha=alpha*9/1000
-                    else
-                        alpha=0f
-
-                }
-                homeFragmentBinding.buttonGroup.alpha=alpha
-                homeFragmentBinding.taskChangerFAB.alpha=alpha
-            }
-        if (isEnter)
-            valueAnimator.duration=500
-        else
-            valueAnimator.duration=200
-        valueAnimator.interpolator=AccelerateInterpolator()
-
-        val animation = AnimationUtils.loadAnimation(requireContext(),R.anim.circle_explosion_anim).apply {
-            duration = 500
-            interpolator = FastOutSlowInInterpolator()
-        }
-
-        if(isEnter)
-            animation.interpolator=ReverseInterpolator()
-
-        valueAnimator.doOnStart {
-            CoroutineScope(Dispatchers.Main).launch {
-
-                delay(1)
-                homeFragmentBinding.circleAnim.startAnimation(animation) {
-                    if (!isEnter) {
-                        (activity as MainActivity).isFromEditFragment=true
-                        homeFragmentBinding.circleAnim.findNavController()
-                            .navigate(R.id.action_FirstFragment_to_calendarEditFragment)
-                    }
-                }
-            }
-        }
-        homeFragmentBinding.buttonGroup.elevation=100f
-
-        return valueAnimator
-    }
     private fun setCornersSize(corner:View,dp:Int,X:Boolean=true,Y:Boolean=true){
         val c1=corner.layoutParams
         if(X)
@@ -472,4 +372,29 @@ class HomeFragment : Fragment() {
     }
 
 
+    private fun circularRevealBack() {
+        val background=homeFragmentBinding.bg
+        val finalRadius = max(background.width, background.height).toFloat()
+        val circularReveal =
+            ViewAnimationUtils.createCircularReveal(
+                background,
+                (activity as MainActivity).homeFabPosition[0],
+                (activity as MainActivity).homeFabPosition[1],
+                finalRadius,
+                0f)
+        circularReveal.addListener(object : Animator.AnimatorListener {
+            override fun onAnimationStart(animator: Animator) {}
+            override fun onAnimationEnd(animator: Animator) {
+
+                homeFragmentBinding.bg.visibility=View.INVISIBLE
+
+            }
+
+            override fun onAnimationCancel(animator: Animator) {}
+            override fun onAnimationRepeat(animator: Animator) {}
+        })
+        circularReveal.duration = 1000
+        circularReveal.start()
+
+    }
 }

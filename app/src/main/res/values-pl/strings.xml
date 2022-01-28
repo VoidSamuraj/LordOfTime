@@ -94,4 +94,5 @@
     <string name="sunday">Niedziela</string>
     <string name="hours">Hours</string>
     <string name="select_hour">Dodaj godzinę</string>
+    <string name="nohour">0 godzin</string>
 </resources>

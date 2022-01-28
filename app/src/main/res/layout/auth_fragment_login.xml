@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".fragments.RegisterFragment"
+    tools:context=".fragments.LoginFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -29,6 +29,7 @@
                 android:background="@color/lemon"
                 android:gravity="center"
                 android:orientation="vertical">
+
                 <ImageView
                     android:layout_width="40dp"
                     android:layout_height="40dp"
@@ -39,32 +40,7 @@
                     tools:ignore="ContentDescription" />
 
                 <View
-                    android:layout_width="match_parent"
-                    android:layout_height="2dp"
-                    android:background="@color/white" />
-                <ImageView
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_margin="10dp"
-                    android:background="@drawable/circle_stroke"
-                    android:padding="10dp"
-                    android:src="@drawable/ic__person"
-                    tools:ignore="ContentDescription" />
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="2dp"
-                    android:background="@color/white" />
-                <ImageView
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_margin="10dp"
-                    android:background="@drawable/circle_stroke"
-                    android:padding="10dp"
-                    android:src="@drawable/ic_baseline_lock_24"
-                    tools:ignore="ContentDescription" />
-
-                <View
+                    android:id="@+id/divider3"
                     android:layout_width="match_parent"
                     android:layout_height="2dp"
                     android:background="@color/white" />
@@ -87,43 +63,28 @@
                 android:layout_gravity="center"
                 android:gravity="center"
                 android:orientation="vertical">
+
                 <EditText
                     android:inputType="textEmailAddress"
                     android:id="@+id/edit_email"
                     android:layout_width="match_parent"
-                    android:textSize="@dimen/normal_text_size"
                     android:layout_height="59dp"
                     android:background="@null"
+                    android:hint="@string/email"
                     android:maxLines="1"
                     android:lines="1"
                     android:singleLine="true"
-                    android:hint="Email"
                     android:paddingStart="5dp"
+                    android:textSize="@dimen/normal_text_size"
                     android:paddingEnd="5dp"
-                    tools:ignore="HardcodedText" />
+                    tools:ignore="Autofill" />
 
                 <View
+                    android:id="@+id/divider5"
                     android:layout_width="match_parent"
                     android:layout_height="2dp"
                     android:background="@color/lemon" />
-                <EditText
-                    android:inputType="text"
-                    android:id="@+id/user_name"
-                    android:layout_width="match_parent"
-                    android:layout_height="59dp"
-                    android:background="@null"
-                    android:hint="@string/user_name"
-                    android:maxLines="1"
-                    android:lines="1"
-                    android:singleLine="true"
-                    android:textSize="@dimen/normal_text_size"
-                    android:paddingStart="5dp"
-                    android:paddingEnd="5dp" />
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="2dp"
-                    android:background="@color/lemon" />
                 <EditText
                     android:id="@+id/edit_password"
                     android:layout_width="match_parent"
@@ -136,51 +97,96 @@
                     android:paddingStart="5dp"
                     android:paddingEnd="5dp"
                     android:textSize="@dimen/normal_text_size"
-                    android:inputType="textPassword"/>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="2dp"
-                    android:background="@color/lemon" />
-
-                <EditText
-                    android:id="@+id/edit_password2"
-                    android:layout_width="match_parent"
-                    android:layout_height="59dp"
-                    android:background="@null"
-                    android:maxLines="1"
-                    android:lines="1"
-                    android:singleLine="true"
-                    android:hint="@string/repeat_password"
-                    android:textSize="@dimen/normal_text_size"
-                    android:paddingStart="5dp"
-                    android:paddingEnd="5dp"
-                    android:inputType="textPassword"/>
+                    android:inputType="textPassword"
+                    tools:ignore="Autofill" />
             </LinearLayout>
         </LinearLayout>
     </androidx.cardview.widget.CardView>
-
+    <TextView
+        android:id="@+id/login"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        app:layout_constraintBottom_toTopOf="@+id/textView13"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginBottom="30dp"
+        style="@style/AuthLabel"
+        android:background="@drawable/button_rounded"
+        android:backgroundTint="@color/lemon"
+        android:text="@string/login" />
 
     <TextView
         android:id="@+id/register"
         android:layout_width="match_parent"
         android:layout_height="50dp"
+        android:layout_marginBottom="30dp"
         android:background="@drawable/button_rounded"
         android:backgroundTint="@color/lemon"
         style="@style/AuthLabel"
         android:text="@string/register" />
-    <TextView
-        android:id="@+id/back_to_login"
-        android:layout_gravity="start"
-        android:layout_marginStart="60dp"
-        android:layout_width="wrap_content"
+
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:padding="10dp"
-        android:textSize="@dimen/normal_text_size"
+        android:orientation="vertical">
 
-        android:layout_marginTop="20dp"
-        android:text="@string/back_to_login" />
+        <TextView
+            android:id="@+id/forgot"
+            android:textSize="@dimen/normal_text_size"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/forgot_password"/>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:gravity="center">
+            <View
+                android:layout_width="wrap_content"
+                android:layout_height="1dp"
+                android:layout_weight="1"
+                android:background="?android:attr/listDivider" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/small_text_size"
+                android:text="@string/or"
+                android:layout_margin="10dp"/>
+            <View
+                android:layout_width="wrap_content"
+                android:layout_height="1dp"
+                android:layout_weight="1"
+                android:background="?android:attr/listDivider" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center">
+            <TextView
+                android:id="@+id/textView14"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/small_text_size"
+                android:text="@string/sign_by" />
+            <ImageButton
+                android:id="@+id/google_login"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:background="@null"
+                android:src="@drawable/ic_google"
+                tools:ignore="ContentDescription" />
+        </LinearLayout>
+
+
+    </LinearLayout>
 
 </LinearLayout>

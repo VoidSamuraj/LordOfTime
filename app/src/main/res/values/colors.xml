@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="thumb">#6C7077</color>
     <color name="work_recycler_card_background">#9F000000</color>
     <color name="switch_back">#8DFFFFFF</color>
     <color name="settings_switch">#FFFFFF</color>
@@ -8,7 +7,6 @@
     <color name="background">#FFFFFF</color>
     <color name="background2">#EBEBEB</color>
     <color name="text">#EB222222</color>
-    <color name="drawer_text">#000000</color>
     <color name="purple_200">#FFBB86FC</color>
     <color name="blue_gray">#2E6F95</color>
     <color name="gray_light">#202232</color>
@@ -22,23 +20,62 @@
     <color name="light_blue_600">#FF039BE5</color>
     <color name="light_blue_900">#FF01579B</color>
     <color name="light_blue_A200">#FF40C4FF</color>
-    <color name="light_blue_A400">#FF00B0FF</color>
+    <color name="light_blue_A400">#FF00B0FF</color
+        >
     <color name="black_overlay">#66000000</color>
     <color name="black_tint">#6F000000</color>
-    <color name="task_color">#FFFFFF</color>
+    <color name="task_color">#95B2B8</color>
     <color name="colorAccent">#276495</color>
-    <color name="work_button_color">#FF039BE5</color>
-    <color name="work_button_icon_color">#FF01579B</color>
-    <color name="working_progress_circle">#673AB7</color>
+
+    <color name="work_button_color">#FBC02D</color><!--#FF039BE5-->
+    <color name="work_button_icon_color">#151616</color><!--#FF01579B-->
+    <color name="working_progress_circle">#039BE5</color>
+    <color name="working_play_button">#039BE5</color><!--#673AB7-->
+
     <color name="gold1">#BF953F</color>
     <color name="gold2">#FCF6BA</color>
     <color name="gold3">#B38728</color>
     <color name="gold4">#FBF5B7</color>
+
     <color name="gold5">#AA771C</color>
-    <color name="drawer_bg">#3F51B5</color>
+    <color name="drawer_text">#4D4545</color>
+    <color name="drawer_bg">#FBC02D</color><!--#3F51B5-->
     <color name="transparent">#00F44336</color>
+
     <color name="chip_checked">#8BC34A</color>
     <color name="chip_unchecked">#9C9C9C</color>
+
     <color name="recycler_view_checked">#A0A0A0</color>
     <color name="blue_dark">#04151F</color>
+    <color name="bar_light">#FBC02D</color><!--#414345    95B2B8-->
+    <color name="bar_dark">#151616</color><!--#7E807F-->
+
+    <color name="gradient_bg_light">#DADAD9</color>
+    <color name="gradient_bg_dark">#9A9A9A</color>
+    <color name="gradient_drawer_light">#FBC02D</color>
+    <color name="gradient_drawer_dark">#8A6815</color>
+    <color name="gradient_bg_img_light">#ACACAC</color>
+    <color name="gradient_bg_img_dark">#2DACACAC</color>
+    <color name="drawer_tint">#D5ACACAC</color>
+
+    <color name="calendar_circle">#F1F1F1</color>
+    <color name="calendar_out">#BFBFBF</color>
+
+    <color name="toggle_button_selected">#FBC02D</color>
+    <color name="toggle_button_unselected">#2DACACAC</color>
+
+    <color name="thumb_selected">#FFC107</color>
+    <color name="thumb_unselected">#E4E0D5</color><!-- E6D8AD -->
+    <color name="switch_thumb_stroke_selected">#E3B136</color>
+    <color name="switch_thumb_stroke_unselected">#D1C49F</color>
+    <color name="switch_track_selected">#E3B136</color>
+    <color name="switch_track_unselected">#8DFFFFFF</color>
+    <color name="switch_track_stroke_selected">#E3B136</color>
+
+    <color name="fab_settings_tint">#B8DBD9</color>
+
+
 </resources>
+
+
+

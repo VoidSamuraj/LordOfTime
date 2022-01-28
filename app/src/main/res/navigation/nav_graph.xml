@@ -33,7 +33,11 @@
             app:destination="@id/settings" />
         <action
             android:id="@+id/action_FirstFragment_to_calendarEditFragment"
-            app:destination="@id/calendarEditFragment" />
+            app:destination="@id/calendarEditFragment"
+            app:enterAnim="@anim/no_transition"
+            app:exitAnim="@anim/no_transition"
+            app:popEnterAnim="@anim/no_transition"
+            app:popExitAnim="@anim/no_transition" />
     </fragment>
     <fragment
         android:id="@+id/colorsFragment"

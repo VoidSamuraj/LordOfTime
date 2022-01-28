@@ -27,6 +27,7 @@ class CalendarAdapter(private val context: Context, private val dataSet: ArrayLi
 
     override fun onBindViewHolder(holder: LinearViewHolder, position: Int) {
         val dm=DisplayMetrics()
+
         val activity=( context as Activity)//.windowManager. defaultDisplay.getMetrics(dm)
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
             val display = activity.display

@@ -20,6 +20,15 @@ import com.voidsamurai.lordoftime.fragments.adapters.CalendarEditAdapter
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.roundToInt
+import android.util.TypedValue
+
+import android.view.ViewAnimationUtils
+
+import android.animation.Animator
+import android.view.ViewTreeObserver.OnGlobalLayoutListener
+import androidx.core.graphics.drawable.toDrawable
+import androidx.core.view.drawToBitmap
+import androidx.navigation.fragment.navArgs
 
 
 class CalendarEditFragment : Fragment() {
@@ -27,6 +36,7 @@ class CalendarEditFragment : Fragment() {
     var _calendarViewBinding:FragmentCalendarEditBinding?=null
     val binding get()=_calendarViewBinding!!
 
+    private lateinit var background:View
     var dayAimH: MutableLiveData<Int> = MutableLiveData(6)
     private var productiveDays:Int=0
     private var workPer:Float=0f
@@ -42,6 +52,7 @@ class CalendarEditFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+
         _calendarViewBinding= FragmentCalendarEditBinding.inflate(inflater,container,false)
         return binding.root
     }
@@ -142,12 +153,49 @@ class CalendarEditFragment : Fragment() {
 
         fillAim()
 
+        background = binding.background
+
+        background.visibility = View.INVISIBLE
+        binding.bg.background=(activity as MainActivity).homeDrawable
+
+
+
+        val viewTreeObserver = background.viewTreeObserver
+
+        if (viewTreeObserver.isAlive) {
+            viewTreeObserver.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    circularReveal()
+                    background.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                }
+            })
+        }
+
+
+
+
+    }
+
+
+
+
+
+    override fun onPause() {
+        (activity as MainActivity).homeDrawable=background.drawToBitmap().toDrawable(resources)
+        super.onPause()
     }
 
     override fun onDestroyView() {
         dayAimH.removeObservers(viewLifecycleOwner)
         _calendarViewBinding=null
+        //(activity as MainActivity).homeDrawable=background.drawToBitmap().toDrawable(resources)
+
         super.onDestroyView()
+
+
+
+
+
     }
     /*
      private fun setFirstDay(calendar: Calendar, isMondayFirstDay: Boolean){
@@ -313,4 +361,48 @@ class CalendarEditFragment : Fragment() {
         recyclerView.adapter=adapter
         recyclerView.layoutManager=layoutManager
     }
+
+
+    private fun circularReveal() {
+        val finalRadius: Int = Math.max(background.width, background.height)
+        val circularReveal = ViewAnimationUtils.createCircularReveal(
+            background,
+            (activity as MainActivity).homeFabPosition[0],
+            (activity as MainActivity).homeFabPosition[1],
+           /* cx,
+            cy, */
+            0f,
+            finalRadius.toFloat()
+        )
+        circularReveal.duration = 1000
+        background.visibility = View.VISIBLE
+        circularReveal.start()
+
+    }
+/*
+    private fun circularRevealBack(des:()->Unit) {
+
+        val finalRadius = Math.max(background.width, background.height).toFloat()
+        val circularReveal =
+            ViewAnimationUtils.createCircularReveal(
+                background,
+                position[0],
+                position[1],
+                finalRadius,
+                0f)
+        circularReveal.addListener(object : Animator.AnimatorListener {
+            override fun onAnimationStart(animator: Animator) {}
+            override fun onAnimationEnd(animator: Animator) {
+                background.visibility = View.INVISIBLE
+                des()
+            }
+
+            override fun onAnimationCancel(animator: Animator) {}
+            override fun onAnimationRepeat(animator: Animator) {}
+        })
+        circularReveal.duration = 3000
+        circularReveal.start()
+
+    }*/
+
 }

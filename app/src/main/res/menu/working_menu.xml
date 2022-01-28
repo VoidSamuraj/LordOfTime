@@ -4,6 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="com.voidsamurai.lordoftime.MainActivity"
     android:animateLayoutChanges="true">
+
     <item
         android:id="@+id/category"
         android:title="@string/category"
@@ -15,5 +16,8 @@
         android:icon="@drawable/ic_baseline_arrow_drop_down_24"
         app:showAsAction="always">
     </item>
+
+
+
 
 </menu>

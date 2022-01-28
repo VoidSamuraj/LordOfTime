@@ -38,6 +38,7 @@
         android:layout_height="0dp"
         android:layout_marginTop="2dp"
         android:background="@drawable/border"
+        android:backgroundTint="#1976D2"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:padding="@dimen/small_padding"
@@ -68,19 +69,20 @@
         app:checkedButton="@+id/day_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/productive_label"
+        app:selectionRequired="true"
         app:singleSelection="true">
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/month_button"
-            style="@style/Widget.App.Button.OutlinedButton.IconOnly"
+            style="@style/ToggleButtonText"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:text="@string/months" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/week_button"
-            style="@style/Widget.App.Button.OutlinedButton.IconOnly"
+            style="@style/ToggleButtonText"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -88,9 +90,9 @@
 
             />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/day_button"
-            style="@style/Widget.App.Button.OutlinedButton.IconOnly"
+            style="@style/ToggleButtonText"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="1"
