@@ -94,8 +94,6 @@ public class LOTDatabaseHelper extends SQLiteOpenHelper {
 
         //  }
 
-
-
     }
     public void addAvatar(String user_id,byte [] avatar){
         Cursor c=db.rawQuery("SELECT * FROM AVATARS  WHERE AVATARS.user_id=?",new String[]{String.valueOf(user_id)});
