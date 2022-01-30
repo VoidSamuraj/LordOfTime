@@ -95,4 +95,8 @@
     <string name="hours">Hours</string>
     <string name="select_hour">Dodaj godzinę</string>
     <string name="nohour">0 godzin</string>
+    <string name="category_in_use">Kategoria jest używana przez zadanie</string>
+    <string name="database_processing_error">Błąd Przetwarzania</string>
+    <string name="warning">UWAGA</string>
+    <string name="confirm_delete_dialog_text">Czy na pewno chcesz usunąć</string>
 </resources>

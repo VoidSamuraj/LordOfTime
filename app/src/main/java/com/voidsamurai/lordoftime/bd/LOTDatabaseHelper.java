@@ -147,7 +147,7 @@ public class LOTDatabaseHelper extends SQLiteOpenHelper {
      */
     public void editOldstatRow(Long date,Long newDate,int duration,String category,String userId){
         ContentValues cv = createOldstatValues(newDate,duration,category,"");
-        db.update("OLDSTATS", cv,"date_id=? AND user_id=?",new String[]{String.valueOf(date),userId});
+        db.update("OLDSTATS", cv,"date_id=? AND (user_id=? OR TRIM(user_id) IS NULL)",new String[]{String.valueOf(date),userId});
         cv.clear();
     }
 
@@ -181,13 +181,15 @@ public class LOTDatabaseHelper extends SQLiteOpenHelper {
         ContentValues cv = createRutinesValues(task_id,days,hours,"");
         return db.update("RUTINES"
                 ,cv
-                ,"_id = ? AND user_id=?"
+                ,"_id = ? AND (user_id=? OR TRIM(user_id) IS NULL)"
                 ,new String[]{String.valueOf(id),user_id});
     }
+
     /**
      * @param days-string with names of week MON,THU,WED,THU,FRI,SAT,SUN separated by , without spaces
      *
      * */
+     /*
     public int getRutinesRowID(int task_id, String days, String hours,String userId){                   // dodaj sprawdzanie czy wpisy już istnieją
         Log.v("GET_RUTINES_ROW_ID",""+task_id+" "+days+" "+hours);
         Cursor c=db.rawQuery("SELECT RUTINES._id FROM RUTINES  WHERE RUTINES.task_id=? AND RUTINES.days=? AND RUTINES.hours=? AND RUTINES.user_id=?",new String[]{String.valueOf(task_id),days,hours,userId});
@@ -199,6 +201,7 @@ public class LOTDatabaseHelper extends SQLiteOpenHelper {
         return  -1;
 
     }
+    */
     /**
      * @param task_id - id of task [not rutine]
      * */
@@ -213,7 +216,7 @@ public class LOTDatabaseHelper extends SQLiteOpenHelper {
         return  array;
     }
     public Map<Integer,RutinesRow> getUserRutinesArray(String user_id){
-        Cursor c=db.rawQuery("SELECT * FROM RUTINES WHERE RUTINES.user_id=?",new String[]{user_id});
+        Cursor c=db.rawQuery("SELECT * FROM RUTINES WHERE RUTINES.user_id=? OR TRIM(RUTINES.user_id) IS NULL ",new String[]{user_id});
         Map<Integer,RutinesRow> array= new HashMap<>();
         if(c.moveToFirst())
             do{
@@ -264,7 +267,7 @@ public class LOTDatabaseHelper extends SQLiteOpenHelper {
                 ,new String[]{String.valueOf(oldId)});
     }
     public DataRowWithColor getTaskRow(int id,String userId){
-        Cursor c=db.rawQuery("SELECT TASKTABLE._id, TASKTABLE.category, TASKTABLE.name, TASKTABLE.datetime, TASKTABLE.working_time, TASKTABLE.priority, TASKTABLE.current_work_time,TASKTABLE.is_finished, COLOR.color  FROM TASKTABLE JOIN COLOR ON TASKTABLE.category=COLOR.category_id WHERE TASKTABLE._id=? AND TASKTABLE.user_id=?",new String[]{String.valueOf(id),userId});
+        Cursor c=db.rawQuery("SELECT TASKTABLE._id, TASKTABLE.category, TASKTABLE.name, TASKTABLE.datetime, TASKTABLE.working_time, TASKTABLE.priority, TASKTABLE.current_work_time,TASKTABLE.is_finished, COLOR.color  FROM TASKTABLE JOIN COLOR ON TASKTABLE.category=COLOR.category_id WHERE TASKTABLE._id=? AND (TASKTABLE.user_id=? OR TRIM(TASKTABLE.user_id) IS NULL)",new String[]{String.valueOf(id),userId});
         if(c.moveToFirst()){
             Calendar cal=Calendar.getInstance(TimeZone.getTimeZone("UTC"));
             Calendar now=Calendar.getInstance(TimeZone.getTimeZone("UTC"));
@@ -305,7 +308,7 @@ public class LOTDatabaseHelper extends SQLiteOpenHelper {
 
 
         Cursor c=db.rawQuery("SELECT TASKTABLE._id, TASKTABLE.category, TASKTABLE.name, TASKTABLE.datetime, TASKTABLE.working_time, TASKTABLE.priority, TASKTABLE.current_work_time, COLOR.color , TASKTABLE.is_finished " +
-                "FROM TASKTABLE JOIN COLOR ON TASKTABLE.category=COLOR.category_id WHERE TASKTABLE.datetime BETWEEN "+startTime+" AND "+endTime+" AND TASKTABLE.userId=?",new String[]{userId});
+                "FROM TASKTABLE JOIN COLOR ON TASKTABLE.category=COLOR.category_id WHERE TASKTABLE.datetime BETWEEN "+startTime+" AND "+endTime+" AND (TASKTABLE.user_id=? OR TRIM(TASKTABLE.user_id) IS NULL) ",new String[]{userId});
         if(c.moveToFirst()){
 
             ArrayList<DataRowWithColor> array = new ArrayList<>();
@@ -398,15 +401,33 @@ public class LOTDatabaseHelper extends SQLiteOpenHelper {
         return cv;
     }
 
-    public  void addColorRow(String category, String color,String user_id) {                                                                       // dodaj sprawdzanie czy wpisy już istnieją
+    public  void addColorRow(String category, String color,String user_id) {
         db.insert("COLOR", null, createColorCValues(category,color,user_id));
     }
 
-    public  void editColorRow(String oldCategory,String newCategory, String newColor,String user_id) {                                               // dodaj sprawdzanie czy wpisy już istnieją
-        db.update("COLOR",createColorCValues(newCategory,newColor,""),"category_id = ? AND user_id=?", new String[]{oldCategory,user_id});
+    public  void editColorRow(String oldCategory,String newCategory, String newColor,String user_id) {
+        db.update("COLOR",createColorCValues(newCategory,newColor,""),"category_id = ? AND (user_id=? OR TRIM(user_id) IS NULL)", new String[]{oldCategory,user_id});
     }
-    public  void deleteColorRow(String oldCategory,String user_id) {
-        db.delete("COLOR","category_id = ? AND user_id=?", new String[]{oldCategory,user_id});
+    /**
+     * @return -1 if category is used
+     *  0 if no row deleted
+     *  else return number of deleted rows
+     */
+
+    public  int deleteColorRow(String oldCategory,String user_id) {
+
+        Cursor c=db.rawQuery("SELECT  TASKTABLE.category FROM TASKTABLE WHERE  (TASKTABLE.user_id=? OR TRIM(TASKTABLE.user_id) IS NULL) ",new String[]{user_id});
+        Boolean found=false;
+        if(c.moveToFirst())
+            do{
+                if(c.getString(0).equals(oldCategory)){
+                    found=true;
+                    break;
+                }
+            }while(c.moveToNext());
+        if(!found)
+           return db.delete("COLOR","category_id = ? AND (user_id=? OR TRIM(user_id) IS NULL)", new String[]{oldCategory,user_id});
+        return -1;
     }
 
     @NotNull

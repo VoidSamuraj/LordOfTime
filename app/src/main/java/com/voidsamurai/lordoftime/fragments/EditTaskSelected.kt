@@ -21,6 +21,7 @@ import com.voidsamurai.lordoftime.R
 import com.voidsamurai.lordoftime.databinding.FragmentTaskEditBinding
 import com.voidsamurai.lordoftime.fragments.adapters.ArrayColorAdapter
 import com.voidsamurai.lordoftime.bd.DataRowWithColor
+import com.voidsamurai.lordoftime.fragments.dialogs.ConfirmDialog
 import com.voidsamurai.lordoftime.fragments.dialogs.RepeatDialog
 import java.util.*
 
@@ -91,9 +92,12 @@ class EditTaskSelected : Fragment() ,DatePickerDialog.OnDateSetListener,TimePick
                 newDate.set(Calendar.MILLISECOND, 0)
             }
             binding.deleteEditButton.setOnClickListener{
-                deleteRow(data!!)
-                update()
-                it.findNavController().navigateUp()
+                ConfirmDialog(""+data?.name,{},{
+                    deleteRow(data!!)
+                    update()
+                    it.findNavController().navigateUp()
+                }).show(parentFragmentManager,"ConfirmDialog")
+
             }
 
             binding.saveEditButton.setOnClickListener{
@@ -292,6 +296,7 @@ class EditTaskSelected : Fragment() ,DatePickerDialog.OnDateSetListener,TimePick
             it.getDBOpenHelper().deleteTaskRow(dataRowWithColor.id)
             it.tasks.delete(dataRowWithColor.id.toString())
         }
+
     }
 
     override fun onDateSet(view: DatePicker?, year: Int, month: Int, dayOfMonth: Int) {

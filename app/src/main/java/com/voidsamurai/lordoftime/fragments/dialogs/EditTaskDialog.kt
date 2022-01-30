@@ -276,9 +276,12 @@ class EditTaskDialog(
 
         if(mode== MODE.EDIT) {
             deleteButton.setOnClickListener {
-                deleteRow(id!!)
-                (fragment as CalendarDayEdit).deleteElement(id)
-                dismiss()
+                ConfirmDialog(""+dataRow?.name,{},{
+                    deleteRow(id!!)
+                    (fragment as CalendarDayEdit).deleteElement(id)
+                    dismiss()
+                }).show(parentFragmentManager,"ConfirmDialog")
+
             }
         }else{
             deleteButton.visibility=View.GONE

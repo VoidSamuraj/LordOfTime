@@ -98,5 +98,9 @@
     <string name="hours">Hours</string>
     <string name="select_hour">Add Hour</string>
     <string name="nohour">0 hours</string>
+    <string name="category_in_use">Category is currently used by the task</string>
+    <string name="database_processing_error">Processing Error</string>
+    <string name="warning">WARNING</string>
+    <string name="confirm_delete_dialog_text">Are you sure you want to delete</string>
 
 </resources>

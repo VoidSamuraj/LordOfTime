@@ -11,6 +11,7 @@ import android.view.View
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatDialogFragment
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.graphics.drawable.DrawableCompat
@@ -37,12 +38,12 @@ class ColorDialogFragment(
     private lateinit var contentView: View
     private lateinit var colorPicker:ColorPickerView
     private lateinit var lightSlider:LightnessSlider
-
-    @SuppressLint("RestrictedApi")
-    override fun setupDialog(dialog: Dialog, style: Int) {
-        super.setupDialog(dialog, style)
-    }
-
+    /*
+        @SuppressLint("RestrictedApi")
+        override fun setupDialog(dialog: Dialog, style: Int) {
+            super.setupDialog(dialog, style)
+        }
+    */
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
 
         val colors: DAOColors = (activity as MainActivity).colors
@@ -57,15 +58,32 @@ class ColorDialogFragment(
         colorPicker.setInitialColor(Color.WHITE,false)
         lightSlider=contentView.findViewById(R.id.v_lightness_slider)
         builder.setView(contentView)
-            .setNegativeButton("Anuluj") { _, _ ->
+            .setNegativeButton(resources.getText(R.string.cancel)) { _, _ ->
 
             }
 
         contentView.findViewById<ImageButton>(R.id.delete_color).setOnClickListener {
-            (activity as MainActivity).getDBOpenHelper().deleteColorRow(getName(),(activity as MainActivity).userId)
-            colors.delete(getName())
-            update()
-            dismiss()
+            val text=getName()
+            ConfirmDialog(text,{},{
+                val state=(activity as MainActivity).getDBOpenHelper().deleteColorRow(getName(),(activity as MainActivity).userId)
+                when (state) {
+                        -1 -> {//category is currently used
+                        Toast.makeText(context,resources.getText(R.string.category_in_use),Toast.LENGTH_SHORT).show()
+                        }
+                    0 -> {//no row found
+                        Toast.makeText(context,resources.getText(R.string.database_processing_error),Toast.LENGTH_SHORT).show()
+                    }
+                    else -> {
+                        colors.delete(text)
+                        update()
+
+                    }
+                }
+                dismiss()
+            }).show(parentFragmentManager,"Confirm")
+
+
+
         }
         if(dialogType==1){
 
@@ -78,7 +96,7 @@ class ColorDialogFragment(
                 setColorToImageView(contentView, R.id.last_color, R.drawable.ic_circle_l, colorPicker.selectedColor)
                 setColorToImageView(contentView, R.id.new_color, R.drawable.ic_circle_r, colorPicker.selectedColor)
             }
-            builder.setPositiveButton("Zapisz") { _, _ ->
+            builder.setPositiveButton(resources.getText(R.string.save)) { _, _ ->
                 (activity as MainActivity).getDBOpenHelper().addColorRow(getName(), getColor(),(activity as MainActivity).userId)
                 colors.add(getName(),getColor())
                 update()
@@ -94,7 +112,7 @@ class ColorDialogFragment(
             lightSlider.setOnValueChangedListener {
                 setColorToImageView(contentView, R.id.new_color, R.drawable.ic_circle_r, colorPicker.selectedColor)
             }
-            builder.setPositiveButton("Zapisz") { _, _ ->
+            builder.setPositiveButton(resources.getText(R.string.save)) { _, _ ->
                 if (oldCategory != null && oldColor != null && newColor != null && newColor!=parseColor(oldColor)) {
                     (activity as MainActivity).getDBOpenHelper()
                         .editColorRow(oldCategory, getName(), getColor(),(activity as MainActivity).userId)
