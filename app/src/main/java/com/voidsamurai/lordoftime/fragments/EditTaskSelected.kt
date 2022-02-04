@@ -96,7 +96,7 @@ class EditTaskSelected : Fragment() ,DatePickerDialog.OnDateSetListener,TimePick
                     deleteRow(data!!)
                     update()
                     it.findNavController().navigateUp()
-                }).show(parentFragmentManager,"ConfirmDialog")
+                },{}).show(parentFragmentManager,"ConfirmDialog")
 
             }
 

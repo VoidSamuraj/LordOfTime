@@ -1,7 +1,6 @@
 package com.voidsamurai.lordoftime.bd
 
-import android.app.PendingIntent
-import android.util.Log
+
 import com.google.firebase.database.*
 import com.voidsamurai.lordoftime.MainActivity
 import java.util.*

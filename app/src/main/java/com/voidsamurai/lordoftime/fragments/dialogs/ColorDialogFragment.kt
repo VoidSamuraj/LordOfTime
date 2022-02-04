@@ -80,7 +80,7 @@ class ColorDialogFragment(
                     }
                 }
                 dismiss()
-            }).show(parentFragmentManager,"Confirm")
+            },{}).show(parentFragmentManager,"Confirm")
 
 
 

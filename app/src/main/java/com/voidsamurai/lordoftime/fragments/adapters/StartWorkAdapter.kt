@@ -3,7 +3,6 @@ package com.voidsamurai.lordoftime.fragments.adapters
 
 import android.content.Intent
 import android.graphics.Color
-import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -15,15 +14,16 @@ import android.widget.TextView
 import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.Navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.snackbar.Snackbar
-import com.voidsamurai.lordoftime.*
+import com.voidsamurai.lordoftime.BackgroundTimeService
+import com.voidsamurai.lordoftime.LinearViewHolder
+import com.voidsamurai.lordoftime.MainActivity
+import com.voidsamurai.lordoftime.R
+import com.voidsamurai.lordoftime.bd.DataRowWithColor
 import com.voidsamurai.lordoftime.charts_and_views.ProgressCircle
 import com.voidsamurai.lordoftime.fragments.WorkingFragmentDirections
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import com.voidsamurai.lordoftime.bd.DataRowWithColor
-import kotlinx.coroutines.withContext
 import java.util.*
 
 class StartWorkAdapter(private val activity: MainActivity, private var toDoData: ArrayList<DataRowWithColor>, private val lifecycleOwner: LifecycleOwner):RecyclerView.Adapter<LinearViewHolder>() {
@@ -144,7 +144,7 @@ class StartWorkAdapter(private val activity: MainActivity, private var toDoData:
                 if (todo - current > 0)
                     setObserver(layout, todo, current, position, activity.currentTaskId!!)
                 else
-                    setEndedObserver(layout, current, true)
+                    setEndedObserver(position,layout, current, true)
 
             }
         }
@@ -173,7 +173,7 @@ class StartWorkAdapter(private val activity: MainActivity, private var toDoData:
                 setEndStyle()
                 if (!activity.getCurrentWorkingTime().hasObservers())
                     activity.getCurrentWorkingTime().removeObservers(lifecycleOwner)
-                setEndedObserver(layout, currentFull, !changeFromObserverToEndObserver)
+                setEndedObserver(position,layout, currentFull, !changeFromObserverToEndObserver)
                 changeFromObserverToEndObserver = false
             }
         } else if(todo-current<=0)
@@ -269,11 +269,11 @@ class StartWorkAdapter(private val activity: MainActivity, private var toDoData:
         setIsRunning(true)
         startIntent()
 
-        activity.getCurrentWorkingTime().observe(lifecycleOwner,{
-            val curr=it.toFloat()+current
-            var left =(todo - curr)
-            if(left>0) {
-                left/=3600
+        activity.getCurrentWorkingTime().observe(lifecycleOwner) {
+            val curr = it.toFloat() + current
+            var left = (todo - curr)
+            if (left > 0) {
+                left /= 3600
 
                 CoroutineScope(Dispatchers.Main).launch {
                     layout.findViewById<TextSwitcher>(R.id.progressPercent)
@@ -281,15 +281,15 @@ class StartWorkAdapter(private val activity: MainActivity, private var toDoData:
                     layout.findViewById<ProgressCircle>(R.id.progressCircle)
                         .fillData(curr, todo)
                 }
-            }
-            else{
-                updateDB( position, id)
+            } else {
+                updateDB(position, id)
                 deleteObservers()
-                changeFromObserverToEndObserver=true
+                changeFromObserverToEndObserver = true
+               // activity.startFinishedNotification(toDoData[position].id,toDoData[position].name)
                 setTime(0)
                 notifyItemChanged(position)
             }
-        })
+        }
     }
     fun deleteObservers(stopService: Boolean=true){
 
@@ -306,27 +306,29 @@ class StartWorkAdapter(private val activity: MainActivity, private var toDoData:
      *
      * @param cleanStart - if true starting from 0, if false starts from currentTime
      * */
-    fun setEndedObserver(layout:View, currentTime:Int, cleanStart:Boolean=false){
+    fun setEndedObserver(position: Int,layout:View, currentTime:Int, cleanStart:Boolean=false){
+
         layout.findViewById<ProgressCircle>(R.id.progressCircle).fillData(1f, 1f)
         if(activity.getCurrentWorkingTime().hasObservers())
             deleteObservers()
 
         val t=if(cleanStart)
             0
-        else
+        else {
+            activity.startFinishedNotification(toDoData[position].id,toDoData[position].name)
             currentTime
-
+        }
 
         setTime(t)
         setIsRunning(true)
         startIntent()
-        activity.getCurrentWorkingTime().observe(lifecycleOwner,{
-            val curr=(it.toFloat()+currentTime)/3600
+        activity.getCurrentWorkingTime().observe(lifecycleOwner) {
+            val curr = (it.toFloat() + currentTime) / 3600
             CoroutineScope(Dispatchers.Main).launch {
                 layout.findViewById<TextSwitcher>(R.id.progressPercent)
                     .setCurrentText(String.format("%2.2f", curr) + "h")
             }
-        })
+        }
 
     }
     private fun setTime(time:Int){
@@ -352,3 +354,5 @@ class StartWorkAdapter(private val activity: MainActivity, private var toDoData:
 
     override fun getItemCount(): Int =toDoData.size
 }
+
+

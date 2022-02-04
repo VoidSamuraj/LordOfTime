@@ -81,8 +81,11 @@ class YourDaysDialog : DialogFragment() ,DatePickerDialog.OnDateSetListener {
                 cal.set(Calendar.SECOND,0)
                 cal.set(Calendar.MILLISECOND,0)
 
-                (activity as MainActivity).setYourTime(cal.timeInMillis)
-                (activity as MainActivity).fillMementoMori()
+                (activity as MainActivity).let {
+                    it.setYourTime(cal.timeInMillis)
+                    it.settings.add(death_date = cal.timeInMillis)
+                    it.fillMementoMori()
+                }
                 dismiss()
             }
         }

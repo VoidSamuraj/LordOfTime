@@ -19,6 +19,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.TimeZone;
 
+import kotlin.Triple;
+
 
 public class LOTDatabaseHelper extends SQLiteOpenHelper {
     private static final String DB_NAME = "LOT";
@@ -70,6 +72,7 @@ public class LOTDatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE IF NOT EXISTS RUTINES (_id INTEGER PRIMARY KEY AUTOINCREMENT,task_id INTEGER, days TEXT,hours TEXT,user_id TEXT);");
         db.execSQL("CREATE TABLE IF NOT EXISTS COLOR (category_id TEXT PRIMARY KEY , color TEXT,user_id TEXT);");
         db.execSQL("CREATE TABLE IF NOT EXISTS OLDSTATS (date_id INTEGER PRIMARY KEY , working_time INTEGER, category TEXT,user_id TEXT);");
+        // db.execSQL("CREATE TABLE IF NOT EXISTS SETTINGS (user_id TEXT PRIMARY KEY , language TINYTEXT, mode TINYTEXT,show_outdated BOOLEAN,show_completed BOOLEAN,delete_completed BOOLEAN,main_chart_auto BOOLEAN,main_chart_aim SMALLINT,birth_date INTEGER, life_time SMALLINT );");
 
         Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
         cal.set(2021, 11, 1, 12, 6,0);
@@ -95,6 +98,56 @@ public class LOTDatabaseHelper extends SQLiteOpenHelper {
         //  }
 
     }
+    /*
+    private void addNoExistSettings(String user_id, String language, String mode, Boolean show_outdated, Boolean show_completed, Boolean delete_completed, Boolean main_chart_auto, short main_chart_aim, long birth_date, int life_time){
+        ContentValues cv=createSettingsCValues(user_id,language,mode,show_outdated,show_completed,delete_completed,main_chart_auto,main_chart_aim,birth_date,life_time);
+        db.insert("SETTINGS",null,cv);
+        cv.clear();
+    }
+*/
+    /**
+     *
+     * @param user_id
+     * @param language [en, pl]
+     * @param mode  [n,d,a] n-night, d-day, a-auto
+     * @param show_outdated
+     * @param show_completed
+     * @param delete_completed
+     * @param main_chart_auto main chart auto scale
+     * @param main_chart_aim time aim for main chart
+     * @param birth_date - 0L for no changes
+     * @param life_time - 0 for no changes
+     *//*
+    public void addOrEditSettings(String user_id, String language, String mode, Boolean show_outdated, Boolean show_completed, Boolean delete_completed, Boolean main_chart_auto, short main_chart_aim, long birth_date, int life_time){
+        Cursor c=db.rawQuery("SELECT * FROM SETTINGS  WHERE AVATARS.user_id=?",new String[]{String.valueOf(user_id)});
+        if(c.moveToFirst()){
+            ContentValues cv= createSettingsCValues("",language,mode,show_outdated,show_completed,delete_completed,main_chart_auto,main_chart_aim,birth_date,life_time);
+            db.update("SETTINGS"
+                    ,cv
+                    ,"user_id = ?"
+                    ,new String[]{String.valueOf(user_id)});
+            cv.clear();
+        }else
+            addNoExistSettings(user_id,language,mode,show_outdated,show_completed,delete_completed,main_chart_auto,main_chart_aim,birth_date,life_time);
+        c.close();
+    }*/
+
+    /**
+     *
+     * @param user_id
+     * @return null when no found
+     *//*
+    public SettingsData getEditSettings(String user_id){
+        Cursor c=db.rawQuery("SELECT * FROM SETTINGS  WHERE AVATARS.user_id=?",new String[]{String.valueOf(user_id)});
+        if(c.moveToFirst()){
+            return new SettingsData(c.getString(0),c.getString(1),c.getString(2),c.getInt(3)!=0,c.getInt(4)!=0,c.getInt(5)!=0,c.getInt(6)!=0,c.getInt(7),c.getLong(8),c.getInt(9));
+        }
+        return null;
+
+    }
+*/
+
+
     public void addAvatar(String user_id,byte [] avatar){
         Cursor c=db.rawQuery("SELECT * FROM AVATARS  WHERE AVATARS.user_id=?",new String[]{String.valueOf(user_id)});
         ContentValues cv= new ContentValues();
@@ -212,7 +265,7 @@ public class LOTDatabaseHelper extends SQLiteOpenHelper {
             do{
                 array.add(new RutinesRow(c.getInt(0),c.getInt(1),c.getString(2),c.getString(3)));
             }while(c.moveToNext());
-       c.close();
+        c.close();
         return  array;
     }
     public Map<Integer,RutinesRow> getUserRutinesArray(String user_id){
@@ -266,6 +319,31 @@ public class LOTDatabaseHelper extends SQLiteOpenHelper {
                 ,"_id = ?"
                 ,new String[]{String.valueOf(oldId)});
     }
+    public ArrayList<Triple<Integer,String,Long>> getServiceTaskInfo(String userId){
+        ArrayList<Triple<Integer,String,Long>> array = new ArrayList<>();
+        Calendar todayMorning=Calendar.getInstance();
+        Calendar todayNight=Calendar.getInstance();
+        todayMorning.set(Calendar.HOUR_OF_DAY,0);
+        todayMorning.set(Calendar.MINUTE,0);
+        todayMorning.set(Calendar.SECOND,0);
+        todayMorning.set(Calendar.MILLISECOND,0);
+        todayNight.set(Calendar.HOUR_OF_DAY,24);
+        todayNight.set(Calendar.MINUTE,0);
+        todayNight.set(Calendar.SECOND,0);
+        todayNight.set(Calendar.MILLISECOND,0);
+
+
+        Cursor c=db.rawQuery("SELECT TASKTABLE._id, TASKTABLE.name, TASKTABLE.datetime  FROM TASKTABLE  WHERE (TASKTABLE.datetime BETWEEN ? AND ? )AND (TASKTABLE.user_id=? OR TRIM(TASKTABLE.user_id) IS NULL)",new String[]{String.valueOf(todayMorning.getTimeInMillis()),String.valueOf(todayNight.getTimeInMillis()),userId});
+
+        if(c.moveToFirst())
+            do{
+                array.add(new Triple<Integer,String,Long>(c.getInt(0),c.getString(1),c.getLong(2)));
+            }while (c.moveToNext());
+
+        c.close();
+        return array;
+    }
+
     public DataRowWithColor getTaskRow(int id,String userId){
         Cursor c=db.rawQuery("SELECT TASKTABLE._id, TASKTABLE.category, TASKTABLE.name, TASKTABLE.datetime, TASKTABLE.working_time, TASKTABLE.priority, TASKTABLE.current_work_time,TASKTABLE.is_finished, COLOR.color  FROM TASKTABLE JOIN COLOR ON TASKTABLE.category=COLOR.category_id WHERE TASKTABLE._id=? AND (TASKTABLE.user_id=? OR TRIM(TASKTABLE.user_id) IS NULL)",new String[]{String.valueOf(id),userId});
         if(c.moveToFirst()){
@@ -313,20 +391,20 @@ public class LOTDatabaseHelper extends SQLiteOpenHelper {
 
             ArrayList<DataRowWithColor> array = new ArrayList<>();
             do {
-                    Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
-                    cal.setTime(new Date(c.getLong(3)));
-                    Calendar now = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
-                    array.add( new DataRowWithColor(
-                            c.getInt(0),
-                            c.getString(1),
-                            c.getString(2),
-                            cal,
-                            ((float) c.getInt(4)) / 3600,
-                            c.getInt(5),
-                            ((float) c.getInt(6)) / 3600,
-                            c.getString(7),
-                            cal.getTime().getTime() < now.getTime().getTime(),
-                            c.getInt(8)));
+                Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+                cal.setTime(new Date(c.getLong(3)));
+                Calendar now = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+                array.add( new DataRowWithColor(
+                        c.getInt(0),
+                        c.getString(1),
+                        c.getString(2),
+                        cal,
+                        ((float) c.getInt(4)) / 3600,
+                        c.getInt(5),
+                        ((float) c.getInt(6)) / 3600,
+                        c.getString(7),
+                        cal.getTime().getTime() < now.getTime().getTime(),
+                        c.getInt(8)));
 
             }while(c.moveToNext());
             c.close();
@@ -353,7 +431,7 @@ public class LOTDatabaseHelper extends SQLiteOpenHelper {
         if(!user_id.equals(""))cv.put("user_id",user_id);
         return cv;
     }
-  /**
+    /**
      * 0 or null mean no changes
      * @param isFinished 0 if false, 1 if true, -1 if not change
      * @param currentWorkingTime [-1 sets time to 0]
@@ -426,7 +504,7 @@ public class LOTDatabaseHelper extends SQLiteOpenHelper {
                 }
             }while(c.moveToNext());
         if(!found)
-           return db.delete("COLOR","category_id = ? AND (user_id=? OR TRIM(user_id) IS NULL)", new String[]{oldCategory,user_id});
+            return db.delete("COLOR","category_id = ? AND (user_id=? OR TRIM(user_id) IS NULL)", new String[]{oldCategory,user_id});
         return -1;
     }
 
@@ -437,6 +515,22 @@ public class LOTDatabaseHelper extends SQLiteOpenHelper {
         if(color!=null)cv.put("color", color);
         if(!user_id.equals(""))cv.put("user_id", user_id);
         return cv;
-    }
+    }/*
+    private  ContentValues createSettingsCValues (String user_id, String language, String mode, Boolean show_outdated, Boolean show_completed, Boolean delete_completed, Boolean main_chart_auto, short main_chart_aim, Long birth_date, int life_time ) {
+        ContentValues cv=new ContentValues();
+        if(!user_id.equals(""))cv.put("user_id",user_id);
+        if(!language.equals(""))cv.put("language",language);
+        if(!mode.equals(""))cv.put("mode",mode);
+        cv.put("show_outdated",show_outdated);
+        cv.put("show_completed",show_completed);
+        cv.put("delete_completed",delete_completed);
+        cv.put("main_chart_auto",main_chart_auto);
+        cv.put("main_chart_aim",main_chart_aim);
+        if(birth_date!= 0L)cv.put("birth_date",birth_date);
+        if(life_time!= 0)cv.put("life_time",life_time);
+
+        return cv;
+    }*/
+
 
 }

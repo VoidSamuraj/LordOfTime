@@ -99,4 +99,10 @@
     <string name="database_processing_error">Błąd Przetwarzania</string>
     <string name="warning">UWAGA</string>
     <string name="confirm_delete_dialog_text">Czy na pewno chcesz usunąć</string>
+    <string name="dont_show_again">Nie pokazuj ponownie</string>
+    <string name="witchout_permission">Aplikacja może nie działać właściwie bez tego pozwolenia</string>
+    <string name="try_again">Spróbuj ponownie</string>
+    <string name="time_to_task">Czas na</string>
+    <string name="task_is_waiting">Masz zadanie do wykonania</string>
+    <string name="task_completed">Zakończono zadanie</string>
 </resources>

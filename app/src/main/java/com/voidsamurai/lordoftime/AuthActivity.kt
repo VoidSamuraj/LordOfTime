@@ -2,11 +2,11 @@ package com.voidsamurai.lordoftime
 
 import android.app.Activity
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
@@ -36,8 +36,10 @@ class AuthActivity : AppCompatActivity() {
                 val task = GoogleSignIn.getLastSignedInAccount(this)
                 try {
                     task?.let { itt -> firebaseAuthWithGoogle(itt)
-
-                        getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE).edit().putString("user_id",itt.id).apply()
+                        val sp=getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE)
+                        val oldId= sp.getString("user_id","")?:""
+                        if(oldId!=itt.id)
+                        sp.edit().putString("user_id",itt.id).putBoolean("IS_USER_CHANGED",true).apply()
 
                     }
                 } catch (e: ApiException) {
@@ -83,6 +85,8 @@ class AuthActivity : AppCompatActivity() {
         supportActionBar?.hide()
         auth = Firebase.auth
 
+
+
         val gso = GoogleSignInOptions
             .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(getString(R.string.defaultt_web_client_id))
@@ -93,6 +97,7 @@ class AuthActivity : AppCompatActivity() {
 
 
     }
+
 
 
 

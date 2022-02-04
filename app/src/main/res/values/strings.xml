@@ -102,5 +102,11 @@
     <string name="database_processing_error">Processing Error</string>
     <string name="warning">WARNING</string>
     <string name="confirm_delete_dialog_text">Are you sure you want to delete</string>
+    <string name="dont_show_again">"Don't show again "</string>
+    <string name="witchout_permission">"The application may not function properly without this permission "</string>
+    <string name="try_again">Try again</string>
+    <string name="time_to_task">Time to</string>
+    <string name="task_is_waiting">You have task to do</string>
+    <string name="task_completed">Task completed</string>
 
 </resources>

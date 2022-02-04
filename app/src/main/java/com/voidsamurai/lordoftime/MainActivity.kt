@@ -1,37 +1,48 @@
 package com.voidsamurai.lordoftime
 
+import android.Manifest
+import android.app.AlarmManager
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.SharedPreferences
+import android.content.pm.PackageManager
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.ImageDecoder
+import android.graphics.drawable.Drawable
+import android.media.MediaPlayer
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
-import android.view.*
+import android.provider.MediaStore
+import android.provider.Settings
+import android.util.Log
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuItem
+import android.widget.*
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.MutableLiveData
-import androidx.navigation.*
+import androidx.navigation.NavController
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
-import com.voidsamurai.lordoftime.databinding.ActivityMainBinding
-import com.voidsamurai.lordoftime.fragments.HomeFragment
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import java.util.*
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
-import android.content.Intent
-import android.content.SharedPreferences
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.net.Uri
-import android.os.Build
-import android.provider.MediaStore
-import android.util.Log
-import android.widget.*
-import androidx.appcompat.app.AppCompatDelegate
+import androidx.navigation.ui.setupWithNavController
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -44,16 +55,18 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
-
-import java.io.*
-import android.graphics.ImageDecoder
-import android.graphics.drawable.Drawable
-import com.voidsamurai.lordoftime.charts_and_views.NTuple4
-import com.voidsamurai.lordoftime.fragments.WorkingFragment
-import androidx.navigation.ui.setupWithNavController
 import com.voidsamurai.lordoftime.bd.*
+import com.voidsamurai.lordoftime.charts_and_views.NTuple4
+import com.voidsamurai.lordoftime.databinding.ActivityMainBinding
+import com.voidsamurai.lordoftime.fragments.HomeFragment
+import com.voidsamurai.lordoftime.fragments.WorkingFragment
 import com.voidsamurai.lordoftime.fragments.dialogs.RepeatDialog
 import com.voidsamurai.lordoftime.fragments.dialogs.YourDaysDialog
+import kotlinx.coroutines.*
+import java.io.ByteArrayOutputStream
+import java.io.File
+import java.io.FileInputStream
+import java.util.*
 
 
 class MainActivity : AppCompatActivity() {
@@ -75,35 +88,8 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-/*
-    private val requestPermissionLauncher =
-        registerForActivityResult(
-            ActivityResultContracts.RequestPermission()
-        ) { isGranted: Boolean ->
-            if (isGranted) {
-                // Permission is granted. Continue the action or workflow in your
-                // app.
-            } else {
-                // Explain to the user that the feature is unavailable because the
-                // features requires a permission that the user has denied. At the
-                // same time, respect the user's decision. Don't link to system
-                // settings in an effort to convince the user to change their
-                // decision.
-            }
-        }
-    private fun requestPermission(){
-        if(
-            ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.READ_EXTERNAL_STORAGE
-            ) == PackageManager.PERMISSION_GRANTED ){}
-        else{
-            requestPermissionLauncher.launch(
-                Manifest.permission.READ_EXTERNAL_STORAGE)
-        }
 
-    }
-*/
+    var timeToEndTask:Long=0L
     lateinit var homeDrawable: Drawable
     private lateinit var firebaseDB:FirebaseDatabase
     private lateinit var analytics: FirebaseAnalytics
@@ -137,6 +123,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var  tasks: DAOTasks
     lateinit var  rutines: DAORutines
     lateinit var  oldTasks: DAOOldTasks
+    lateinit var settings: DAOSettings
     private lateinit var sharedPreferences:SharedPreferences
     fun getMode()=sharedPreferences.getInt(MODE,-1)
     fun getLanguage()=sharedPreferences.getString(LANGUAGE,"DEFAULT")
@@ -168,6 +155,39 @@ class MainActivity : AppCompatActivity() {
 
     fun getCurrentUserId():String{
         return sharedPreferences.getString("user_id","")?:""
+    }
+
+
+
+    fun getSettings(sd:SettingsData) {
+
+        if (getIsUserChanged()){
+
+            sd.show_completed?.let { setIsShowingCompleted(it) }
+            sd.delete_completed?.let { setIsDeletingCompleted(it) }
+            sd.show_outdated?.let { setOutdated(it) }
+            sd.main_chart_auto?.let {
+                sharedPreferences.edit().putBoolean("MAIN_CHART_AUTO", it).apply()
+            }
+            sd.main_chart_aim?.let { setMainChartRange(it) }
+            sd.death_date?.let {setYourTime(it) }
+
+
+            var modeChanged = false
+            var languageChanged = false
+            sd.mode?.let {
+                sharedPreferences.edit().putInt(MODE, it).putBoolean(SETTINGS_CHANGE, true).apply()
+                modeChanged = true
+            }
+            sd.language?.let {
+                setLanguage(it)
+                languageChanged = true
+            }
+            sharedPreferences.edit().putBoolean("IS_USER_CHANGED",false).apply()
+            if (modeChanged && (!languageChanged))
+                newIntent()
+
+        }
     }
     fun setOutdated(boolean: Boolean){
         showOutdated=boolean
@@ -201,6 +221,9 @@ class MainActivity : AppCompatActivity() {
     fun getIsRunningTask():Boolean{
         return sharedPreferences.getBoolean("IS_RUNNING_TASK",false)
     }
+    fun getIsUserChanged():Boolean{
+        return sharedPreferences.getBoolean("IS_USER_CHANGED",false)
+    }
     fun setStartTime(startTime: Long){
         sharedPreferences.edit().putLong("START_TIME",startTime).apply()
     }
@@ -228,6 +251,7 @@ class MainActivity : AppCompatActivity() {
     }
     fun setMainChartAuto():Boolean{
         val state=getIsMainChartManual().not()
+        settings.add(main_chart_auto = state)
         sharedPreferences.edit().putBoolean("MAIN_CHART_AUTO",state).apply()
         return state
     }
@@ -468,18 +492,18 @@ class MainActivity : AppCompatActivity() {
     }
     fun getAvatar(){
 
-       // val f=File(userId+".jpeg")
+        // val f=File(userId+".jpeg")
 
         // CoroutineScope(Dispatchers.IO).launch {
-            val optional=oh.getAvatar(userId)
+        val optional=oh.getAvatar(userId)
 
 
-           /*
-            if (f.exists()) {
-                val fo = openFileInput(f.path)
-                bitmap = BitmapFactory.decodeStream(fo)
-            }*/
-       // }
+        /*
+         if (f.exists()) {
+             val fo = openFileInput(f.path)
+             bitmap = BitmapFactory.decodeStream(fo)
+         }*/
+        // }
         if(optional.isPresent){
             val bitmap: Bitmap=optional.get()
             userImage=bitmap
@@ -499,9 +523,9 @@ class MainActivity : AppCompatActivity() {
 
                 try{
                     CoroutineScope(Dispatchers.IO).launch {
-                   /* val fo=openFileOutput(userId+".jpeg", MODE_PRIVATE)
-                    fo.write(stream.toByteArray())
-                    fo.close()*/
+                        /* val fo=openFileOutput(userId+".jpeg", MODE_PRIVATE)
+                         fo.write(stream.toByteArray())
+                         fo.close()*/
                     }
                 }catch (e:Exception){
                     Log.e("IMAGE_INTERNAL_SAVING", e.cause.toString())
@@ -543,7 +567,8 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
-//        requestPermission()
+        sharedPreferences=application.getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE)
+
         val gso = GoogleSignInOptions
             .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(getString(R.string.defaultt_web_client_id))
@@ -576,9 +601,9 @@ class MainActivity : AppCompatActivity() {
         tasks= DAOTasks(this)
         oldTasks= DAOOldTasks(this)
         rutines= DAORutines(this)
+        settings= DAOSettings(this)
         storageReference=FirebaseStorage.getInstance().reference.child("profileImages").child(userId!!+".jpg")
 
-        sharedPreferences=application.getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE)
 
 
         showOutdated= sharedPreferences.getBoolean(SHOW_OUTDATED,true)
@@ -617,6 +642,7 @@ class MainActivity : AppCompatActivity() {
         tasks.addListeners()
         oldTasks.addListeners()
         rutines.addListeners()
+        settings.addListeners()
 
         queryArrayByPriority.value = getSortedByPriority(getQueryArrayByDate().value!!)
         queryArrayByDuration.value = getSortedByDuration(getQueryArrayByDate().value!!)
@@ -651,7 +677,38 @@ class MainActivity : AppCompatActivity() {
             ydd.show(supportFragmentManager,"Memento_Mori")
 
         }
+        val menu: Menu = mainFragmentBinding.navView.menu
+        val menuItem = menu.findItem(R.id.calendarEditFragment)
+        val calendarItem = menu.findItem(R.id.manyCharts)
+        menuItem.setOnMenuItemClickListener {
+
+            drawerLayout.closeDrawer(GravityCompat.START)
+
+            MainScope().launch {
+                delay(200)
+                val nhf = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+                val hf= nhf.childFragmentManager.fragments[0] as HomeFragment
+                hf.homeFragmentBinding.taskChangerFAB.performClick()
+
+            }
+            true
+        }
+        calendarItem.setOnMenuItemClickListener {
+
+            drawerLayout.closeDrawer(GravityCompat.START)
+            MainScope().launch {
+                delay(200)
+                val nhf = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+                val hf= nhf.childFragmentManager.fragments[0] as HomeFragment
+                hf.homeFragmentBinding.card2Click.performClick()
+
+            }
+            true
+        }
+
     }
+
+
 
     override fun onStart() {
         super.onStart()
@@ -663,7 +720,9 @@ class MainActivity : AppCompatActivity() {
             navController.navigate(R.id.action_FirstFragment_to_settings)
             drawerLayout.closeDrawer(GravityCompat.START)
         }
-
+        requestPermissions()
+       // createTodayNotifications()
+       // deleteTodayNotifications()
     }
 
 
@@ -685,6 +744,7 @@ class MainActivity : AppCompatActivity() {
         tasks.removeListeners()
         oldTasks.removeListeners()
         rutines.removeListeners()
+        settings.removeListeners()
         // db.close()
         // oh.close()
 
@@ -696,8 +756,10 @@ class MainActivity : AppCompatActivity() {
         findViewById<TextView>(R.id.user_name).text=userName
         fillMementoMori()
         menuInflater.inflate(R.menu.menu_main, menu)
+
         return true
     }
+
     fun fillMementoMori() {
         val mTime = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
         val now = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
@@ -750,6 +812,33 @@ class MainActivity : AppCompatActivity() {
         }
 
     }
+/*
+    override fun onContextItemSelected(item: MenuItem): Boolean {
+        Log.v("POKAZAC","IIIO")
+        if(item.itemId==R.id.calendarEditFragment){
+
+            val navHostFragment: NavHostFragment? =
+                supportFragmentManager.findFragmentById(R.id.nav_view) as NavHostFragment?
+            val hfb=(navHostFragment!!.childFragmentManager.fragments[0] as HomeFragment).homeFragmentBinding
+
+            val background=hfb.homeFrag
+            val intArray= IntArray(2)
+            hfb.taskChangerFAB.getLocationOnScreen(intArray)
+            intArray[0]= (intArray[0]+(resources.getDimension(R.dimen.fab_size)/2)/*resources.getDimension(R.dimen.fab_margin)+resources.getDimension(R.dimen.small_padding)*/).toInt()
+            intArray[1]= (intArray[1]-resources.getDimension(R.dimen.bar_height)).toInt()
+
+
+                homeFabPosition.let { itt ->
+                    itt[0]=intArray[0]
+                    itt[1]=intArray[1]
+
+                homeDrawable=background.drawToBitmap().toDrawable(resources)
+
+            }
+
+        }
+        return super.onContextItemSelected(item)
+    }*/
 
     override fun onSupportNavigateUp(): Boolean {
         return navController.navigateUp(appBarConfiguration)
@@ -760,10 +849,10 @@ class MainActivity : AppCompatActivity() {
         navController.currentDestination?.label.let {
             when {
                 drawerLayout.isDrawerOpen(GravityCompat.START) -> drawerLayout.closeDrawer(GravityCompat.START)
-               /* it == "EditList" -> {
-                    isFromEditFragment=true
-                    super.onBackPressed()
-                }*/
+                /* it == "EditList" -> {
+                     isFromEditFragment=true
+                     super.onBackPressed()
+                 }*/
                 it == "WorkingFragment" -> {
                     isFromWorkFragment=true
                     super.onBackPressed()
@@ -772,9 +861,9 @@ class MainActivity : AppCompatActivity() {
                     val nh= supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
                     val fragment=nh.childFragmentManager.primaryNavigationFragment
                     if(fragment is HomeFragment){
-                    val frag= fragment
-                    if (!frag.isButtonHidden)
-                        frag.homeFragmentBinding.view.performClick()
+                        val frag= fragment
+                        if (!frag.isButtonHidden)
+                            frag.homeFragmentBinding.view.performClick()
                     }else
                         super.onBackPressed()
                 }
@@ -914,34 +1003,34 @@ class MainActivity : AppCompatActivity() {
     }
     fun getOldData():ArrayList<Triple<Calendar,Float,String>> {
         CoroutineScope(Dispatchers.IO).run {
-        val selectionQuery =
-            "SELECT OLDSTATS.date_id, OLDSTATS.working_time, OLDSTATS.category from OLDSTATS WHERE OLDSTATS.user_id=? OR TRIM(OLDSTATS.user_id) IS NULL "
-        val c: Cursor = db.rawQuery(selectionQuery, arrayOf(userId))
-        val map: MutableMap<Calendar, Pair<Float, String>> = java.util.HashMap()
-        val list: ArrayList<Triple<Calendar, Float, String>> = arrayListOf()
-        if (c.moveToFirst())
-            do {
-                val cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
-                cal.time = Date(c.getLong(0))
-                cal.set(Calendar.HOUR_OF_DAY, 0)
-                cal.set(Calendar.MINUTE, 0)
-                cal.set(Calendar.SECOND, 0)
-                cal.set(Calendar.MILLISECOND, 0)
-                map.putIfAbsent(cal, Pair(c.getInt(1).toFloat() / 3600, c.getString(2)))?.let {
-                    map.replace(
-                        cal,
-                        Pair(it.first + c.getInt(1).toFloat() / 3600, c.getString(2))
-                    )
-                }
+            val selectionQuery =
+                "SELECT OLDSTATS.date_id, OLDSTATS.working_time, OLDSTATS.category from OLDSTATS WHERE OLDSTATS.user_id=? OR TRIM(OLDSTATS.user_id) IS NULL "
+            val c: Cursor = db.rawQuery(selectionQuery, arrayOf(userId))
+            val map: MutableMap<Calendar, Pair<Float, String>> = java.util.HashMap()
+            val list: ArrayList<Triple<Calendar, Float, String>> = arrayListOf()
+            if (c.moveToFirst())
+                do {
+                    val cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
+                    cal.time = Date(c.getLong(0))
+                    cal.set(Calendar.HOUR_OF_DAY, 0)
+                    cal.set(Calendar.MINUTE, 0)
+                    cal.set(Calendar.SECOND, 0)
+                    cal.set(Calendar.MILLISECOND, 0)
+                    map.putIfAbsent(cal, Pair(c.getInt(1).toFloat() / 3600, c.getString(2)))?.let {
+                        map.replace(
+                            cal,
+                            Pair(it.first + c.getInt(1).toFloat() / 3600, c.getString(2))
+                        )
+                    }
 
-            } while (c.moveToNext())
-        c.close()
-        for (element in map)
-            list.add(Triple(element.key, element.value.first, element.value.second))
+                } while (c.moveToNext())
+            c.close()
+            for (element in map)
+                list.add(Triple(element.key, element.value.first, element.value.second))
 
 
-        return list
-    }
+            return list
+        }
     }
 
     /**
@@ -952,33 +1041,33 @@ class MainActivity : AppCompatActivity() {
      */
     fun updateOldstats(currentTime:Int, timeToAdd:Int){
         CoroutineScope(Dispatchers.IO).run {
-        if(currentTime!=0&&currentTaskId!=null) {
-            //update current task time
+            if(currentTime!=0&&currentTaskId!=null) {
+                //update current task time
 
-            //   if(this::oh.isInitialized){
-            oh.editTaskRow(
-                currentTaskId!!,
-                null, null, null, 0, 0, currentTime,-1
-            )
+                //   if(this::oh.isInitialized){
+                oh.editTaskRow(
+                    currentTaskId!!,
+                    null, null, null, 0, 0, currentTime,-1
+                )
 
-            tasks.update(currentTaskId!!,null,null,null,null,null,currentTime,-1)
-            //add oldstats row
-            //need also edit in firebase
-            if (currentTaskCategory.isNullOrEmpty())
-                currentTaskCategory=getTaskCategory()
-            timeToAdd.let {
-                oh.addOldstatRow(
-                    Calendar.getInstance(TimeZone.getTimeZone("UTC")).time.time, it,
-                    currentTaskCategory,
-                    userId
-                )
-                oldTasks.add(
-                    dateTime = Calendar.getInstance(TimeZone.getTimeZone("UTC")).time.time,
-                    currentWorkingTime = it,
-                    category = currentTaskCategory!!
-                )
+                tasks.update(currentTaskId!!,null,null,null,null,null,currentTime,-1)
+                //add oldstats row
+                //need also edit in firebase
+                if (currentTaskCategory.isNullOrEmpty())
+                    currentTaskCategory=getTaskCategory()
+                timeToAdd.let {
+                    oh.addOldstatRow(
+                        Calendar.getInstance(TimeZone.getTimeZone("UTC")).time.time, it,
+                        currentTaskCategory,
+                        userId
+                    )
+                    oldTasks.add(
+                        dateTime = Calendar.getInstance(TimeZone.getTimeZone("UTC")).time.time,
+                        currentWorkingTime = it,
+                        category = currentTaskCategory!!
+                    )
+                }
             }
-        }
         }
         //    }
     }
@@ -1260,5 +1349,158 @@ class MainActivity : AppCompatActivity() {
     }
 
 
+    private fun requestPermission(permission:String, onSuccess:()->Unit,onFailure:()->Unit) {
+        if(
+            ContextCompat.checkSelfPermission(this, permission)
+            == PackageManager.PERMISSION_DENIED ){
+            registerForActivityResult(
+                ActivityResultContracts.RequestPermission()
+            ) { isGranted: Boolean ->
+                if (isGranted)
+                    onSuccess()
+                else
+                    onFailure()
+            }.launch(permission)
+
+        }
+    }
+
+
+
+
+    private fun requestPermissions(){
+        CoroutineScope(Dispatchers.Default).run {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && (!sharedPreferences.getBoolean(
+                    "dont_show " + Manifest.permission.FOREGROUND_SERVICE,
+                    false
+                ))
+            )
+                requestPermission(Manifest.permission.FOREGROUND_SERVICE, {}, {
+                    // createDialog(Manifest.permission.FOREGROUND_SERVICE)
+                })
+
+
+            if (!sharedPreferences.getBoolean("dont_show " + Manifest.permission.INTERNET, false))
+                requestPermission(Manifest.permission.INTERNET, {}, {
+                    //  createDialog(Manifest.permission.INTERNET)
+                })
+/*
+            if (!sharedPreferences.getBoolean("dont_show " + Manifest.permission.READ_EXTERNAL_STORAGE, false))
+                requestPermission(Manifest.permission.READ_EXTERNAL_STORAGE, {
+
+                }, {
+                 //   createDialog(Manifest.permission.READ_EXTERNAL_STORAGE)
+                })
+*/
+
+
+
+
+        }
+    }
+
+
+    fun startTaskNotification(timeToAlarm:Long,taskId:Int,taskName:String){
+        val myIntent = Intent(this, TimeBroadcastReceiver::class.java)
+        myIntent.putExtra("taskId",taskId).putExtra("taskName",taskName)
+        val pendingIntent = PendingIntent.getBroadcast(
+            this.applicationContext, taskId, myIntent, 0)
+        val alarmManager:AlarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
+
+        alarmManager.setExact(AlarmManager.RTC, timeToAlarm, pendingIntent)
+
+    }
+    fun startFinishedNotification(taskId:Int,taskName:String){
+        val myIntent = Intent(this, TimeBroadcastReceiver::class.java)
+        myIntent.putExtra("taskId",taskId).putExtra("taskName",taskName).putExtra("finished",true)
+        val pendingIntent = PendingIntent.getBroadcast(
+            this.applicationContext, taskId, myIntent, 0)            //multiply maybe not necessary
+        val alarmManager:AlarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
+
+        alarmManager.setExact(AlarmManager.RTC, 1, pendingIntent)
+
+    }
+
+    fun createTodayNotifications(){
+        val data=oh.getServiceTaskInfo(userId)
+        val now=Calendar.getInstance().timeInMillis+   TimeZone.getDefault().rawOffset
+
+        for(row in data){
+            val time=row.third-now
+            Log.v("TIMETO",""+time+" "+row.third+" "+now+" "+TimeZone.getDefault().rawOffset)
+            if(time>0)
+                startTaskNotification(time,row.first,row.second)
+        }
+
+    }
+    fun deleteTodayNotifications(){
+
+        val alarmManager:AlarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
+        val data=oh.getServiceTaskInfo(userId)
+        for(row in data){
+            val myIntent = Intent(this, TimeBroadcastReceiver::class.java)
+            myIntent.putExtra("taskId",row.first).putExtra("taskName",row.second)
+            val pendingIntent = PendingIntent.getBroadcast(
+                this.applicationContext, taskId, myIntent, 0)
+            alarmManager.cancel(pendingIntent)
+        }
+
+    }
 
 }
+private fun createNotificationChannel(taskId: Int,taskName: String):NotificationChannel{
+    val importance=NotificationManager.IMPORTANCE_HIGH
+    val channel = NotificationChannel(taskId.toString(),taskName,importance).apply {
+        description="LOT Task Notification"
+    }
+    return channel
+
+}
+private fun displayTaskNotification(taskId: Int,taskName:String,title: String,taskDescription: String,context: Context){
+
+    val intent = Intent(context, MainActivity::class.java)
+    val pendingIntent = PendingIntent.getActivity(
+        context, 0 /* Request code */, intent,
+        PendingIntent.FLAG_UPDATE_CURRENT
+    )
+    //val alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
+    val notification=NotificationCompat.Builder(context,taskId.toString())
+        .setSmallIcon(android.R.drawable.ic_dialog_info)
+        .setContentTitle(title)
+        .setContentText(taskDescription)
+        .setPriority(NotificationCompat.PRIORITY_HIGH)
+        .setAutoCancel(true)
+        .setContentIntent(pendingIntent)
+    val nm=NotificationManagerCompat.from(context)
+    nm.createNotificationChannel(createNotificationChannel(taskId, taskName))
+    nm.notify(taskId,notification.build())
+    MediaPlayer.create(context, Settings.System.DEFAULT_NOTIFICATION_URI).start()
+
+}
+
+class TimeBroadcastReceiver : BroadcastReceiver() {
+    // var mp: MediaPlayer? = null
+    override fun onReceive(context: Context?, intent: Intent?) {
+        val taskId=intent!!.getIntExtra("taskId",0)
+        val mode= intent.getBooleanExtra("finished",false)
+        val taskName= intent.getStringExtra("taskName")?:"TASK NAME"
+        //val alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
+        /*mp = MediaPlayer.create(context, Settings.System.DEFAULT_NOTIFICATION_URI)
+        mp!!.start()*/
+        if(mode)
+            displayTaskNotification(taskId,taskName,context!!.resources.getText(R.string.task_completed).toString(),taskName ,
+                context
+            )
+        else
+            displayTaskNotification(taskId,taskName,context!!.resources.getText(R.string.task_is_waiting).toString(),context.resources.getText(R.string.time_to_task).toString()+" "+taskName ,
+                context
+            )
+
+        // Toast.makeText(context, "Alarm....", Toast.LENGTH_SHORT).show()
+    }
+}
+
+
+
+
+

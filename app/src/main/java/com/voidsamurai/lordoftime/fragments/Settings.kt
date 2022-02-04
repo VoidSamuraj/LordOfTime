@@ -91,14 +91,23 @@ class Settings : Fragment(), AdapterView.OnItemSelectedListener {
 
         settingsBinding.oldSwitch.isChecked=mActivity.showOutdated
         settingsBinding.oldSwitch.setOnClickListener {
-            mActivity.setOutdated(settingsBinding.oldSwitch.isChecked)
-            mActivity.getDataFromDB()
+            mActivity.let {
+                val checked=settingsBinding.oldSwitch.isChecked
+                it.setOutdated(checked)
+                it.settings.add(show_outdated = checked)
+                it.getDataFromDB()
+            }
         }
 
         settingsBinding.completeSwitch.isChecked=mActivity.getIsShowingCompleted()
         settingsBinding.completeSwitch.setOnClickListener {
-            mActivity.setIsShowingCompleted(settingsBinding.completeSwitch.isChecked)
-            mActivity.getDataFromDB()
+            mActivity.let {
+                val checked=settingsBinding.completeSwitch.isChecked
+                it.setIsShowingCompleted(checked)
+                it.settings.add(show_completed = checked)
+                it.getDataFromDB()
+            }
+
         }
         settingsBinding.deleteSwitch.isChecked=mActivity.getIsDeletingCompleted()
         settingsBinding.deleteSwitch.setOnClickListener {
@@ -110,14 +119,17 @@ class Settings : Fragment(), AdapterView.OnItemSelectedListener {
                     .setIcon(android.R.drawable.ic_dialog_alert)
                     .setPositiveButton(R.string.yes) { _, _ ->
                         mActivity.setIsDeletingCompleted(true)
+                        mActivity.settings.add(delete_completed =true )
                         mActivity.deleteCompleted()
                         mActivity.getDataFromDB()
                     }
                     .setNegativeButton(R.string.no, {_,_ ->
                         settingsBinding.deleteSwitch.isChecked=false
                     }).setCancelable(false).show()
+
         }else
-                mActivity.setIsDeletingCompleted(settingsBinding.deleteSwitch.isChecked)
+                mActivity.setIsDeletingCompleted(false)
+            mActivity.settings.add(delete_completed =false )
         }
 
 
@@ -130,9 +142,18 @@ class Settings : Fragment(), AdapterView.OnItemSelectedListener {
 
             settingsBinding.toggleGroup.addOnButtonCheckedListener { _, checkedId, _ ->
                 when (checkedId) {
-                    R.id.auto -> mActivity.setStyle(-1)
-                    R.id.light -> mActivity.setStyle(1)
-                    R.id.dark -> mActivity.setStyle(2)
+                    R.id.auto -> {
+                        mActivity.setStyle(-1)
+                        mActivity.settings.add(mode = -1)
+                    }
+                    R.id.light -> {
+                        mActivity.setStyle(1)
+                        mActivity.settings.add(mode = 1)
+                    }
+                    R.id.dark -> {
+                        mActivity.setStyle(2)
+                        mActivity.settings.add(mode = 2)
+                    }
                 }
             }
 
@@ -167,7 +188,10 @@ class Settings : Fragment(), AdapterView.OnItemSelectedListener {
         settingsBinding.numberPicker.setOnClickListener {
             val fnp= NumberPicker((activity as MainActivity).getMainChartRange()) {
                 settingsBinding.hours.text= String.format("%s %d %s",resources.getText(R.string.aim),it.value+1,resources.getText(R.string.h))
-                (activity as MainActivity).setMainChartRange(it.value+1)
+                (activity as MainActivity).let{itt->
+                    itt.setMainChartRange(it.value+1)
+                    itt.settings.add(main_chart_aim = it.value+1)
+                }
             }
             // fnp.show(requireActivity().supportFragmentManager,"Hours")
             fnp.show(childFragmentManager,"Hours")
@@ -203,7 +227,10 @@ class Settings : Fragment(), AdapterView.OnItemSelectedListener {
 
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
     if(firstClick!=0) {
-        (activity as MainActivity).setLanguage(parent!!.getItemAtPosition(position).toString())
+        val activity=(activity as MainActivity)
+        val language=parent!!.getItemAtPosition(position).toString()
+        activity.setLanguage(parent.getItemAtPosition(position).toString())
+        activity.settings.add(language = language)
     }else
         ++firstClick
 

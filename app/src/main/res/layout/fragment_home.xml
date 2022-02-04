@@ -131,6 +131,11 @@
                             android:layout_height="match_parent"
                             tools:layout="@layout/fragment_pie_chart" />
 
+                        <View
+                            android:id="@+id/view"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent" />
+
                     </LinearLayout>
 
                     <View
@@ -221,13 +226,6 @@
 
             </RelativeLayout>
         </ScrollView>
-
-        <View
-            android:id="@+id/view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:layout_editor_absoluteX="6dp"
-            tools:layout_editor_absoluteY="352dp" />
 
         <ImageView
             android:id="@+id/corner1bg"

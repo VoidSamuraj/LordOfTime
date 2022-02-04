@@ -280,7 +280,7 @@ class EditTaskDialog(
                     deleteRow(id!!)
                     (fragment as CalendarDayEdit).deleteElement(id)
                     dismiss()
-                }).show(parentFragmentManager,"ConfirmDialog")
+                },{}).show(parentFragmentManager,"ConfirmDialog")
 
             }
         }else{

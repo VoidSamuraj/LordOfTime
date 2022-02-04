@@ -102,6 +102,7 @@
         <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/layout/chart_details_element.xml" value="0.33695652173913043" />
         <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/layout/color_edit_element.xml" value="0.44429347826086957" />
         <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/layout/dialog_confirm.xml" value="0.5" />
+        <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/layout/dialog_description.xml" value="0.4078125" />
         <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/layout/dialog_edit_task.xml" value="0.3333333333333333" />
         <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/layout/dialog_fragment_edit_color_category.xml" value="0.55" />
         <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/layout/dialog_repeat.xml" value="0.5546875" />
@@ -157,6 +158,7 @@
         <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/layout/todo_edit_element.xml" value="0.44429347826086957" />
         <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/layout/todo_element.xml" value="0.44429347826086957" />
         <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/layout/widget_layout.xml" value="0.5546875" />
+        <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/layout/widget_notification.xml" value="0.47552083333333334" />
         <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/menu/drawer_menu.xml" value="0.5461538461538461" />
         <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/menu/menu_main.xml" value="0.4083333333333333" />
         <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/menu/settings_menu.xml" value="0.4083333333333333" />
