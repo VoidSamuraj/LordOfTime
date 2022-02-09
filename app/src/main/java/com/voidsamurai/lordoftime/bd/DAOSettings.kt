@@ -28,6 +28,8 @@ class DAOSettings(val mActivity: MainActivity) {
                             children.child("main_chart_auto").value as Boolean,
                             children.child("main_chart_aim").value as Int,
                             children.child("death_date").value as Long,
+                            children.child("show_notifications").value as Boolean,
+                            children.child("notifications_sound").value as Boolean
                         ))
                         break
                     }
@@ -51,7 +53,7 @@ class DAOSettings(val mActivity: MainActivity) {
      * 2 dark mode
      *
      * */
-    fun add(language:String?=null, mode:Int?=null, show_outdated:Boolean?=null, show_completed:Boolean?=null, delete_completed:Boolean?=null, main_chart_auto:Boolean?=null, main_chart_aim:Int?=null,death_date:Long?=null){
+    fun add(language:String?=null, mode:Int?=null, show_outdated:Boolean?=null, show_completed:Boolean?=null, delete_completed:Boolean?=null, main_chart_auto:Boolean?=null, main_chart_aim:Int?=null,death_date:Long?=null,show_notifications:Boolean?=null,notifications_sound:Boolean?=null){
         language.let {  dbReference.child("language").setValue(it)}
         mode.let {dbReference.child("mode").setValue(it)}
         show_outdated.let {dbReference.child("show_outdated").setValue(it)}
@@ -60,6 +62,9 @@ class DAOSettings(val mActivity: MainActivity) {
         main_chart_auto.let {dbReference.child("main_chart_auto").setValue(it)}
         main_chart_aim.let {dbReference.child("main_chart_aim").setValue(it)}
         death_date.let {dbReference.child("death_date").setValue(it)}
+        show_notifications.let {dbReference.child("show_notifications").setValue(it)}
+        notifications_sound.let {dbReference.child("notifications_sound").setValue(it)}
+
     }
 
 

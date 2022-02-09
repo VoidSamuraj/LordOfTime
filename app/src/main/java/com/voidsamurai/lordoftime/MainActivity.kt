@@ -1,25 +1,27 @@
 package com.voidsamurai.lordoftime
 
 import android.Manifest
-import android.app.AlarmManager
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.app.PendingIntent
+import android.app.*
+import android.app.usage.UsageStatsManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Color
 import android.graphics.ImageDecoder
 import android.graphics.drawable.Drawable
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Build
+import android.os.Build.VERSION_CODES.Q
 import android.os.Bundle
+import android.os.Process
 import android.provider.MediaStore
 import android.provider.Settings
 import android.util.Log
@@ -28,6 +30,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.*
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.app.NotificationCompat
@@ -43,6 +46,7 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import androidx.palette.graphics.Palette
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -171,7 +175,8 @@ class MainActivity : AppCompatActivity() {
             }
             sd.main_chart_aim?.let { setMainChartRange(it) }
             sd.death_date?.let {setYourTime(it) }
-
+            sd.show_notifications?.let{setIsShowingNotifications(it)}
+            sd.notifications_sound?.let{setHaveNotificationsSound(it)}
 
             var modeChanged = false
             var languageChanged = false
@@ -208,6 +213,24 @@ class MainActivity : AppCompatActivity() {
     }
     fun getCurrentTaskId():Int{
         return sharedPreferences.getInt("TASK_ID",-1)
+    }
+    fun setIsShowingNotifications(isShowing: Boolean){
+        sharedPreferences.edit().putBoolean("IS_SHOWING_NOTIFICATIONS",isShowing).apply()
+    }
+    fun getIsShowingNotifications():Boolean{
+        return sharedPreferences.getBoolean("IS_SHOWING_NOTIFICATIONS",true)
+    }
+    fun setHaveUsagePermission(permitted: Boolean){
+        sharedPreferences.edit().putBoolean("USAGE_PERMISSION",permitted).apply()
+    }
+    fun getHaveUsagePermission():Boolean{
+        return sharedPreferences.getBoolean("USAGE_PERMISSION",false)
+    }
+    fun setHaveNotificationsSound(have: Boolean){
+        sharedPreferences.edit().putBoolean("HAVE_NOTIFICATIONS_SOUND",have).apply()
+    }
+    fun getHaveNotificationsSound():Boolean{
+        return sharedPreferences.getBoolean("HAVE_NOTIFICATIONS_SOUND",true)
     }
     fun setTaskCategory(category:String){
         sharedPreferences.edit().putString("TASK_CATEGORY",category).apply()
@@ -706,6 +729,8 @@ class MainActivity : AppCompatActivity() {
             true
         }
 
+
+
     }
 
 
@@ -721,8 +746,10 @@ class MainActivity : AppCompatActivity() {
             drawerLayout.closeDrawer(GravityCompat.START)
         }
         requestPermissions()
-       // createTodayNotifications()
-       // deleteTodayNotifications()
+
+        if(getIsShowingNotifications()){
+            createTodayNotifications()
+        }
     }
 
 
@@ -1378,6 +1405,19 @@ class MainActivity : AppCompatActivity() {
                 requestPermission(Manifest.permission.FOREGROUND_SERVICE, {}, {
                     // createDialog(Manifest.permission.FOREGROUND_SERVICE)
                 })
+/*
+            val appOpsManager:AppOpsManager=getSystemService(APP_OPS_SERVICE) as AppOpsManager
+            if (Build.VERSION.SDK_INT >= Q) {
+                val mode= appOpsManager.unsafeCheckOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS, Process.myUid(),packageName)
+                if(mode!= AppOpsManager.MODE_ALLOWED){
+                    startActivity(Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS))
+                }
+            }*/
+
+/*
+            requestPermission(Manifest.permission.PACKAGE_USAGE_STATS, {}, {
+                    // createDialog(Manifest.permission.FOREGROUND_SERVICE)
+                })*/
 
 
             if (!sharedPreferences.getBoolean("dont_show " + Manifest.permission.INTERNET, false))
@@ -1407,7 +1447,16 @@ class MainActivity : AppCompatActivity() {
             this.applicationContext, taskId, myIntent, 0)
         val alarmManager:AlarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
 
-        alarmManager.setExact(AlarmManager.RTC, timeToAlarm, pendingIntent)
+        alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC, timeToAlarm, pendingIntent)
+
+    } fun deleteTaskNotification(timeToAlarm:Long,taskId:Int,taskName:String){
+        val myIntent = Intent(this, TimeBroadcastReceiver::class.java)
+        myIntent.putExtra("taskId",taskId).putExtra("taskName",taskName)
+        val pendingIntent = PendingIntent.getBroadcast(
+            this.applicationContext, taskId, myIntent, 0)
+        val alarmManager:AlarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
+
+        alarmManager.cancel(pendingIntent)
 
     }
     fun startFinishedNotification(taskId:Int,taskName:String){
@@ -1427,24 +1476,79 @@ class MainActivity : AppCompatActivity() {
 
         for(row in data){
             val time=row.third-now
-            Log.v("TIMETO",""+time+" "+row.third+" "+now+" "+TimeZone.getDefault().rawOffset)
+
             if(time>0)
-                startTaskNotification(time,row.first,row.second)
+                startTaskNotification(row.third-TimeZone.getDefault().rawOffset,row.first,row.second)
         }
 
     }
-    fun deleteTodayNotifications(){
 
-        val alarmManager:AlarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
+    fun deleteTodayNotifications(){
         val data=oh.getServiceTaskInfo(userId)
+        val now=Calendar.getInstance().timeInMillis+   TimeZone.getDefault().rawOffset
+
         for(row in data){
-            val myIntent = Intent(this, TimeBroadcastReceiver::class.java)
-            myIntent.putExtra("taskId",row.first).putExtra("taskName",row.second)
-            val pendingIntent = PendingIntent.getBroadcast(
-                this.applicationContext, taskId, myIntent, 0)
-            alarmManager.cancel(pendingIntent)
+            val time=row.third-now
+            if(time>0)
+                deleteTaskNotification(row.third-TimeZone.getDefault().rawOffset,row.first,row.second)
         }
 
+    }
+
+    @RequiresApi(Q)
+    suspend fun createDailyUsageStats(): ArrayList<Pair<String, Long>> {
+
+        val usageStasManager = getSystemService(USAGE_STATS_SERVICE) as UsageStatsManager
+        val pm = applicationContext.packageManager
+        val cal = Calendar.getInstance()
+        // cal.add(Calendar.DAY_OF_MONTH,-1)
+        cal.set(Calendar.HOUR_OF_DAY, 0)
+        cal.set(Calendar.MINUTE, 0)
+        cal.set(Calendar.SECOND, 0)
+        cal.set(Calendar.MILLISECOND, 0)
+        val queryUsageState = usageStasManager.queryUsageStats(
+            UsageStatsManager.INTERVAL_BEST,
+            cal.timeInMillis,
+            System.currentTimeMillis()
+        )
+        val arrayList: ArrayList<Pair<String, Long>> = arrayListOf()
+
+        for (element in queryUsageState) {
+            val ai: ApplicationInfo? = try {
+                pm.getApplicationInfo(element.packageName, 0)
+            } catch (e: PackageManager.NameNotFoundException) {
+                null
+            }
+
+            arrayList.add(
+                Pair(
+                    (if (ai != null) pm.getApplicationLabel(ai) else element.packageName) as String,
+                    element.totalTimeVisible
+                )
+            )
+
+        }
+        val noSystem= arrayListOf<String>()
+        val pinfoList = pm.getInstalledPackages(0)
+        for (element in pinfoList){
+            val ai: ApplicationInfo? = try {
+                pm.getApplicationInfo(element.packageName, 0)
+            } catch (e: PackageManager.NameNotFoundException) {
+                null
+            }
+            var isSystem = false
+            isSystem = (element.applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM ) != 0
+            if (element.applicationInfo.sourceDir.startsWith("/data/app/") && isSystem)
+                isSystem = false
+            if(!isSystem) {
+                noSystem.add((if (ai != null) pm.getApplicationLabel(ai) else element.packageName) as String)
+            }
+
+        }
+        val filteredList=(arrayList.filter { it.second >= 0L } as ArrayList<Pair<String, Long>>).filter {
+            noSystem.contains(it.first)
+        } as ArrayList<Pair<String, Long>>
+        return  filteredList
     }
 
 }
@@ -1474,7 +1578,9 @@ private fun displayTaskNotification(taskId: Int,taskName:String,title: String,ta
     val nm=NotificationManagerCompat.from(context)
     nm.createNotificationChannel(createNotificationChannel(taskId, taskName))
     nm.notify(taskId,notification.build())
-    MediaPlayer.create(context, Settings.System.DEFAULT_NOTIFICATION_URI).start()
+
+    if(context.getSharedPreferences(MainActivity.SHARED_PREFERENCES, AppCompatActivity.MODE_PRIVATE).getBoolean("HAVE_NOTIFICATIONS_SOUND",true))
+        MediaPlayer.create(context, Settings.System.DEFAULT_NOTIFICATION_URI).start()
 
 }
 
@@ -1484,9 +1590,6 @@ class TimeBroadcastReceiver : BroadcastReceiver() {
         val taskId=intent!!.getIntExtra("taskId",0)
         val mode= intent.getBooleanExtra("finished",false)
         val taskName= intent.getStringExtra("taskName")?:"TASK NAME"
-        //val alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
-        /*mp = MediaPlayer.create(context, Settings.System.DEFAULT_NOTIFICATION_URI)
-        mp!!.start()*/
         if(mode)
             displayTaskNotification(taskId,taskName,context!!.resources.getText(R.string.task_completed).toString(),taskName ,
                 context
@@ -1495,8 +1598,6 @@ class TimeBroadcastReceiver : BroadcastReceiver() {
             displayTaskNotification(taskId,taskName,context!!.resources.getText(R.string.task_is_waiting).toString(),context.resources.getText(R.string.time_to_task).toString()+" "+taskName ,
                 context
             )
-
-        // Toast.makeText(context, "Alarm....", Toast.LENGTH_SHORT).show()
     }
 }
 

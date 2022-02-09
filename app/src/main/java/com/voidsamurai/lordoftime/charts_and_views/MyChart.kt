@@ -112,22 +112,9 @@ class MyChart(context: Context?, attributeSet: AttributeSet ):
     }
     private fun drawArc1(canvas: Canvas,startAngle:Float,sweepAngle:Float,color: Int,duration:Float=0.0f){
 
-        /*
-        *
-        paint.style= Paint.Style.STROKE
-        paint.color = color
-        val rect:RectF =RectF( (width / 2 - side / 3).toFloat(),
-            (height / 2 - side / 3).toFloat(),
-            (width / 2 + side / 3).toFloat(),
-            (height / 2 + side / 3).toFloat())
-        val path=Path()
-        paint.strokeWidth=100f
-        path.addArc(rect, startAngle, sweepAngle)
-        canvas.drawPath(path,paint)
-
-        * */
         paint.style= Paint.Style.FILL
         paint.color = color
+        if((sweepAngle-startAngle)!=360.0f)
         canvas.drawArc(
             (width / 2 - side / 2).toFloat(),
             (height / 2 - side / 2).toFloat(),
@@ -138,6 +125,18 @@ class MyChart(context: Context?, attributeSet: AttributeSet ):
             true,
             paint
         )
+        else
+            canvas.drawArc(
+                (width / 2 - side / 2+1).toFloat(),
+                (height / 2 - side / 2+1).toFloat(),
+                (width / 2 + side / 2-1).toFloat(),
+                (height / 2 + side / 2-1).toFloat(),
+                startAngle,
+                sweepAngle,
+                true,
+                paint
+            )
+
         paint.color = Color.BLACK
         paint.strokeWidth=3f
 

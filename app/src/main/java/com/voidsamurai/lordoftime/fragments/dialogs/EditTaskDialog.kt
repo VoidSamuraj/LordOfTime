@@ -162,7 +162,7 @@ class EditTaskDialog(
             if(mode== MODE.SAVE){
                 if (checkIfCanSave()) {
                     val id=addNewElement().toInt()
-                   if(id!=-1){
+                    if(id!=-1){
 
                         (activity as MainActivity).let {
                             it.repeatDialog = RepeatDialog(id,this)
@@ -238,10 +238,10 @@ class EditTaskDialog(
         category.onFocusChangeListener =onFocusChange
         durationEdit.onFocusChangeListener = onFocusChange
         nameEdit.onFocusChangeListener=onFocusChange
-       // isFinished.onFocusChangeListener=onFocusChange
+        // isFinished.onFocusChangeListener=onFocusChange
         isFinished.setOnClickListener {changed=true }
-       // binding.hourEdit.setOnClickListener {changed=true }
-       // binding.dateEdit.setOnClickListener {changed=true }
+        // binding.hourEdit.setOnClickListener {changed=true }
+        // binding.dateEdit.setOnClickListener {changed=true }
         /*
         startHour.onFocusChangeListener=onFocusChange
         endHour.onFocusChangeListener=onFocusChange
@@ -268,7 +268,7 @@ class EditTaskDialog(
                 endHourCalendar.set(Calendar.HOUR_OF_DAY,hourf)
                 endHourCalendar.set(Calendar.MINUTE,minutef)
                 endHour.setText(String.format("%02d:%02d", hourf, minutef))
-               // changed=true
+                // changed=true
             }
         }
 
@@ -327,45 +327,53 @@ class EditTaskDialog(
     fun addNewElement():Long{
         if(durationEdit.text.isNullOrEmpty()||durationEdit.text.toString().toFloat()<0f)
             setDuration()
-        val (id,dur)=addRow(
-            (category.selectedItem as Pair<*, *>).first.toString (),
-            nameEdit.text.toString(),
-            startHourCalendar.time.time,
-            durationEdit.text.toString(),
-            priority.text.toString().toInt()
-        )
+        var idReturn:Long?=null
 
-        if(id!=-1L) {
-            val category = (category.selectedItem as Pair<*, *>).first.toString()
-            val drwc = DataRowWithColor(
-                name = nameEdit.text.toString(),
-                category = category,
-                date = startHourCalendar,
-                workingTime = dur,
-                currentWorkingTime = 0f,
-                outdated = startHourCalendar.time.time < Calendar.getInstance(TimeZone.getTimeZone("UTC")).time.time,
-                color = (activity as MainActivity).getColors().value!![category]!!,
-                priority = priority.text.toString().toInt(),
-                id =id.toInt()
+        val dura =  (durationEdit.text.toString().formatToFloat())
+        val (hour,min)=(startHour.text.toString().split(":"))
+        val start = hour.toFloat()+min.toFloat()/60
+        val m=(fragment as CalendarDayEdit).getStartMargin(start,dura)
 
+        if(m==-1)
+        {
+            Toast.makeText(context,resources.getText(R.string.time_occupied),Toast.LENGTH_SHORT).show()
+        }else {
+            val (id, dur) = addRow(
+                (category.selectedItem as Pair<*, *>).first.toString(),
+                nameEdit.text.toString(),
+                startHourCalendar.time.time,
+                durationEdit.text.toString(),
+                priority.text.toString().toInt()
             )
-            // add to layout
-            val dura =  (durationEdit.text.toString().formatToFloat())
-            val (hour,min)=(startHour.text.toString().split(":"))
-            val start = hour.toFloat()+min.toFloat()/60                                //czy na 100
-            val m=(fragment as CalendarDayEdit).getStartMargin(start,dura,id.toInt())
-            if(m==-1)
-            {
-                Toast.makeText(context,resources.getText(R.string.time_occupied),Toast.LENGTH_SHORT).show()
-            }
-            else {
+            idReturn=id
+            if (id != -1L) {
+                val category = (category.selectedItem as Pair<*, *>).first.toString()
+                val drwc = DataRowWithColor(
+                    name = nameEdit.text.toString(),
+                    category = category,
+                    date = startHourCalendar,
+                    workingTime = dur,
+                    currentWorkingTime = 0f,
+                    outdated = startHourCalendar.time.time < Calendar.getInstance(
+                        TimeZone.getTimeZone(
+                            "UTC"
+                        )
+                    ).time.time,
+                    color = (activity as MainActivity).getColors().value!![category]!!,
+                    priority = priority.text.toString().toInt(),
+                    id = id.toInt()
+
+                )
+                // add to layout
                 (fragment as CalendarDayEdit).addElement(
                     drwc,
                     m//margin?.toInt() ?: 1
                 )
+
             }
         }
-        return id
+
+        return idReturn?:-1L
     }
 
     private fun setDuration(){
@@ -415,56 +423,63 @@ class EditTaskDialog(
     private fun updateRow(data:DataRowWithColor) {
         setDuration()
 
-        var dur =  (durationEdit.text.toString().formatToFloat())
-        val (hour,min)=(startHour.text.toString().split(":"))
-        val start = hour.toFloat()+min.toFloat()/60                                //czy na 100
-        val m=(fragment as CalendarDayEdit).getStartMargin(start,dur,data.id)
-        if(m==-1)
-        {
-            Toast.makeText(context,resources.getText(R.string.time_occupied),Toast.LENGTH_SHORT).show()
-            return
-        }
-        m.let{
+        var dur = (durationEdit.text.toString().formatToFloat())
+        val (hour, min) = (startHour.text.toString().split(":"))
+        val start = hour.toFloat() + min.toFloat() / 60                                //czy na 100
+        val m = (fragment as CalendarDayEdit).getStartMargin(start, dur, data.id)
+        if (m == -1) {
+            Toast.makeText(context, resources.getText(R.string.time_occupied), Toast.LENGTH_SHORT).show()
 
-            dur=(fragment as CalendarDayEdit).getMaxDur(it, (fragment as CalendarDayEdit).getHeight(dur),data.id)
-        }
-        //if((dur+(startHourCalendar.timeInMillis.toDouble()/3600000)>24))
+        }else {
 
-        //edit element in layout
-        (fragment as CalendarDayEdit).editElement(
-            DataRowWithColor(
-                data.id,
-                (category.selectedItem as Pair<*, *>).first.toString (),
-                nameEdit.text.toString(),
-                startHourCalendar.clone() as Calendar,
-                dur,
-                priority.text.toString().toInt(),
-                0f,
-                (category.selectedItem as Pair<*, *>).second.toString (),
-                null
+            m.let {
+
+                dur = (fragment as CalendarDayEdit).getMaxDur(
+                    it,
+                    (fragment as CalendarDayEdit).getHeight(dur),
+                    data.id
+                )
+            }
+            //if((dur+(startHourCalendar.timeInMillis.toDouble()/3600000)>24))
+
+            //edit element in layout
+            (fragment as CalendarDayEdit).editElement(
+                DataRowWithColor(
+                    data.id,
+                    (category.selectedItem as Pair<*, *>).first.toString(),
+                    nameEdit.text.toString(),
+                    startHourCalendar.clone() as Calendar,
+                    dur,
+                    priority.text.toString().toInt(),
+                    0f,
+                    (category.selectedItem as Pair<*, *>).second.toString(),
+                    null
+                )
             )
-        )
-        dur*=3600
-        (activity as MainActivity).getDBOpenHelper().editTaskRow(
-            data.id,
-            (category.selectedItem as Pair<*, *>).first.toString (),
-            nameEdit.text.toString(),
-            startHourCalendar.time.time,
-            dur.toInt(),
-            priority.text.toString().toInt(),
-            0,
-            if(isFinished.isChecked)1 else 0)
-        //edit firebase row
-        (activity as MainActivity).tasks.add  ( id=data.id,
-            category = (category.selectedItem as Pair<*, *>).first.toString (),
-            name = nameEdit.text.toString(),
-            dateTime = startHourCalendar.time.time,
-            workingTime = dur.toInt(),
-            priority = priority.text.toString().toInt(),
-            currentWorkingTime = 0,
-            finished = if(isFinished.isChecked)1 else 0)
-        (context as MainActivity).getDataFromDB()
-
+            dur *= 3600
+            (activity as MainActivity).getDBOpenHelper().editTaskRow(
+                data.id,
+                (category.selectedItem as Pair<*, *>).first.toString(),
+                nameEdit.text.toString(),
+                startHourCalendar.time.time,
+                dur.toInt(),
+                priority.text.toString().toInt(),
+                0,
+                if (isFinished.isChecked) 1 else 0
+            )
+            //edit firebase row
+            (activity as MainActivity).tasks.add(
+                id = data.id,
+                category = (category.selectedItem as Pair<*, *>).first.toString(),
+                name = nameEdit.text.toString(),
+                dateTime = startHourCalendar.time.time,
+                workingTime = dur.toInt(),
+                priority = priority.text.toString().toInt(),
+                currentWorkingTime = 0,
+                finished = if (isFinished.isChecked) 1 else 0
+            )
+            (context as MainActivity).getDataFromDB()
+        }
     }
 
 

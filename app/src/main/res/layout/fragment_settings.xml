@@ -206,6 +206,7 @@
                     app:icon="@drawable/ic_baseline_dark_mode_24" />
             </com.google.android.material.button.MaterialButtonToggleGroup>
 
+
             <TextView
                 android:id="@+id/old_label"
                 android:layout_width="wrap_content"
@@ -215,6 +216,14 @@
                 android:textSize="@dimen/normal_text_size"
                 app:layout_constraintStart_toStartOf="@+id/textView12"
                 app:layout_constraintTop_toBottomOf="@+id/toggle_group" />
+
+            <androidx.constraintlayout.widget.Barrier
+                android:id="@+id/barrier"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:barrierDirection="right"
+                android:orientation="vertical"
+                app:constraint_referenced_ids="old_label,complete_label,delete_label,show_notifications,sound_notification" />
 
             <androidx.appcompat.widget.SwitchCompat
                 android:id="@+id/old_switch"
@@ -227,7 +236,7 @@
                 android:textSize="@dimen/small_text_size"
                 android:thumb="@drawable/thumb1"
                 app:layout_constraintBottom_toBottomOf="@+id/old_label"
-                app:layout_constraintStart_toEndOf="@+id/old_label"
+                app:layout_constraintStart_toEndOf="@+id/barrier"
                 app:layout_constraintTop_toTopOf="@+id/old_label"
                 app:showText="true"
                 app:thumbTextPadding="4dp"
@@ -255,7 +264,7 @@
                 android:textSize="@dimen/small_text_size"
                 android:thumb="@drawable/thumb1"
                 app:layout_constraintBottom_toBottomOf="@+id/complete_label"
-                app:layout_constraintStart_toEndOf="@+id/complete_label"
+                app:layout_constraintStart_toEndOf="@+id/barrier"
                 app:layout_constraintTop_toTopOf="@+id/complete_label"
                 app:showText="true"
                 app:thumbTextPadding="4dp"
@@ -282,8 +291,62 @@
                 android:textSize="@dimen/small_text_size"
                 android:thumb="@drawable/thumb1"
                 app:layout_constraintBottom_toBottomOf="@+id/delete_label"
-                app:layout_constraintStart_toEndOf="@+id/delete_label"
+                app:layout_constraintStart_toEndOf="@+id/barrier"
                 app:layout_constraintTop_toTopOf="@+id/delete_label"
+                app:showText="true"
+                app:thumbTextPadding="4dp"
+                app:track="@drawable/track1" />
+
+            <TextView
+                android:id="@+id/show_notifications"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/normal_text_size"
+                android:layout_marginTop="@dimen/settings_margin"
+                android:text="@string/show_notification"
+                app:layout_constraintStart_toStartOf="@+id/delete_label"
+                app:layout_constraintTop_toBottomOf="@+id/delete_switch" />
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/show_notification_switch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/default_margin"
+                android:elevation="10dp"
+                android:textOff="@string/no"
+                android:textOn="@string/yes"
+                android:textSize="@dimen/small_text_size"
+                android:thumb="@drawable/thumb1"
+                app:layout_constraintBottom_toBottomOf="@+id/show_notifications"
+                app:layout_constraintStart_toEndOf="@+id/barrier"
+                app:layout_constraintTop_toTopOf="@+id/show_notifications"
+                app:showText="true"
+                app:thumbTextPadding="4dp"
+                app:track="@drawable/track1" />
+
+            <TextView
+                android:id="@+id/sound_notification"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/normal_text_size"
+                android:layout_marginTop="@dimen/settings_margin"
+                android:text="@string/sound_notification"
+                app:layout_constraintStart_toStartOf="@+id/delete_label"
+                app:layout_constraintTop_toBottomOf="@+id/show_notification_switch" />
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/sound_notification_switch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/default_margin"
+                android:elevation="10dp"
+                android:textOff="@string/no"
+                android:textOn="@string/yes"
+                android:textSize="@dimen/small_text_size"
+                android:thumb="@drawable/thumb1"
+                app:layout_constraintBottom_toBottomOf="@+id/sound_notification"
+                app:layout_constraintStart_toEndOf="@+id/barrier"
+                app:layout_constraintTop_toTopOf="@+id/sound_notification"
                 app:showText="true"
                 app:thumbTextPadding="4dp"
                 app:track="@drawable/track1" />
@@ -296,7 +359,7 @@
                 android:textSize="@dimen/normal_text_size"
                 android:layout_marginTop="@dimen/settings_margin"
                 app:layout_constraintStart_toStartOf="@+id/old_label"
-                app:layout_constraintTop_toBottomOf="@+id/delete_switch" />
+                app:layout_constraintTop_toBottomOf="@+id/sound_notification_switch" />
 
             <androidx.appcompat.widget.SwitchCompat
                 android:id="@+id/chart_switch"
@@ -368,6 +431,8 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/old_label"
                 app:layout_constraintTop_toBottomOf="@+id/divider2" />
+
+
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

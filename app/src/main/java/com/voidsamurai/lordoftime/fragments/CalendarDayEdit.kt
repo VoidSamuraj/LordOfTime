@@ -155,7 +155,7 @@ class CalendarDayEdit : Fragment() {
         return max.toFloat()/calendarBinding.scroll.height*24
     }
 
-        fun getStartMargin(nextStartHour:Float,duration:Float,id:Int):Int {
+        fun getStartMargin(nextStartHour:Float,duration:Float,id:Int?=-1):Int {
         var canBe=true
         val y=  (nextStartHour * calendarBinding.scroll.height / 24f).toInt()
         val dur=  (duration * calendarBinding.scroll.height / 24f).toInt()

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:state_checked="false">
+    <item  android:state_checked="false">
         <shape android:shape="rectangle">
             <solid android:color="@color/thumb_unselected"/>
             <corners android:radius="24dp"/>
@@ -8,7 +8,7 @@
             <stroke android:color="@color/switch_thumb_stroke_unselected" android:width="1dp"/>
         </shape>
     </item>
-    <item android:state_checked="true">
+    <item  android:state_checked="true">
         <shape android:shape="rectangle">
             <solid android:color="@color/thumb_selected"/>
             <corners android:radius="24dp"/>
@@ -17,4 +17,5 @@
             <stroke android:color="@color/switch_thumb_stroke_selected" android:width="1dp"/>
         </shape>
     </item>
+
 </selector>

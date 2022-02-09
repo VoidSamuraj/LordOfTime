@@ -105,4 +105,8 @@
     <string name="time_to_task">Czas na</string>
     <string name="task_is_waiting">Masz zadanie do wykonania</string>
     <string name="task_completed">Zakończono zadanie</string>
+    <string name="show_notification">Pokazuj powiadomienia</string>
+    <string name="sound_notification">Dźwięk powiadomień</string>
+    <string name="last_24_hours">Ostatnie 24 godziny</string>
+    <string name="give_permission_to_display_stats">Udziel zezwolenia by wyświetlić dane</string>
 </resources>

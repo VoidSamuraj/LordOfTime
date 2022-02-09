@@ -109,6 +109,36 @@ class Settings : Fragment(), AdapterView.OnItemSelectedListener {
             }
 
         }
+        settingsBinding.showNotificationSwitch.isChecked=mActivity.getIsShowingNotifications()
+        settingsBinding.showNotificationSwitch.setOnClickListener {
+            mActivity.let {
+                val checked=settingsBinding.showNotificationSwitch.isChecked
+                if(checked)
+                    it.createTodayNotifications()
+                else
+                    it.deleteTodayNotifications()
+
+                settingsBinding.soundNotificationSwitch.isEnabled=checked
+
+                it.setIsShowingNotifications(checked)
+                it.settings.add(show_notifications = checked)
+                it.getDataFromDB()
+            }
+        }
+        settingsBinding.soundNotificationSwitch.isChecked=mActivity.getHaveNotificationsSound()
+        settingsBinding.soundNotificationSwitch.isEnabled=mActivity.getIsShowingNotifications()
+        settingsBinding.soundNotificationSwitch.setOnClickListener {
+            mActivity.let {
+                it.deleteTodayNotifications()
+                it.createTodayNotifications()
+                val checked=settingsBinding.soundNotificationSwitch.isChecked
+                it.setHaveNotificationsSound(checked)
+                it.settings.add(notifications_sound = checked)
+                it.getDataFromDB()
+            }
+        }
+
+
         settingsBinding.deleteSwitch.isChecked=mActivity.getIsDeletingCompleted()
         settingsBinding.deleteSwitch.setOnClickListener {
 
@@ -123,9 +153,9 @@ class Settings : Fragment(), AdapterView.OnItemSelectedListener {
                         mActivity.deleteCompleted()
                         mActivity.getDataFromDB()
                     }
-                    .setNegativeButton(R.string.no, {_,_ ->
-                        settingsBinding.deleteSwitch.isChecked=false
-                    }).setCancelable(false).show()
+                    .setNegativeButton(R.string.no) { _, _ ->
+                        settingsBinding.deleteSwitch.isChecked = false
+                    }.setCancelable(false).show()
 
         }else
                 mActivity.setIsDeletingCompleted(false)

@@ -108,5 +108,9 @@
     <string name="time_to_task">Time to</string>
     <string name="task_is_waiting">You have task to do</string>
     <string name="task_completed">Task completed</string>
+    <string name="show_notification">Show notifications</string>
+    <string name="sound_notification">Noitfication sound</string>
+    <string name="last_24_hours">Last 24 hours</string>
+    <string name="give_permission_to_display_stats">Give permission to display stats</string>
 
 </resources>

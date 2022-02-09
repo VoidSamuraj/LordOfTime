@@ -50,5 +50,7 @@ data class SettingsData(
     var delete_completed:Boolean?,
     var main_chart_auto:Boolean?,
     var main_chart_aim:Int?,
-    var death_date:Long?
+    var death_date:Long?,
+    var show_notifications:Boolean?,
+    var notifications_sound:Boolean?
 ):Parcelable
