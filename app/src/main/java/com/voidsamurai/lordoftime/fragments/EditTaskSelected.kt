@@ -7,6 +7,7 @@ import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -72,6 +73,7 @@ class EditTaskSelected : Fragment() ,DatePickerDialog.OnDateSetListener,TimePick
             binding.deleteEditButton.visibility=View.VISIBLE
             binding.nameEdit.setText(data!!.name)
             val lastElementPos=adapter.getPosition(Pair(data!!.category,data!!.color))
+     //       Log.v("POSITION",""+lastElementPos+" "+adapter.count)
             lastElementCategory=adapter.getItem(lastElementPos)!!.first
 
             binding.checkCategory.setSelection(lastElementPos)

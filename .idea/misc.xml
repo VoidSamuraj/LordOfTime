@@ -91,7 +91,7 @@
         <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/layout/activity_auth.xml" value="0.5458333333333333" />
         <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/layout/activity_home_nav_host.xml" value="0.37604166666666666" />
         <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/layout/activity_main.xml" value="0.3333333333333333" />
-        <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/layout/activity_splash_screen.xml" value="0.5" />
+        <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/layout/activity_splash_screen.xml" value="0.3333333333333333" />
         <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/layout/auth_activity.xml" value="0.5546875" />
         <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/layout/auth_fragment_forgot_password.xml" value="0.38125" />
         <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/layout/auth_fragment_login.xml" value="0.35208333333333336" />
@@ -112,7 +112,7 @@
         <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/layout/element_calendar_card.xml" value="0.5494791666666666" />
         <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/layout/element_calendar_edit.xml" value="0.5546875" />
         <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/layout/element_chart_details.xml" value="0.5546875" />
-        <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/layout/element_color_edit.xml" value="0.5546875" />
+        <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/layout/element_color_edit.xml" value="0.5288966725043783" />
         <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/layout/element_fragment_rutines.xml" value="0.5546875" />
         <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/layout/element_rutines.xml" value="0.5546875" />
         <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/layout/element_start_work_recycle.xml" value="0.5546875" />
@@ -163,6 +163,7 @@
         <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/menu/menu_main.xml" value="0.4083333333333333" />
         <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/menu/settings_menu.xml" value="0.4083333333333333" />
         <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/menu/working_menu.xml" value="0.5" />
+        <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.3975" />
         <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/xml-night/styles.xml" value="0.5458333333333333" />
         <entry key="..\:/ProjektyAndroid/LordOfTime/app/src/main/res/xml/root_preferences.xml" value="0.27239583333333334" />
       </map>

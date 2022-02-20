@@ -26,7 +26,7 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@color/lemon"
+                android:background="@color/work_button_color"
                 android:gravity="center"
                 android:orientation="vertical">
 
@@ -83,7 +83,8 @@
                     android:id="@+id/divider5"
                     android:layout_width="match_parent"
                     android:layout_height="2dp"
-                    android:background="@color/lemon" />
+                    android:background="@color/work_button_color"
+                    />
 
                 <EditText
                     android:id="@+id/edit_password"
@@ -112,7 +113,7 @@
         android:layout_marginBottom="30dp"
         style="@style/AuthLabel"
         android:background="@drawable/button_rounded"
-        android:backgroundTint="@color/lemon"
+        android:backgroundTint="@color/work_button_color"
         android:text="@string/login" />
 
     <TextView
@@ -121,7 +122,7 @@
         android:layout_height="50dp"
         android:layout_marginBottom="30dp"
         android:background="@drawable/button_rounded"
-        android:backgroundTint="@color/lemon"
+        android:backgroundTint="@color/work_button_color"
         style="@style/AuthLabel"
         android:text="@string/register" />
 

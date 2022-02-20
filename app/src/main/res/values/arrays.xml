@@ -32,7 +32,7 @@
         <item>EN</item>
         <item>PL</item>
     </string-array>
-    <!-- Reply Preference -->
+
     <string-array name="reply_entries">
         <item>Reply</item>
         <item>Reply to all</item>
@@ -41,5 +41,13 @@
     <string-array name="reply_values">
         <item>reply</item>
         <item>reply_all</item>
+    </string-array>
+
+    <string-array name="tutorial">
+        <item>Welcome in Lord Of Time</item>
+        <item>In app you can:</item>
+        <item>add and edit tasks</item>
+        <item>add repeating to tasks</item>
+        <item>Full guide at Google Play Store</item>
     </string-array>
 </resources>

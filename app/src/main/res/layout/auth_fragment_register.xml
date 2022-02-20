@@ -26,7 +26,7 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@color/lemon"
+                android:background="@color/work_button_color"
                 android:gravity="center"
                 android:orientation="vertical">
                 <ImageView
@@ -105,7 +105,8 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="2dp"
-                    android:background="@color/lemon" />
+                    android:background="@color/work_button_color"
+                    />
                 <EditText
                     android:inputType="text"
                     android:id="@+id/user_name"
@@ -124,7 +125,7 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="2dp"
-                    android:background="@color/lemon" />
+                    android:background="@color/work_button_color"/>
                 <EditText
                     android:id="@+id/edit_password"
                     android:layout_width="match_parent"
@@ -143,7 +144,7 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="2dp"
-                    android:background="@color/lemon" />
+                    android:background="@color/work_button_color" />
 
                 <EditText
                     android:id="@+id/edit_password2"
@@ -169,7 +170,7 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:background="@drawable/button_rounded"
-        android:backgroundTint="@color/lemon"
+        android:backgroundTint="@color/work_button_color"
         style="@style/AuthLabel"
         android:text="@string/register" />
     <TextView

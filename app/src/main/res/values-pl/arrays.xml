@@ -32,4 +32,12 @@
         <item>EN</item>
         <item>PL</item>
     </string-array>
+
+    <string-array name="tutorial">
+        <item>Witaj w Lord Of Time</item>
+        <item>W aplikacji możesz:</item>
+        <item>dodawać i edytować zadania</item>
+        <item>dodać powtarzanie zadań</item>
+        <item>Poradnik na Google Play Store</item>
+    </string-array>
 </resources>

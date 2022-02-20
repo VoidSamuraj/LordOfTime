@@ -55,12 +55,11 @@ class AppsUsage : Fragment(){
         //binding.myChart.setLayerType(View.LAYER_TYPE_SOFTWARE, null)
 
         //  binding.chartDescription.addOnItemTouchListener(RecyclerViewDisabler())
+/*
         binding.chartDescription.addOnItemTouchListener(object : RecyclerView.OnItemTouchListener{
-
             override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
                 return true
             }
-
 
             override fun onTouchEvent(rv: RecyclerView, e: MotionEvent) {
                 navigate()
@@ -70,19 +69,18 @@ class AppsUsage : Fragment(){
                 parent.performClick()
             }
 
-
             override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {
-
             }
+        })*/
 
-        })
-
-        binding.none.visibility=View.GONE
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             CoroutineScope(Dispatchers.Default ).launch {
                 (activity as MainActivity).let {activity->
                     if(activity.getHaveUsagePermission()){
+                        binding.loading.visibility=View.VISIBLE
+                        binding.myChart.visibility=View.GONE
+                        binding.chartDescription.visibility=View.GONE
                         fillChartWithData(withContext(Dispatchers.IO) {
                             activity.createDailyUsageStats()
                         }
@@ -109,8 +107,9 @@ class AppsUsage : Fragment(){
                                         } else {                                                                    //only legend displayed but everytime
                                             activity.setHaveUsagePermission(true)
                                             withContext(Dispatchers.Main){
-                                                binding.chartDescription.visibility=View.VISIBLE
-                                                binding.myChart.visibility=View.VISIBLE
+                                               // binding.chartDescription.visibility=View.VISIBLE
+                                               // binding.myChart.visibility=View.VISIBLE
+                                                binding.loading.visibility=View.VISIBLE
                                                 it.visibility=View.GONE
                                             }
                                             fillChartWithData(withContext(Dispatchers.IO) {
@@ -192,9 +191,11 @@ class AppsUsage : Fragment(){
             val aim = -1
             MainScope().launch{
                 try {
+                    binding.loading.visibility=View.GONE
                     if (chartMap.values.isEmpty() && legendMap.isEmpty()) {
                         binding.chartDescription.visibility = View.GONE
                         binding.myChart.visibility = View.GONE
+
                         //  binding.none.visibility = View.VISIBLE
                     } else {
                         binding.none.visibility = View.GONE
@@ -218,11 +219,12 @@ class AppsUsage : Fragment(){
             }
         }
     }
+    /*
     class RecyclerViewDisabler : RecyclerView.OnItemTouchListener {
         override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean=true
         override fun onTouchEvent(rv: RecyclerView, e: MotionEvent) {}
         override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {}
-    }
+    }*/
 
 
     override fun onDestroyView() {

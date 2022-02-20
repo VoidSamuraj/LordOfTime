@@ -10,12 +10,15 @@ import android.graphics.BitmapFactory;
 import android.util.Log;
 import androidx.annotation.Nullable;
 import org.jetbrains.annotations.NotNull;
+
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.TimeZone;
 
@@ -24,18 +27,19 @@ import kotlin.Triple;
 
 public class LOTDatabaseHelper extends SQLiteOpenHelper {
     private static final String DB_NAME = "LOT";
-
-    private static final int DB_VERSION = 13;
+    private static final int DB_VERSION = 18;
     private static SQLiteDatabase db;
+    private static List<String> guide;
 
     public LOTDatabaseHelper(@Nullable Context context) {
         super(context, DB_NAME, null, DB_VERSION);
     }
+    public static void SetGuide(List<String> guide) {
+        LOTDatabaseHelper.guide =guide;
+    }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-
-        Log.v("create","db");
         updateMyDatabase(db,0);
     }
 
@@ -64,89 +68,47 @@ public class LOTDatabaseHelper extends SQLiteOpenHelper {
             //    db.execSQL("DROP TABLE IF EXISTS AVATARS;");
 
         }
-        Log.v("oldVersiun",""+oldVersion);
-        //if(oldVersion<90) {
-        //   db.execSQL("CREATE TABLE IF NOT EXISTS AVATARS (user_id TEXT PRIMARY KEY , file BLOB);");
         db.execSQL("CREATE TABLE IF NOT EXISTS TASKTABLE (_id INTEGER PRIMARY KEY AUTOINCREMENT, category TEXT,name TEXT, datetime INTEGER, working_time INTEGER,priority INTEGER, current_work_time INTEGER, is_finished INTEGER,user_id TEXT);");
         db.execSQL("CREATE TABLE IF NOT EXISTS AVATARS (user_id TEXT PRIMARY KEY, avatar BLOB);");
         db.execSQL("CREATE TABLE IF NOT EXISTS RUTINES (_id INTEGER PRIMARY KEY AUTOINCREMENT,task_id INTEGER, days TEXT,hours TEXT,user_id TEXT);");
         db.execSQL("CREATE TABLE IF NOT EXISTS COLOR (category_id TEXT PRIMARY KEY , color TEXT,user_id TEXT);");
         db.execSQL("CREATE TABLE IF NOT EXISTS OLDSTATS (date_id INTEGER PRIMARY KEY , working_time INTEGER, category TEXT,user_id TEXT);");
-        // db.execSQL("CREATE TABLE IF NOT EXISTS SETTINGS (user_id TEXT PRIMARY KEY , language TINYTEXT, mode TINYTEXT,show_outdated BOOLEAN,show_completed BOOLEAN,delete_completed BOOLEAN,main_chart_auto BOOLEAN,main_chart_aim SMALLINT,birth_date INTEGER, life_time SMALLINT );");
 
-        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
-        cal.set(2021, 11, 1, 12, 6,0);
-        cal.set(Calendar.MILLISECOND,0);
-        fillTestData("Książki", "Ludzie bezdomni", cal.getTime().getTime(),(int)(2.3*3600) ,3,(int)(1.2*3600));
-        cal.set(2021, 11, 1, 15, 6,0);
-        cal.set(Calendar.MILLISECOND,0);
-        fillTestData("Sport", "Sztanga", cal.getTime().getTime(), (int)(6.6*3600),1,(int)(2.6*3600));
-        cal.set(2021, 11, 2, 1, 6,0);
-        cal.set(Calendar.MILLISECOND,0);
-        fillTestData("Sport", "Bieganie", cal.getTime().getTime(), (int)(1.8*3600),1,3600);
-        cal.set(2022, 4, 11, 14, 16,0);
-        cal.set(Calendar.MILLISECOND,0);
-        fillTestData("Praca w ogrodzie","Sadzenie cebuli",cal.getTime().getTime(),(int)(2.4*3600) ,2,(int)(2.0*3600));
-        cal.set(2022, 6, 30, 10, 2,0);
-        cal.set(Calendar.MILLISECOND,0);
-        fillTestData("Praca w ogrodzie","Podlewanie kwiatów",cal.getTime().getTime(),(int)(0.4*3600),2 ,0);
+      //  if(DB_VERSION==1) {
 
-        addColorRow( "Praca w ogrodzie", "#FFAA56","");
-        addColorRow( "Książki", "#AAFF96","");
-        addColorRow( "Sport", "#2266BB","");
-
-        //  }
-
-    }
-    /*
-    private void addNoExistSettings(String user_id, String language, String mode, Boolean show_outdated, Boolean show_completed, Boolean delete_completed, Boolean main_chart_auto, short main_chart_aim, long birth_date, int life_time){
-        ContentValues cv=createSettingsCValues(user_id,language,mode,show_outdated,show_completed,delete_completed,main_chart_auto,main_chart_aim,birth_date,life_time);
-        db.insert("SETTINGS",null,cv);
-        cv.clear();
-    }
-*/
-    /**
-     *
-     * @param user_id
-     * @param language [en, pl]
-     * @param mode  [n,d,a] n-night, d-day, a-auto
-     * @param show_outdated
-     * @param show_completed
-     * @param delete_completed
-     * @param main_chart_auto main chart auto scale
-     * @param main_chart_aim time aim for main chart
-     * @param birth_date - 0L for no changes
-     * @param life_time - 0 for no changes
-     *//*
-    public void addOrEditSettings(String user_id, String language, String mode, Boolean show_outdated, Boolean show_completed, Boolean delete_completed, Boolean main_chart_auto, short main_chart_aim, long birth_date, int life_time){
-        Cursor c=db.rawQuery("SELECT * FROM SETTINGS  WHERE AVATARS.user_id=?",new String[]{String.valueOf(user_id)});
-        if(c.moveToFirst()){
-            ContentValues cv= createSettingsCValues("",language,mode,show_outdated,show_completed,delete_completed,main_chart_auto,main_chart_aim,birth_date,life_time);
-            db.update("SETTINGS"
-                    ,cv
-                    ,"user_id = ?"
-                    ,new String[]{String.valueOf(user_id)});
-            cv.clear();
-        }else
-            addNoExistSettings(user_id,language,mode,show_outdated,show_completed,delete_completed,main_chart_auto,main_chart_aim,birth_date,life_time);
-        c.close();
-    }*/
-
-    /**
-     *
-     * @param user_id
-     * @return null when no found
-     *//*
-    public SettingsData getEditSettings(String user_id){
-        Cursor c=db.rawQuery("SELECT * FROM SETTINGS  WHERE AVATARS.user_id=?",new String[]{String.valueOf(user_id)});
-        if(c.moveToFirst()){
-            return new SettingsData(c.getString(0),c.getString(1),c.getString(2),c.getInt(3)!=0,c.getInt(4)!=0,c.getInt(5)!=0,c.getInt(6)!=0,c.getInt(7),c.getLong(8),c.getInt(9));
+            Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+        if(guide!=null){
+            int i=guide.size();
+            cal.add(Calendar.HOUR,-(i+1));
+            for (String x: guide){
+                cal.add(Calendar.HOUR,1);
+                fillTestData("Tutorial", x, cal.getTime().getTime(), 0, i--, (int) (0.5 * 3600));
+            }
+            addColorRow("Tutorial", "#2266BB", "");
         }
-        return null;
+          /*  cal.set(2021, 11, 1, 12, 6, 0);
+            cal.set(Calendar.MILLISECOND, 0);
+            fillTestData("Książki", "Ludzie bezdomni", cal.getTime().getTime(), (int) (2.3 * 3600), 3, (int) (1.2 * 3600));
+            cal.set(2021, 11, 1, 15, 6, 0);
+            cal.set(Calendar.MILLISECOND, 0);
+            fillTestData("Sport", "Sztanga", cal.getTime().getTime(), (int) (6.6 * 3600), 1, (int) (2.6 * 3600));
+            cal.set(2021, 11, 2, 1, 6, 0);
+            cal.set(Calendar.MILLISECOND, 0);
+            fillTestData("Sport", "Bieganie", cal.getTime().getTime(), (int) (1.8 * 3600), 1, 3600);
+            cal.set(2022, 4, 11, 14, 16, 0);
+            cal.set(Calendar.MILLISECOND, 0);
+            fillTestData("Praca w ogrodzie", "Sadzenie cebuli", cal.getTime().getTime(), (int) (2.4 * 3600), 2, (int) (2.0 * 3600));
+            cal.set(2022, 6, 30, 10, 2, 0);
+            cal.set(Calendar.MILLISECOND, 0);
+            fillTestData("Praca w ogrodzie", "Podlewanie kwiatów", cal.getTime().getTime(), (int) (0.4 * 3600), 2, 0);
+*/
+            //addColorRow("Praca w ogrodzie", "#FFAA56", "");
+            //addColorRow("Książki", "#AAFF96", "");
+            addColorRow("Sport", "#2266BB", "");
+
+       // }
 
     }
-*/
-
 
     public void addAvatar(String user_id,byte [] avatar){
         Cursor c=db.rawQuery("SELECT * FROM AVATARS  WHERE AVATARS.user_id=?",new String[]{String.valueOf(user_id)});
@@ -180,9 +142,9 @@ public class LOTDatabaseHelper extends SQLiteOpenHelper {
         return bit;
     }
 
-    private void fillTestData(String category, String name, Long startdatetime, int hours, int priority, int workingTime){
-        addTaskRow(category,name,startdatetime,hours,priority,workingTime,"");
-        addOldstatRow(startdatetime,hours,category,"");
+    private void fillTestData(String category, String name, Long startdatetime, int currentTimeInS, int priority, int workingTime){
+        addTaskRow(category,name,startdatetime,currentTimeInS,priority,workingTime,"");
+        addOldstatRow(startdatetime,currentTimeInS,category,"");
     }
 
     /**
@@ -238,23 +200,6 @@ public class LOTDatabaseHelper extends SQLiteOpenHelper {
                 ,new String[]{String.valueOf(id),user_id});
     }
 
-    /**
-     * @param days-string with names of week MON,THU,WED,THU,FRI,SAT,SUN separated by , without spaces
-     *
-     * */
-     /*
-    public int getRutinesRowID(int task_id, String days, String hours,String userId){                   // dodaj sprawdzanie czy wpisy już istnieją
-        Log.v("GET_RUTINES_ROW_ID",""+task_id+" "+days+" "+hours);
-        Cursor c=db.rawQuery("SELECT RUTINES._id FROM RUTINES  WHERE RUTINES.task_id=? AND RUTINES.days=? AND RUTINES.hours=? AND RUTINES.user_id=?",new String[]{String.valueOf(task_id),days,hours,userId});
-        if(c.moveToFirst()){
-            int ret=c.getInt(0);
-            c.close();
-            return ret;
-        }
-        return  -1;
-
-    }
-    */
     /**
      * @param task_id - id of task [not rutine]
      * */
@@ -515,22 +460,5 @@ public class LOTDatabaseHelper extends SQLiteOpenHelper {
         if(color!=null)cv.put("color", color);
         if(!user_id.equals(""))cv.put("user_id", user_id);
         return cv;
-    }/*
-    private  ContentValues createSettingsCValues (String user_id, String language, String mode, Boolean show_outdated, Boolean show_completed, Boolean delete_completed, Boolean main_chart_auto, short main_chart_aim, Long birth_date, int life_time ) {
-        ContentValues cv=new ContentValues();
-        if(!user_id.equals(""))cv.put("user_id",user_id);
-        if(!language.equals(""))cv.put("language",language);
-        if(!mode.equals(""))cv.put("mode",mode);
-        cv.put("show_outdated",show_outdated);
-        cv.put("show_completed",show_completed);
-        cv.put("delete_completed",delete_completed);
-        cv.put("main_chart_auto",main_chart_auto);
-        cv.put("main_chart_aim",main_chart_aim);
-        if(birth_date!= 0L)cv.put("birth_date",birth_date);
-        if(life_time!= 0)cv.put("life_time",life_time);
-
-        return cv;
-    }*/
-
-
+    }
 }

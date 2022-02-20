@@ -46,7 +46,6 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import androidx.palette.graphics.Palette
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -634,6 +633,7 @@ class MainActivity : AppCompatActivity() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
             AppCompatDelegate.setDefaultNightMode(sharedPreferences.getInt(MODE,-1 ))
         super.onCreate(savedInstanceState)
+        LOTDatabaseHelper.SetGuide(resources.getStringArray(R.array.tutorial).toList())
         oh = LOTDatabaseHelper(this)
         db = oh.readableDatabase
 
@@ -651,7 +651,10 @@ class MainActivity : AppCompatActivity() {
                 setStartTime(Calendar.getInstance(TimeZone.getTimeZone("UTC")).timeInMillis)
                 Log.v("TIME",""+wt)
 
-                updateOldstats(wt+(row.currentWorkingTime*3600).toInt(),wt)
+                row?.currentWorkingTime?.let {
+                    updateOldstats(wt+(it*3600).toInt(),wt)
+                }
+
             }
 
         }
@@ -1021,11 +1024,10 @@ class MainActivity : AppCompatActivity() {
     private fun getSortedByPriority(querryArray:ArrayList<DataRowWithColor>):ArrayList<DataRowWithColor>{
         CoroutineScope(Dispatchers.IO).run {
             querryArray.sortWith(compareByDescending<DataRowWithColor> { it.priority }.thenBy { it.date.time.time })
-            querryArray.reverse()
-            val newArray: ArrayList<DataRowWithColor> = ArrayList()
-            newArray.addAll(querryArray.toList())
-            querryArray.sortWith(compareBy<DataRowWithColor> { it.date.time.time }.thenByDescending { it.priority })
-            return newArray
+
+           // val newArray: ArrayList<DataRowWithColor> = ArrayList(querryArray.toList())
+           // querryArray.sortWith(compareBy<DataRowWithColor> { it.date.time.time }.thenByDescending { it.priority })
+            return  ArrayList(querryArray.toList())
         }
     }
     fun getOldData():ArrayList<Triple<Calendar,Float,String>> {
