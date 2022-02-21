@@ -1,5 +1,3 @@
-
-
 package com.voidsamurai.lordoftime.fragments
 
 import android.annotation.SuppressLint
@@ -24,9 +22,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.roundToInt
 
-
 class DateChartFragment : Fragment() {
-
 
     private var _binding: FragmentDateWidgetBinding?=null
     private val binding get()=_binding!!

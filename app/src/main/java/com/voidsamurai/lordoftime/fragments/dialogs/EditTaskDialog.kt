@@ -16,6 +16,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import com.voidsamurai.lordoftime.MainActivity
 import com.voidsamurai.lordoftime.MainActivity.Companion.formatToFloat
 import com.voidsamurai.lordoftime.R
@@ -29,7 +30,6 @@ class EditTaskDialog(
     private var LayoutId: Int,
     private val mode: MODE,
     private val startTime:Calendar?=null,
-    //  private val margin:Float?=null,
     private val id:Int?=null
 ) : DialogFragment() {
 
@@ -121,21 +121,15 @@ class EditTaskDialog(
                 val pos=adapter.getPosition(Pair(dataRow!!.category,dataRow!!.color))
                 lastElementCategory=adapter.getItem(pos)!!.first
                 category.setSelection(pos)
-
             }
-
         }
 
-
         super.onCreateDialog(savedInstanceState)
-
-
 
         builder.setView(contentView)
         cancelButton.setOnClickListener {
             dismiss()
         }
-
 
         saveButton.setOnClickListener {
 
@@ -184,7 +178,8 @@ class EditTaskDialog(
                 }
         }
         addColorB.setOnClickListener {
-            it?.findNavController()!!.navigate(R.id.action_editTaskSelected_to_colorsFragment)
+            activity?.findNavController(R.id.nav_host_fragment)!!.navigate(R.id.action_calendarDayEdit_to_colorsFragment)
+            dismiss()
 
         }
 
@@ -203,7 +198,7 @@ class EditTaskDialog(
                     startHourCalendar.set(Calendar.MINUTE, minute)
                     startHourCalendar.set(Calendar.SECOND, 0)
                     startHourCalendar.set(Calendar.MILLISECOND, 0)
-                    startHour.setText(String.format("%02d:%02d", hourOfDay,minute))//(if (hourOfDay < 10) "0" else "") + hourOfDay.toString() + ":" + if (minute < 10) "0" else "" + minute.toString())
+                    startHour.setText(String.format("%02d:%02d", hourOfDay,minute))
                     setDuration()
                     changed=true
                 },
@@ -238,14 +233,8 @@ class EditTaskDialog(
         category.onFocusChangeListener =onFocusChange
         durationEdit.onFocusChangeListener = onFocusChange
         nameEdit.onFocusChangeListener=onFocusChange
-        // isFinished.onFocusChangeListener=onFocusChange
         isFinished.setOnClickListener {changed=true }
-        // binding.hourEdit.setOnClickListener {changed=true }
-        // binding.dateEdit.setOnClickListener {changed=true }
-        /*
-        startHour.onFocusChangeListener=onFocusChange
-        endHour.onFocusChangeListener=onFocusChange
-        */
+
         priority.onFocusChangeListener=onFocusChange
 
         durationEdit.addTextChangedListener{
@@ -268,11 +257,8 @@ class EditTaskDialog(
                 endHourCalendar.set(Calendar.HOUR_OF_DAY,hourf)
                 endHourCalendar.set(Calendar.MINUTE,minutef)
                 endHour.setText(String.format("%02d:%02d", hourf, minutef))
-                // changed=true
             }
         }
-
-
 
         if(mode== MODE.EDIT) {
             deleteButton.setOnClickListener {
@@ -286,15 +272,10 @@ class EditTaskDialog(
         }else{
             deleteButton.visibility=View.GONE
         }
-        addColorB.setOnClickListener {
 
+        isRutineChecked.observe(this) {
+            isRepeating.isChecked = it
         }
-
-        isRutineChecked.observe(
-            this,
-            { isRepeating.isChecked=it
-            }
-        )
         isRepeating.setOnCheckedChangeListener { compoundButton, _ ->
             compoundButton.isChecked=isRutineChecked.value!!
         }
@@ -380,36 +361,11 @@ class EditTaskDialog(
         var hoursInFloat=endHourCalendar.get(Calendar.HOUR_OF_DAY)-startHourCalendar.get(Calendar.HOUR_OF_DAY)+((endHourCalendar.get(Calendar.MINUTE)-startHourCalendar.get(Calendar.MINUTE)).toFloat()/60f)
         if (hoursInFloat<0){
             hoursInFloat*=-1
-            // endHour.setText(String.format("%02d:%02d",startHourCalendar.get(Calendar.HOUR_OF_DAY)+(allMinutes/60).toInt(), startHourCalendar.get(Calendar.MINUTE)+(allMinutes%60).toInt()))
         }
-        // if (startHourCalendar>endHourCalendar){
-        /*
-        val allMinutes=hoursInFloat*60
-        var endMinutes=startHourCalendar.get(Calendar.MINUTE)+(allMinutes%60).toInt()
-        var endHours=startHourCalendar.get(Calendar.HOUR_OF_DAY)+(allMinutes/60).toInt()
-        */
-        /* if(endMinutes<0) {
-             endMinutes += 60
-             --endHours
-         }*/
 
-        // startHour.setText(String.format("%02d:%02d",endHours,endMinutes ))
-
-        // }
-        /*
-        if((endHours+hoursInFloat.toInt()+(endMinutes+hoursInFloat%60).toInt())>24){
-            endHours=24
-            endMinutes=0
-            hoursInFloat=endHours-startHourCalendar.get(Calendar.HOUR_OF_DAY)+((endMinutes-startHourCalendar.get(Calendar.MINUTE)).toFloat()/60f)
-            if (hoursInFloat<0)
-                hoursInFloat*=-1
-        }
-        */
         durationEdit.setText(hoursInFloat.toString())
 
     }
-
-
     private fun setColorSpinner(){
         val list: Array<String> = (activity as MainActivity).getColors().value!!.keys.toTypedArray()
         list.sort()
@@ -440,7 +396,6 @@ class EditTaskDialog(
                     data.id
                 )
             }
-            //if((dur+(startHourCalendar.timeInMillis.toDouble()/3600000)>24))
 
             //edit element in layout
             (fragment as CalendarDayEdit).editElement(

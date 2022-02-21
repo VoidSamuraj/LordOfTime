@@ -104,7 +104,7 @@
                     android:layout_marginStart="@dimen/small_padding"
                     android:layout_marginEnd="@dimen/small_padding"
                     android:minHeight="100dp"
-                    android:transitionName="chartCard"
+                    android:transitionName="chartCard2"
                     app:cardCornerRadius="@dimen/radius_card_view"
                     app:cardElevation="@dimen/padding_elevation">
 
@@ -129,12 +129,8 @@
                             class="com.voidsamurai.lordoftime.fragments.FragmentPieChart"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            tools:layout="@layout/fragment_pie_chart" />
-
-                        <View
-                            android:id="@+id/view"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent" />
+                            tools:layout="@layout/fragment_pie_chart"
+                            />
 
                     </LinearLayout>
 
@@ -240,10 +236,21 @@
             app:tint="@color/work_button_color"
             tools:ignore="ContentDescription" />
 
+
         <!--
             android:layout_width="@dimen/button_group_width"
-
+@dimen/button_group_width
     -->
+        <View
+            android:id="@+id/view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/button_group"
             android:layout_width="@dimen/button_group_width"
@@ -302,6 +309,7 @@
                 android:id="@+id/startTaskLabel"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:visibility="invisible"
                 android:lines="1"
                 android:maxLines="1"
                 android:text="@string/start_task"
@@ -312,74 +320,78 @@
                 app:layout_constraintTop_toTopOf="@+id/button_status" />
 
             <LinearLayout
-                    android:id="@+id/label_hour"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="30dp"
-                    android:gravity="center_horizontal"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/switcher_hour"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:inAnimation="@anim/slide_in_down"
-                        android:outAnimation="@anim/slide_out_down"
-                        android:textSize="@dimen/label_button" />
+                android:id="@+id/label_hour"
+                android:visibility="invisible"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp"
+                android:gravity="center_horizontal"
+                android:orientation="horizontal"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:layout_editor_absoluteX="30dp">
 
                 <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:text=":"
-                        android:textSize="@dimen/label_button"
-                        tools:ignore="HardcodedText" />
+                    android:id="@+id/switcher_hour"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:inAnimation="@anim/slide_in_down"
+                    android:outAnimation="@anim/slide_out_down"
+                    android:textSize="@dimen/label_button" />
 
                 <TextView
-                        android:id="@+id/switcher_minutes1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:inAnimation="@anim/slide_in_down"
-                        android:outAnimation="@anim/slide_out_down"
-                        android:textSize="@dimen/label_button" />
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text=":"
+                    android:textSize="@dimen/label_button"
+                    tools:ignore="HardcodedText" />
 
                 <TextView
-                        android:id="@+id/switcher_minutes2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:inAnimation="@anim/slide_in_down"
-                        android:outAnimation="@anim/slide_out_down"
-                        android:textSize="@dimen/label_button" />
+                    android:id="@+id/switcher_minutes1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:inAnimation="@anim/slide_in_down"
+                    android:outAnimation="@anim/slide_out_down"
+                    android:textSize="@dimen/label_button" />
 
                 <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:text=":"
-                        android:textSize="@dimen/label_button"
-                        tools:ignore="HardcodedText" />
+                    android:id="@+id/switcher_minutes2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:inAnimation="@anim/slide_in_down"
+                    android:outAnimation="@anim/slide_out_down"
+                    android:textSize="@dimen/label_button" />
 
                 <TextView
-                        android:id="@+id/switcher_seconds1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:inAnimation="@anim/slide_in_down"
-                        android:outAnimation="@anim/slide_out_down"
-                        android:textSize="@dimen/label_button" />
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text=":"
+                    android:textSize="@dimen/label_button"
+                    tools:ignore="HardcodedText" />
 
                 <TextView
-                        android:id="@+id/switcher_seconds2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:inAnimation="@anim/slide_in_down"
-                        android:outAnimation="@anim/slide_out_down"
-                        android:textSize="@dimen/label_button" />
-                </LinearLayout>
+                    android:id="@+id/switcher_seconds1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:inAnimation="@anim/slide_in_down"
+                    android:outAnimation="@anim/slide_out_down"
+                    android:textSize="@dimen/label_button" />
+
+                <TextView
+                    android:id="@+id/switcher_seconds2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:inAnimation="@anim/slide_in_down"
+                    android:outAnimation="@anim/slide_out_down"
+                    android:textSize="@dimen/label_button" />
+            </LinearLayout>
 
             <ImageView
                 android:id="@+id/status_image"

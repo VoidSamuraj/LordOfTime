@@ -19,17 +19,11 @@ class ManyChartsFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        sharedElementEnterTransition = TransitionInflater.from(context).inflateTransition(R.transition.move_fade)
-
+        val transition=TransitionInflater.from(context).inflateTransition(R.transition.move_fade)
+        sharedElementEnterTransition = transition
+        sharedElementReturnTransition = transition
     }
 
-    override fun onStart() {
-        super.onStart()
-
-        AnimationUtils.loadAnimation(context,R.anim.fade_in).also { animation ->
-            binding.chart2.startAnimation(animation)
-        }
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

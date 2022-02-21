@@ -20,21 +20,18 @@ import com.voidsamurai.lordoftime.fragments.adapters.CalendarEditAdapter
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.roundToInt
-import android.util.TypedValue
 
 import android.view.ViewAnimationUtils
 
-import android.animation.Animator
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import androidx.core.graphics.drawable.toDrawable
 import androidx.core.view.drawToBitmap
-import androidx.navigation.fragment.navArgs
-
+import kotlin.math.max
 
 class CalendarEditFragment : Fragment() {
 
-    var _calendarViewBinding:FragmentCalendarEditBinding?=null
-    val binding get()=_calendarViewBinding!!
+    private var _calendarViewBinding:FragmentCalendarEditBinding?=null
+    private val binding get()=_calendarViewBinding!!
 
     private lateinit var background:View
     var dayAimH: MutableLiveData<Int> = MutableLiveData(6)
@@ -77,9 +74,9 @@ class CalendarEditFragment : Fragment() {
         fun updateAfterAimChange(){
             fillLabels()
         }
-        dayAimH.observe(viewLifecycleOwner, {
+        dayAimH.observe(viewLifecycleOwner) {
             updateAfterAimChange()
-        })
+        }
 
 
         date= Calendar.getInstance(TimeZone.getTimeZone("UTC"))
@@ -150,7 +147,6 @@ class CalendarEditFragment : Fragment() {
 
         binding.currentMonthLabel.setText(mdf.format(date.time))
 
-
         fillAim()
 
         background = binding.background
@@ -170,15 +166,7 @@ class CalendarEditFragment : Fragment() {
                 }
             })
         }
-
-
-
-
     }
-
-
-
-
 
     override fun onPause() {
         (activity as MainActivity).homeDrawable=background.drawToBitmap().toDrawable(resources)
@@ -188,22 +176,10 @@ class CalendarEditFragment : Fragment() {
     override fun onDestroyView() {
         dayAimH.removeObservers(viewLifecycleOwner)
         _calendarViewBinding=null
-        //(activity as MainActivity).homeDrawable=background.drawToBitmap().toDrawable(resources)
 
         super.onDestroyView()
-
-
-
-
-
     }
-    /*
-     private fun setFirstDay(calendar: Calendar, isMondayFirstDay: Boolean){
-         if (isMondayFirstDay)
-             calendar.firstDayOfWeek=Calendar.MONDAY
-         else
-             calendar.firstDayOfWeek=Calendar.SUNDAY
-     }*/
+
     private fun createDaysCalendarChart(monthCalendar: Calendar, isMondayFirstDay:Boolean=false, weeks:Array<RecyclerView>) {
         productiveDays = 0
         val hours = 0f
@@ -239,14 +215,8 @@ class CalendarEditFragment : Fragment() {
         fun getMonthData(relativeMonth: Int): Map<Int, ArrayList<NTuple6<Calendar, Float, Int, String, String, String>>> {
             val selectedCalendar=monthCalendar.clone() as Calendar
             selectedCalendar.add(Calendar.MONTH,relativeMonth)
-            /*
-            var selectedMonth=monthCalendar.get(Calendar.MONTH)
-            if(selectedMonth)
-            val selectedYear=monthCalendar.get(Calendar.YEAR)
-            */
-            return allData.filter { entry ->
 
-                //  setFirstDay( entry.key,isMondayFirstDay)
+            return allData.filter { entry ->
 
                 (selectedCalendar.get(Calendar.YEAR) == entry.key.get(Calendar.YEAR))
                         && (selectedCalendar.get(Calendar.MONTH) == entry.key.get(Calendar.MONTH))
@@ -256,16 +226,6 @@ class CalendarEditFragment : Fragment() {
         val lastMonthData:Map<Int,ArrayList<NTuple6<Calendar, Float, Int, String, String, String>>> =getMonthData(-1)
         val nextMonthData:Map<Int,ArrayList<NTuple6<Calendar,Float, Int, String, String, String>>> =getMonthData(1)
 
-        /*
-         for(x in allData.values){
-             for(y in x)
-                 Log.v("Data",""+y.t1.get(Calendar.MONTH)+"/"+y.t1.get(Calendar.DAY_OF_MONTH)+" "+y.t4+" "+y.t5+" "+y.t6)
-         }*/
-
-        // val c:Calendar= Calendar.getInstance()
-        //c.set(2021, 11, 1, 12, 6,0)
-
-        //  val list:ArrayList<ArrayList<ArrayList<NTuple6<Calendar,Float,Int, String, String,String>>?>> = arrayListOf()
         val currentCalendar: Calendar = monthCalendar.clone() as Calendar
 
         currentCalendar.set(Calendar.DAY_OF_MONTH,1)
@@ -280,15 +240,10 @@ class CalendarEditFragment : Fragment() {
 
         Log.v("Monthdata", ""+monthData)
         val lastMonth: Calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
-        // setFirstDay(lastMonth,isMondayFirstDay)
         lastMonth.add(Calendar.MONTH,-1)
         var lastMonthDays=lastMonth.getActualMaximum(Calendar.DAY_OF_MONTH)-(firstMonthDay-1)
         var nextMonthDays=1
-      /*  if(isMondayFirstDay) {
-            ++lastMonthDays
-            ++nextMonthDays
 
-        }*/
         val monthDays:Int= currentCalendar.getActualMaximum(Calendar.DAY_OF_MONTH)
         var day=1
         var started=false
@@ -314,8 +269,6 @@ class CalendarEditFragment : Fragment() {
                             //in month
                             if (!started) {
                                 day = 1
-                              /*  if(isMondayFirstDay)
-                                    ++day*/
                             }
                             val cal=date.clone() as Calendar
                             cal.set(Calendar.DAY_OF_MONTH,day)
@@ -342,16 +295,7 @@ class CalendarEditFragment : Fragment() {
                 CalendarEditAdapter(requireContext(),localList),
                 LinearLayoutManager(context, RecyclerView.HORIZONTAL,false)
             )
-            // list.add(localList)
         }
-/*
-        weeks.forEachIndexed { weekDay, week ->
-            setAdapterManager(
-                week,
-                CalendarEditAdapter(requireContext(),list[weekDay]),
-                LinearLayoutManager(context, RecyclerView.HORIZONTAL,false)
-            )
-        }*/
 
         workPer=hours/( dayAimH.value!! * monthDays)
         productivePer=(productiveDays.toFloat()/monthDays*100)
@@ -362,15 +306,12 @@ class CalendarEditFragment : Fragment() {
         recyclerView.layoutManager=layoutManager
     }
 
-
     private fun circularReveal() {
-        val finalRadius: Int = Math.max(background.width, background.height)
+        val finalRadius: Int = max(background.width, background.height)
         val circularReveal = ViewAnimationUtils.createCircularReveal(
             background,
             (activity as MainActivity).homeFabPosition[0],
             (activity as MainActivity).homeFabPosition[1],
-           /* cx,
-            cy, */
             0f,
             finalRadius.toFloat()
         )
@@ -379,30 +320,5 @@ class CalendarEditFragment : Fragment() {
         circularReveal.start()
 
     }
-/*
-    private fun circularRevealBack(des:()->Unit) {
-
-        val finalRadius = Math.max(background.width, background.height).toFloat()
-        val circularReveal =
-            ViewAnimationUtils.createCircularReveal(
-                background,
-                position[0],
-                position[1],
-                finalRadius,
-                0f)
-        circularReveal.addListener(object : Animator.AnimatorListener {
-            override fun onAnimationStart(animator: Animator) {}
-            override fun onAnimationEnd(animator: Animator) {
-                background.visibility = View.INVISIBLE
-                des()
-            }
-
-            override fun onAnimationCancel(animator: Animator) {}
-            override fun onAnimationRepeat(animator: Animator) {}
-        })
-        circularReveal.duration = 3000
-        circularReveal.start()
-
-    }*/
 
 }

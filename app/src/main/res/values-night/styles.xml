@@ -1,11 +1,5 @@
 <resources>
-    <!--
-    <style name="Widget.Theme.LordOfTime.ActionBar.Fullscreen" parent="Widget.AppCompat.ActionBar">
-        <item name="android:background">@color/background</item>
 
-          <item name="android:windowAnimationStyle">@style/CustomActivityAnimation</item>
-    </style>
-    -->
     <style name="CustomActivityAnimation" parent="@android:style/Animation.Activity">
         <item name="android:activityOpenEnterAnimation">@anim/slide_in_right</item>
         <item name="android:activityOpenExitAnimation">@anim/slide_out_right</item>

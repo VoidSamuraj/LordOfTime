@@ -1,5 +1,6 @@
 package com.voidsamurai.lordoftime.fragments.adapters
 
+import android.annotation.SuppressLint
 import android.graphics.Color
 import android.util.TypedValue
 import android.view.LayoutInflater
@@ -26,6 +27,7 @@ class ToDoAdapter(private val dataSet: ArrayList<DataRowWithColor>, private val 
 
     override fun getItemCount() = dataSet.size
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     override fun onBindViewHolder(holder: LinearViewHolder, position: Int) {
 
         val layout: LinearLayout =holder.layout

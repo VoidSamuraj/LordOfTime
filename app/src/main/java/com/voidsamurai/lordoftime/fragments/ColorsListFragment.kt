@@ -17,7 +17,6 @@ import com.voidsamurai.lordoftime.fragments.dialogs.ColorDialogFragment
 
 class ColorsListFragment : Fragment() {
 
-
     private lateinit var colorAdapter: ColorsAdapter
     private lateinit var colorList: RecyclerView
 
@@ -44,9 +43,9 @@ class ColorsListFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         data=(activity as MainActivity).getColors()
         colorList=binding.colorsList
-        (activity as MainActivity).getColors().observe(viewLifecycleOwner,{
+        (activity as MainActivity).getColors().observe(viewLifecycleOwner) {
             fillEditList(it)
-        })
+        }
 
         binding.colorFab.setOnClickListener{
             showDialog()

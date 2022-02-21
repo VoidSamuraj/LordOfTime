@@ -2,20 +2,19 @@ package com.voidsamurai.lordoftime.fragments
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.UserProfileChangeRequest
 import com.voidsamurai.lordoftime.AuthActivity
 import com.voidsamurai.lordoftime.MainActivity
 import com.voidsamurai.lordoftime.R
 import com.voidsamurai.lordoftime.databinding.AuthFragmentRegisterBinding
-import com.google.firebase.auth.UserProfileChangeRequest
 
 
 class RegisterFragment : Fragment() {
@@ -76,7 +75,9 @@ class RegisterFragment : Fragment() {
                                 user.updateProfile(profileUpdates)
                                     .addOnCompleteListener { task ->
                                         if (task.isSuccessful) {
-                                            Log.d("FIREBASE", "User profile updated.")
+                                            Toast.makeText(context,
+                                            resources.getString(R.string.user_profile_updated),
+                                            Toast.LENGTH_SHORT).show()
                                         }
                                     }
 
@@ -104,10 +105,6 @@ class RegisterFragment : Fragment() {
 
         }
         registerBinding.backToLogin.setOnClickListener {
-
-
-            //check if parsed data and display notification
-
             findNavController().popBackStack()
         }
     }

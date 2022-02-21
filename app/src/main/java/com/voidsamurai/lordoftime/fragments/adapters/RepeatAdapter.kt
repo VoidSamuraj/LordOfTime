@@ -1,6 +1,5 @@
 package com.voidsamurai.lordoftime.fragments.adapters
 
-import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -13,7 +12,7 @@ import com.voidsamurai.lordoftime.bd.DAORutines
 import com.voidsamurai.lordoftime.bd.RutinesRow
 import com.voidsamurai.lordoftime.fragments.dialogs.RepeatDialog
 
-class RepeatAdapter (private val data:List<RutinesRow>,private val context: Context): RecyclerView.Adapter<LinearViewHolder>() {
+class RepeatAdapter (private val data:List<RutinesRow>): RecyclerView.Adapter<LinearViewHolder>() {
     var lastPosition:Int?=null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LinearViewHolder {
@@ -59,9 +58,7 @@ class RepeatAdapter (private val data:List<RutinesRow>,private val context: Cont
                 text2=hours[1]
             val text1=hours[0]
             setText(text1,text2,"")
-
         }
-
 
         layout.findViewById<LinearLayout>(R.id.element).setOnClickListener {view->
             RepeatDialog.selectedId=data[position].id
@@ -79,14 +76,8 @@ class RepeatAdapter (private val data:List<RutinesRow>,private val context: Cont
                 )
             }
         }
-
-
     }
 
-
-
     override fun getItemCount(): Int =data.size
-
-
 
 }

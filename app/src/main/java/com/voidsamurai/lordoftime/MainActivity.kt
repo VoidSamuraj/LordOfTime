@@ -13,7 +13,6 @@ import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.graphics.Color
 import android.graphics.ImageDecoder
 import android.graphics.drawable.Drawable
 import android.media.MediaPlayer
@@ -21,7 +20,6 @@ import android.net.Uri
 import android.os.Build
 import android.os.Build.VERSION_CODES.Q
 import android.os.Bundle
-import android.os.Process
 import android.provider.MediaStore
 import android.provider.Settings
 import android.util.Log
@@ -91,8 +89,6 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-
-    var timeToEndTask:Long=0L
     lateinit var homeDrawable: Drawable
     private lateinit var firebaseDB:FirebaseDatabase
     private lateinit var analytics: FirebaseAnalytics
@@ -151,7 +147,6 @@ class MainActivity : AppCompatActivity() {
 
     val homeFabPosition:IntArray=IntArray(2)
 
-
     fun logout(){
         sharedPreferences.edit().putBoolean("logged_in",false).apply()
     }
@@ -159,8 +154,6 @@ class MainActivity : AppCompatActivity() {
     fun getCurrentUserId():String{
         return sharedPreferences.getString("user_id","")?:""
     }
-
-
 
     fun getSettings(sd:SettingsData) {
 
@@ -291,8 +284,6 @@ class MainActivity : AppCompatActivity() {
         val sort=sharedPreferences.getString("SORTBY","DATE")
         return Pair(order!!,sort!!)
     }
-
-
 
     /**
      * Sets light styles
@@ -425,7 +416,6 @@ class MainActivity : AppCompatActivity() {
                         }
                     }
 
-
                 }
             }
         }
@@ -448,7 +438,6 @@ class MainActivity : AppCompatActivity() {
                 for (el in array) {
                     if (el.first == this.date_id)
                         isGood = true
-                    //   Log.v("Testy",""+el.first+" "+this.date_id+" "+isGood)
                 }
                 return isGood
             }
@@ -480,25 +469,14 @@ class MainActivity : AppCompatActivity() {
         }
     }
     fun saveAvatar(uri: Uri){
-        val bmp: Bitmap?
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
-            bmp= ImageDecoder.decodeBitmap(ImageDecoder.createSource(contentResolver, uri))
+        val bmp: Bitmap? = if(Build.VERSION.SDK_INT >= Q)
+            ImageDecoder.decodeBitmap(ImageDecoder.createSource(contentResolver, uri))
         else
-            bmp = MediaStore.Images.Media.getBitmap(contentResolver, uri)
+            MediaStore.Images.Media.getBitmap(contentResolver, uri)
 
         val stream = ByteArrayOutputStream()
         bmp!!.compress(Bitmap.CompressFormat.JPEG, 80, stream)
         val byteArray = stream.toByteArray()
-
-
-/*
-        try{
-            val fo=openFileOutput(userId+".jpeg", MODE_PRIVATE)
-            fo.write(byteArray)
-            fo.close()
-        }catch (e:Exception){
-            Log.e("IMAGE_INTERNAL_SAVING", e.cause.toString())
-        }*/
 
         userImage=bmp
 
@@ -514,18 +492,7 @@ class MainActivity : AppCompatActivity() {
     }
     fun getAvatar(){
 
-        // val f=File(userId+".jpeg")
-
-        // CoroutineScope(Dispatchers.IO).launch {
         val optional=oh.getAvatar(userId)
-
-
-        /*
-         if (f.exists()) {
-             val fo = openFileInput(f.path)
-             bitmap = BitmapFactory.decodeStream(fo)
-         }*/
-        // }
         if(optional.isPresent){
             val bitmap: Bitmap=optional.get()
             userImage=bitmap
@@ -545,15 +512,11 @@ class MainActivity : AppCompatActivity() {
 
                 try{
                     CoroutineScope(Dispatchers.IO).launch {
-                        /* val fo=openFileOutput(userId+".jpeg", MODE_PRIVATE)
-                         fo.write(stream.toByteArray())
-                         fo.close()*/
                     }
                 }catch (e:Exception){
                     Log.e("IMAGE_INTERNAL_SAVING", e.cause.toString())
                 }
             }
-
 
         }
 
@@ -575,17 +538,15 @@ class MainActivity : AppCompatActivity() {
 
         sharedPreferences.edit().putString(LANGUAGE,language).apply()
         resources.updateConfiguration(config, resources.displayMetrics)
-
         newIntent()
     }
-    fun newIntent(){
+    private fun newIntent(){
         val intent = intent
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
         startActivity(intent)
 
         finish()
     }
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -606,7 +567,8 @@ class MainActivity : AppCompatActivity() {
         if(userId==null){
             userId=getCurrentUserId()
         }
-        userId?.let {                        getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE).edit().putString("user_id",it).apply()
+        userId?.let {
+            getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE).edit().putString("user_id",it).apply()
         }
         if(userId.isNullOrBlank()||userName.isNullOrBlank()){
             auth.currentUser.let {
@@ -627,10 +589,9 @@ class MainActivity : AppCompatActivity() {
         storageReference=FirebaseStorage.getInstance().reference.child("profileImages").child(userId!!+".jpg")
 
 
-
         showOutdated= sharedPreferences.getBoolean(SHOW_OUTDATED,true)
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
+        if (Build.VERSION.SDK_INT >= Q)
             AppCompatDelegate.setDefaultNightMode(sharedPreferences.getInt(MODE,-1 ))
         super.onCreate(savedInstanceState)
         LOTDatabaseHelper.SetGuide(resources.getStringArray(R.array.tutorial).toList())
@@ -659,7 +620,6 @@ class MainActivity : AppCompatActivity() {
 
         }
 
-
         if(getIsDeletingCompleted())
             deleteCompleted()
 
@@ -687,8 +647,6 @@ class MainActivity : AppCompatActivity() {
         appBarConfiguration = AppBarConfiguration(navController.graph, drawerLayout)
         setupActionBarWithNavController(navController, drawerLayout)
 
-
-
         CoroutineScope(Dispatchers.Default).launch {
             while (true) {
                 delay(1000)
@@ -715,7 +673,6 @@ class MainActivity : AppCompatActivity() {
                 val nhf = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
                 val hf= nhf.childFragmentManager.fragments[0] as HomeFragment
                 hf.homeFragmentBinding.taskChangerFAB.performClick()
-
             }
             true
         }
@@ -727,15 +684,10 @@ class MainActivity : AppCompatActivity() {
                 val nhf = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
                 val hf= nhf.childFragmentManager.fragments[0] as HomeFragment
                 hf.homeFragmentBinding.card2Click.performClick()
-
             }
             true
         }
-
-
-
     }
-
 
 
     override fun onStart() {
@@ -754,7 +706,6 @@ class MainActivity : AppCompatActivity() {
             createTodayNotifications()
         }
     }
-
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return if ( navController.currentDestination?.label=="first_fragment_label"||
@@ -775,9 +726,6 @@ class MainActivity : AppCompatActivity() {
         oldTasks.removeListeners()
         rutines.removeListeners()
         settings.removeListeners()
-        // db.close()
-        // oh.close()
-
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -803,10 +751,7 @@ class MainActivity : AppCompatActivity() {
                 --mYears
             }
 
-
             var mDays = mTime.get(Calendar.DAY_OF_MONTH) - now.get(Calendar.DAY_OF_MONTH)
-
-
 
             if (mDays < 0) {
                 mDays =
@@ -842,33 +787,6 @@ class MainActivity : AppCompatActivity() {
         }
 
     }
-/*
-    override fun onContextItemSelected(item: MenuItem): Boolean {
-        Log.v("POKAZAC","IIIO")
-        if(item.itemId==R.id.calendarEditFragment){
-
-            val navHostFragment: NavHostFragment? =
-                supportFragmentManager.findFragmentById(R.id.nav_view) as NavHostFragment?
-            val hfb=(navHostFragment!!.childFragmentManager.fragments[0] as HomeFragment).homeFragmentBinding
-
-            val background=hfb.homeFrag
-            val intArray= IntArray(2)
-            hfb.taskChangerFAB.getLocationOnScreen(intArray)
-            intArray[0]= (intArray[0]+(resources.getDimension(R.dimen.fab_size)/2)/*resources.getDimension(R.dimen.fab_margin)+resources.getDimension(R.dimen.small_padding)*/).toInt()
-            intArray[1]= (intArray[1]-resources.getDimension(R.dimen.bar_height)).toInt()
-
-
-                homeFabPosition.let { itt ->
-                    itt[0]=intArray[0]
-                    itt[1]=intArray[1]
-
-                homeDrawable=background.drawToBitmap().toDrawable(resources)
-
-            }
-
-        }
-        return super.onContextItemSelected(item)
-    }*/
 
     override fun onSupportNavigateUp(): Boolean {
         return navController.navigateUp(appBarConfiguration)
@@ -879,10 +797,6 @@ class MainActivity : AppCompatActivity() {
         navController.currentDestination?.label.let {
             when {
                 drawerLayout.isDrawerOpen(GravityCompat.START) -> drawerLayout.closeDrawer(GravityCompat.START)
-                /* it == "EditList" -> {
-                     isFromEditFragment=true
-                     super.onBackPressed()
-                 }*/
                 it == "WorkingFragment" -> {
                     isFromWorkFragment=true
                     super.onBackPressed()
@@ -891,9 +805,9 @@ class MainActivity : AppCompatActivity() {
                     val nh= supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
                     val fragment=nh.childFragmentManager.primaryNavigationFragment
                     if(fragment is HomeFragment){
-                        val frag= fragment
-                        if (!frag.isButtonHidden)
-                            frag.homeFragmentBinding.view.performClick()
+                        if(!fragment.isButtonHidden) {
+                            fragment.homeFragmentBinding.view.performClick()
+                        }
                     }else
                         super.onBackPressed()
                 }
@@ -901,6 +815,7 @@ class MainActivity : AppCompatActivity() {
                     isFromCalendarFragment=true
                     super.onBackPressed()
                 }
+
                 else -> {
                     super.onBackPressed()
                 }
@@ -986,7 +901,6 @@ class MainActivity : AppCompatActivity() {
                             )
                         )
 
-
                 } while (c.moveToNext())
             c.close()
             c = db.rawQuery("SELECT * FROM COLOR WHERE COLOR.user_id=? OR TRIM(COLOR.user_id) IS NULL", arrayOf(userId))
@@ -1004,12 +918,9 @@ class MainActivity : AppCompatActivity() {
             queryArrayByDate.value = query
             queryArrayByPriority.value = getSortedByPriority(query)
             queryArrayByDuration.value = getSortedByDuration(query)
-
-
         }
 
     }
-
 
     private fun getSortedByDuration(qa: ArrayList<DataRowWithColor>): ArrayList<DataRowWithColor> {
         CoroutineScope(Dispatchers.IO).run {
@@ -1025,8 +936,6 @@ class MainActivity : AppCompatActivity() {
         CoroutineScope(Dispatchers.IO).run {
             querryArray.sortWith(compareByDescending<DataRowWithColor> { it.priority }.thenBy { it.date.time.time })
 
-           // val newArray: ArrayList<DataRowWithColor> = ArrayList(querryArray.toList())
-           // querryArray.sortWith(compareBy<DataRowWithColor> { it.date.time.time }.thenByDescending { it.priority })
             return  ArrayList(querryArray.toList())
         }
     }
@@ -1035,7 +944,7 @@ class MainActivity : AppCompatActivity() {
             val selectionQuery =
                 "SELECT OLDSTATS.date_id, OLDSTATS.working_time, OLDSTATS.category from OLDSTATS WHERE OLDSTATS.user_id=? OR TRIM(OLDSTATS.user_id) IS NULL "
             val c: Cursor = db.rawQuery(selectionQuery, arrayOf(userId))
-            val map: MutableMap<Calendar, Pair<Float, String>> = java.util.HashMap()
+            val map: MutableMap<Calendar, Pair<Float, String>> = HashMap()
             val list: ArrayList<Triple<Calendar, Float, String>> = arrayListOf()
             if (c.moveToFirst())
                 do {
@@ -1057,7 +966,6 @@ class MainActivity : AppCompatActivity() {
             for (element in map)
                 list.add(Triple(element.key, element.value.first, element.value.second))
 
-
             return list
         }
     }
@@ -1073,7 +981,6 @@ class MainActivity : AppCompatActivity() {
             if(currentTime!=0&&currentTaskId!=null) {
                 //update current task time
 
-                //   if(this::oh.isInitialized){
                 oh.editTaskRow(
                     currentTaskId!!,
                     null, null, null, 0, 0, currentTime,-1
@@ -1081,7 +988,6 @@ class MainActivity : AppCompatActivity() {
 
                 tasks.update(currentTaskId!!,null,null,null,null,null,currentTime,-1)
                 //add oldstats row
-                //need also edit in firebase
                 if (currentTaskCategory.isNullOrEmpty())
                     currentTaskCategory=getTaskCategory()
                 timeToAdd.let {
@@ -1098,7 +1004,6 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-        //    }
     }
     /**
      * @return ArrayList<Ntuple<Calendar,Int,String,String>>
@@ -1109,7 +1014,7 @@ class MainActivity : AppCompatActivity() {
             val selectionQuery =
                 "SELECT OLDSTATS.date_id, OLDSTATS.working_time, OLDSTATS.category, COLOR.color from OLDSTATS  JOIN COLOR ON OLDSTATS.category=COLOR.category_id"
             val c: Cursor = db.rawQuery(selectionQuery, null)
-            var map: MutableMap<Calendar, Triple<Int, String, String>> = java.util.HashMap()
+            var map: MutableMap<Calendar, Triple<Int, String, String>> = HashMap()
             val list: ArrayList<NTuple4<Calendar, Int, String, String>> = arrayListOf()
             val calC = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
             if (c.moveToFirst())
@@ -1153,7 +1058,6 @@ class MainActivity : AppCompatActivity() {
                     )
                 )
 
-
             return list
         }
     }
@@ -1174,11 +1078,9 @@ class MainActivity : AppCompatActivity() {
                 oh.deleteTaskRow(id)
                 tasks.delete(id)
             }
-
             c.close()
         }
     }
-
 
 
     fun updateRutines(){
@@ -1188,9 +1090,6 @@ class MainActivity : AppCompatActivity() {
             val c: Cursor = db.rawQuery(selectionQuery, null)
             val cCalendar = Calendar.getInstance(/*TimeZone.getTimeZone("UTC")*/)
 
-
-/*        if (isMondayFirstDay)
-            cCalendar.firstDayOfWeek=Calendar.MONDAY*/
             val dow = cCalendar.get(Calendar.DAY_OF_WEEK)
             val currentDayOfWeek = if (isMondayFirstDay) when (dow) {
                 1 -> 7
@@ -1235,20 +1134,10 @@ class MainActivity : AppCompatActivity() {
             var anyChanges = false
             if (c.moveToFirst())
                 do {
-                    val localCal =
-                        Calendar.getInstance()                      //błąd porównania strefy czasowej roznica 1h
+                    val localCal = Calendar.getInstance()
                     localCal.timeInMillis = c.getLong(1) + (c.getLong(5) * 1000)
                     val durationMinutes = (c.getInt(5) / 60)
                     val durationHours = (durationMinutes / 60)
-
-
-
-                    Log.v(
-                        "Time",
-                        "" + localCal.timeInMillis + " " + c.getLong(5) + "  " + (localCal.timeInMillis + c.getLong(
-                            5
-                        )) + " " + cCalendar.timeInMillis + " id:" + c.getInt(0) + " Timezone:" + localCal.timeZone.rawOffset
-                    )
                     if ((localCal.timeInMillis/*-localCal.timeZone.rawOffset*/) < (cCalendar.timeInMillis + cCalendar.timeZone.rawOffset)
                     ) {
 
@@ -1259,7 +1148,7 @@ class MainActivity : AppCompatActivity() {
                                     it,
                                     isMondayFirstDay
                                 )
-                            }//.sortedWith(compareBy{DAORutines.getDayNr(it)})
+                            }
                         if (isMondayFirstDay) {
                             daysArray.sorted()
                         }
@@ -1267,7 +1156,6 @@ class MainActivity : AppCompatActivity() {
                             .sortedWith(compareBy { it: String -> it.split(':')[0].toInt() }.thenBy { it: String ->
                                 it.split(':')[1].toInt()
                             })
-
 
                         val daysBefore = daysArray.filter { it < currentDayOfWeek }
                         val daysAfter = daysArray.filter { it > currentDayOfWeek }
@@ -1281,9 +1169,6 @@ class MainActivity : AppCompatActivity() {
                                     val time = it.split(':')
                                     val hour = time[0].toInt()
                                     val minute = time[1].toInt()
-
-                                    // Log.v("TIMES_TODAY,", "" + currentHour + "/" + hour + " " + currentMinute + "/" + minute +" dur"+durationHours+":"+durationMinutes+ " id:" + c.getInt(0))
-
                                     if (currentHour < (hour + durationHours) || (currentHour == (hour + durationHours) && currentMinute < (minute + durationMinutes))) {
                                         val newDate =
                                             getCalendarTime(cCalendar, today[0], hour, minute)
@@ -1316,12 +1201,6 @@ class MainActivity : AppCompatActivity() {
                                     val minute = time[1].toInt()
                                     val newDate =
                                         getCalendarTime(cCalendar, daysAfter[0], hour, minute)
-                                    Log.v(
-                                        "TIMES_AFTER,",
-                                        "" + currentHour + "/" + hour + " " + currentMinute + "/" + minute + " id:" + c.getInt(
-                                            0
-                                        )
-                                    )
                                     oh.editTaskRow(c.getInt(0), null, null, newDate, 0, 0, -1, 0)
                                     tasks.update(c.getInt(0), dateTime = newDate, workingTime = 0)
                                     changed = true
@@ -1334,14 +1213,7 @@ class MainActivity : AppCompatActivity() {
                                 val time = it.split(':')
                                 val hour = time[0].toInt()
                                 val minute = time[1].toInt()
-                                Log.v(
-                                    "TIMES_BEFORE,",
-                                    "" + currentHour + "/" + hour + " " + currentMinute + "/" + minute + " id:" + c.getInt(
-                                        0
-                                    )
-                                )
-                                val newDate =
-                                    getCalendarTime(cCalendar, daysBefore[0], hour, minute, true)
+                                val newDate = getCalendarTime(cCalendar, daysBefore[0], hour, minute, true)
                                 oh.editTaskRow(c.getInt(0), null, null, newDate, 0, 0, -1, 0)
                                 tasks.update(c.getInt(0), dateTime = newDate, workingTime = 0)
                                 changed = true
@@ -1354,16 +1226,6 @@ class MainActivity : AppCompatActivity() {
                             val hour = time[0].toInt()
                             val minute = time[1].toInt()
                             val newDate = getCalendarTime(cCalendar, today[0], hour, minute, true)
-                            //val ca = Calendar.getInstance(
-                            //    TimeZone.getTimeZone("UTC")
-                            // )
-                            // ca.timeInMillis = newDate
-                            Log.v(
-                                "TIMES_TODAY_BEFORE,",
-                                "" + currentHour + "/" + time[0] + " " + currentMinute + "/" + time[1] + " id:" + c.getInt(
-                                    0
-                                )/*+" new Time"+ca.get(Calendar.DAY_OF_MONTH)*/
-                            )
                             oh.editTaskRow(c.getInt(0), null, null, newDate, 0, 0, -1, 0)
                             tasks.update(c.getInt(0), dateTime = newDate, workingTime = 0)
                             changed = true
@@ -1395,8 +1257,6 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-
-
     private fun requestPermissions(){
         CoroutineScope(Dispatchers.Default).run {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && (!sharedPreferences.getBoolean(
@@ -1407,36 +1267,10 @@ class MainActivity : AppCompatActivity() {
                 requestPermission(Manifest.permission.FOREGROUND_SERVICE, {}, {
                     // createDialog(Manifest.permission.FOREGROUND_SERVICE)
                 })
-/*
-            val appOpsManager:AppOpsManager=getSystemService(APP_OPS_SERVICE) as AppOpsManager
-            if (Build.VERSION.SDK_INT >= Q) {
-                val mode= appOpsManager.unsafeCheckOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS, Process.myUid(),packageName)
-                if(mode!= AppOpsManager.MODE_ALLOWED){
-                    startActivity(Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS))
-                }
-            }*/
-
-/*
-            requestPermission(Manifest.permission.PACKAGE_USAGE_STATS, {}, {
-                    // createDialog(Manifest.permission.FOREGROUND_SERVICE)
-                })*/
-
 
             if (!sharedPreferences.getBoolean("dont_show " + Manifest.permission.INTERNET, false))
                 requestPermission(Manifest.permission.INTERNET, {}, {
-                    //  createDialog(Manifest.permission.INTERNET)
                 })
-/*
-            if (!sharedPreferences.getBoolean("dont_show " + Manifest.permission.READ_EXTERNAL_STORAGE, false))
-                requestPermission(Manifest.permission.READ_EXTERNAL_STORAGE, {
-
-                }, {
-                 //   createDialog(Manifest.permission.READ_EXTERNAL_STORAGE)
-                })
-*/
-
-
-
 
         }
     }
@@ -1498,12 +1332,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     @RequiresApi(Q)
-    suspend fun createDailyUsageStats(): ArrayList<Pair<String, Long>> {
+    fun createDailyUsageStats(): ArrayList<Pair<String, Long>> {
 
         val usageStasManager = getSystemService(USAGE_STATS_SERVICE) as UsageStatsManager
         val pm = applicationContext.packageManager
         val cal = Calendar.getInstance()
-        // cal.add(Calendar.DAY_OF_MONTH,-1)
         cal.set(Calendar.HOUR_OF_DAY, 0)
         cal.set(Calendar.MINUTE, 0)
         cal.set(Calendar.SECOND, 0)
@@ -1569,9 +1402,8 @@ private fun displayTaskNotification(taskId: Int,taskName:String,title: String,ta
         context, 0 /* Request code */, intent,
         PendingIntent.FLAG_UPDATE_CURRENT
     )
-    //val alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
     val notification=NotificationCompat.Builder(context,taskId.toString())
-        .setSmallIcon(android.R.drawable.ic_dialog_info)
+        .setSmallIcon(R.mipmap.ic_launcher_round)
         .setContentTitle(title)
         .setContentText(taskDescription)
         .setPriority(NotificationCompat.PRIORITY_HIGH)
@@ -1587,7 +1419,6 @@ private fun displayTaskNotification(taskId: Int,taskName:String,title: String,ta
 }
 
 class TimeBroadcastReceiver : BroadcastReceiver() {
-    // var mp: MediaPlayer? = null
     override fun onReceive(context: Context?, intent: Intent?) {
         val taskId=intent!!.getIntExtra("taskId",0)
         val mode= intent.getBooleanExtra("finished",false)

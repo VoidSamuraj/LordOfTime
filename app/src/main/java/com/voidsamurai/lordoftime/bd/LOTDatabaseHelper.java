@@ -65,16 +65,16 @@ public class LOTDatabaseHelper extends SQLiteOpenHelper {
             db.execSQL("DROP TABLE IF EXISTS RUTINES;");
             db.execSQL("DROP TABLE IF EXISTS OLDSTATS;");
             db.execSQL("DROP TABLE IF EXISTS COLOR;");
-            //    db.execSQL("DROP TABLE IF EXISTS AVATARS;");
 
         }
+
         db.execSQL("CREATE TABLE IF NOT EXISTS TASKTABLE (_id INTEGER PRIMARY KEY AUTOINCREMENT, category TEXT,name TEXT, datetime INTEGER, working_time INTEGER,priority INTEGER, current_work_time INTEGER, is_finished INTEGER,user_id TEXT);");
         db.execSQL("CREATE TABLE IF NOT EXISTS AVATARS (user_id TEXT PRIMARY KEY, avatar BLOB);");
         db.execSQL("CREATE TABLE IF NOT EXISTS RUTINES (_id INTEGER PRIMARY KEY AUTOINCREMENT,task_id INTEGER, days TEXT,hours TEXT,user_id TEXT);");
         db.execSQL("CREATE TABLE IF NOT EXISTS COLOR (category_id TEXT PRIMARY KEY , color TEXT,user_id TEXT);");
         db.execSQL("CREATE TABLE IF NOT EXISTS OLDSTATS (date_id INTEGER PRIMARY KEY , working_time INTEGER, category TEXT,user_id TEXT);");
 
-      //  if(DB_VERSION==1) {
+        if(DB_VERSION==1) {
 
             Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
         if(guide!=null){
@@ -86,27 +86,7 @@ public class LOTDatabaseHelper extends SQLiteOpenHelper {
             }
             addColorRow("Tutorial", "#2266BB", "");
         }
-          /*  cal.set(2021, 11, 1, 12, 6, 0);
-            cal.set(Calendar.MILLISECOND, 0);
-            fillTestData("Książki", "Ludzie bezdomni", cal.getTime().getTime(), (int) (2.3 * 3600), 3, (int) (1.2 * 3600));
-            cal.set(2021, 11, 1, 15, 6, 0);
-            cal.set(Calendar.MILLISECOND, 0);
-            fillTestData("Sport", "Sztanga", cal.getTime().getTime(), (int) (6.6 * 3600), 1, (int) (2.6 * 3600));
-            cal.set(2021, 11, 2, 1, 6, 0);
-            cal.set(Calendar.MILLISECOND, 0);
-            fillTestData("Sport", "Bieganie", cal.getTime().getTime(), (int) (1.8 * 3600), 1, 3600);
-            cal.set(2022, 4, 11, 14, 16, 0);
-            cal.set(Calendar.MILLISECOND, 0);
-            fillTestData("Praca w ogrodzie", "Sadzenie cebuli", cal.getTime().getTime(), (int) (2.4 * 3600), 2, (int) (2.0 * 3600));
-            cal.set(2022, 6, 30, 10, 2, 0);
-            cal.set(Calendar.MILLISECOND, 0);
-            fillTestData("Praca w ogrodzie", "Podlewanie kwiatów", cal.getTime().getTime(), (int) (0.4 * 3600), 2, 0);
-*/
-            //addColorRow("Praca w ogrodzie", "#FFAA56", "");
-            //addColorRow("Książki", "#AAFF96", "");
-            addColorRow("Sport", "#2266BB", "");
-
-       // }
+        }
 
     }
 
@@ -166,24 +146,12 @@ public class LOTDatabaseHelper extends SQLiteOpenHelper {
         cv.clear();
     }
 
-
-    /**
-     *
-     * @param date set only Y,M,D rest need to be 0, also milliseconds
-     */
-    public int deleteOldstatRow(Long date){
-        return db.delete("OLDSTATS"
-                ,"date_id = ?"
-                ,new String[]{String.valueOf(date)});
-    }
-
-
     /**
      * @param days-string with names of week MON,THU,WED,THU,FRI,SAT,SUN separated by , without spaces
      *
      * */
 
-    public long addRutinesRow(int task_id, String days, String hours, String userId){                   // dodaj sprawdzanie czy wpisy już istnieją
+    public long addRutinesRow(int task_id, String days, String hours, String userId){
         ContentValues cv = createRutinesValues(task_id,days,hours,userId);
         return db.insert("RUTINES", null, cv);
 
@@ -192,7 +160,7 @@ public class LOTDatabaseHelper extends SQLiteOpenHelper {
      * @param days-string with names of week MON,THU,WED,THU,FRI,SAT,SUN separated by , without spaces
      *
      * */
-    public long editRutinesRow(int id,int task_id, String days, String hours, String user_id){                   // dodaj sprawdzanie czy wpisy już istnieją
+    public long editRutinesRow(int id,int task_id, String days, String hours, String user_id){
         ContentValues cv = createRutinesValues(task_id,days,hours,"");
         return db.update("RUTINES"
                 ,cv
@@ -243,12 +211,12 @@ public class LOTDatabaseHelper extends SQLiteOpenHelper {
         return list;
     }
 
-    public long addTaskRow(String category, String name, Long startdatetime, int hours, int priority,int workingTime,String userId){                   // dodaj sprawdzanie czy wpisy już istnieją
+    public long addTaskRow(String category, String name, Long startdatetime, int hours, int priority,int workingTime,String userId){
         ContentValues cv = createTasktableValues(category,name,startdatetime,hours,priority,workingTime,userId);
         return db.insert("TASKTABLE", null, cv);
 
     }
-    public long addTaskRow(DataRowWithColor data,String userId){                   // dodaj sprawdzanie czy wpisy już istnieją
+    public long addTaskRow(DataRowWithColor data,String userId){
         ContentValues cv = createTasktableValues(data.getCategory(),data.getName(),data.getDate().getTime().getTime(),(int)data.getWorkingTime(),data.getPriority(),(int)data.getCurrentWorkingTime(),userId);
         return  db.insert("TASKTABLE", null, cv);
 
@@ -257,7 +225,7 @@ public class LOTDatabaseHelper extends SQLiteOpenHelper {
      * to not change specified values set null or 0, depends on type and -1 to is finishted
      * @param workingTime [-1 set time to 0]
      */
-    public int editTaskRow(int oldId, String category, String name, Long startdatetime, int hours, int priority,int workingTime, int isFinished ){        // dodaj sprawdzanie czy wpisy już istnieją
+    public int editTaskRow(int oldId, String category, String name, Long startdatetime, int hours, int priority,int workingTime, int isFinished ){
         ContentValues cv = createEditTasktableValues(category,name,startdatetime,hours,priority,workingTime,isFinished,"");
         return db.update("TASKTABLE"
                 ,cv
@@ -282,7 +250,7 @@ public class LOTDatabaseHelper extends SQLiteOpenHelper {
 
         if(c.moveToFirst())
             do{
-                array.add(new Triple<Integer,String,Long>(c.getInt(0),c.getString(1),c.getLong(2)));
+                array.add(new Triple<>(c.getInt(0),c.getString(1),c.getLong(2)));
             }while (c.moveToNext());
 
         c.close();

@@ -25,7 +25,6 @@ class ColorsAdapter(val activity: FragmentActivity,private val dataSet: List<Pai
         val layout=holder.layout
         layout.findViewById<View>(R.id.chart_color_block).setBackgroundColor( Color.parseColor(dataSet[position].second))
         layout.findViewById<TextView>(R.id.chart_text_block).text = dataSet[position].first
-        Log.v("color","+"+  Color.parseColor(dataSet[position].second))
         layout.findViewById<LinearLayout>(R.id.colors_linear_layout).setOnClickListener{
             val ft = ColorDialogFragment(R.layout.dialog_fragment_edit_color_category,
                 ColorDialogFragment.EDIT ,dataSet[position].first,dataSet[position].second)

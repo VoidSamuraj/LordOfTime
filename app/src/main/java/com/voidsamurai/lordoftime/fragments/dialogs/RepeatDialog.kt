@@ -83,7 +83,7 @@ class RepeatDialog(
         data=(activity as MainActivity).getDBOpenHelper().getRutinesArray(taskId)
         data?.let {
             data=it.filter {rutinesRow: RutinesRow -> rutinesRow.task_id==taskId }
-            recyclerView.adapter=RepeatAdapter(data!!.toList(),requireContext())
+            recyclerView.adapter=RepeatAdapter(data!!.toList())
             recyclerView.layoutManager=LinearLayoutManager(requireContext())
         }
     }

@@ -20,7 +20,7 @@ class DAOOldTasks (mActivity: MainActivity) {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()) {
                     val calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
-/*
+
                     for (child in snapshot.children){
                         val id = child.key!!.toLong()
                         calendar.time = Date(id)
@@ -31,7 +31,7 @@ class DAOOldTasks (mActivity: MainActivity) {
                                 (child.child("currentWorkingTime").value as Long).toFloat(),
                             )
                         )
-                    }*/
+                    }
                     mActivity.updateLocalOldTaskDB(data)
                 }
 
@@ -52,7 +52,6 @@ class DAOOldTasks (mActivity: MainActivity) {
         ref.child("category").setValue(category)
         ref.child("currentWorkingTime").setValue(currentWorkingTime)
 
-
     }
 
     fun delete(taskId: String) {
@@ -67,5 +66,3 @@ class DAOOldTasks (mActivity: MainActivity) {
         dbReference.removeEventListener(vel)
     }
 }
-
-//date_id INTEGER PRIMARY KEY , working_time INTEGER, category TEXT

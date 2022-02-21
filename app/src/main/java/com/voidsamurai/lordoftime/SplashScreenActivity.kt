@@ -17,7 +17,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-
 class SplashScreenActivity : AppCompatActivity(), Animation.AnimationListener{
 
     lateinit var auth: FirebaseAuth
@@ -33,9 +32,7 @@ class SplashScreenActivity : AppCompatActivity(), Animation.AnimationListener{
         auth = Firebase.auth
 
          currentUser = auth.currentUser
-
     }
-
 
     override fun onStart() {
         super.onStart()
@@ -44,9 +41,7 @@ class SplashScreenActivity : AppCompatActivity(), Animation.AnimationListener{
         findViewById<ImageView>(R.id.logo).startAnimation(animation)
         findViewById<LottieAnimationView>(R.id.logo_animation).addAnimatorListener(object:
             Animator.AnimatorListener {
-            override fun onAnimationStart(p0: Animator?) {
-
-            }
+            override fun onAnimationStart(p0: Animator?) {}
 
             override fun onAnimationEnd(p0: Animator?) {
                 if (animEnd)
@@ -54,22 +49,16 @@ class SplashScreenActivity : AppCompatActivity(), Animation.AnimationListener{
                 animEnd=true
             }
 
-            override fun onAnimationCancel(p0: Animator?) {
+            override fun onAnimationCancel(p0: Animator?) {}
 
-            }
-
-            override fun onAnimationRepeat(p0: Animator?) {
-
-            }
+            override fun onAnimationRepeat(p0: Animator?) {}
 
         })
         super.onStart()
 
     }
 
-
-    override fun onAnimationStart(animation: Animation?) {
-    }
+    override fun onAnimationStart(animation: Animation?) {}
 
     override fun onAnimationEnd(animation: Animation?) {
         if (animEnd)

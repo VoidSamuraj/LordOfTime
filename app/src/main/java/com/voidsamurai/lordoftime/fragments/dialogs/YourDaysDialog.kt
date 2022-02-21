@@ -20,7 +20,6 @@ import java.util.*
 class YourDaysDialog : DialogFragment() ,DatePickerDialog.OnDateSetListener {
     private lateinit var contentView: View
 
-    //var _binding:bind
     lateinit var birthDate:EditText
     lateinit var years:EditText
     lateinit var save:Button
@@ -93,10 +92,8 @@ class YourDaysDialog : DialogFragment() ,DatePickerDialog.OnDateSetListener {
             dismiss()
         }
 
-
         return builder.create()
     }
-
 
     override fun onDateSet(view: DatePicker?, year: Int, month: Int, dayOfMonth: Int) {
      birthDate.setText("${year}/${month}/${dayOfMonth}")

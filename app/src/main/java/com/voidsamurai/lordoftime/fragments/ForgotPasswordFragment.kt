@@ -48,7 +48,6 @@ class ForgotPasswordFragment : Fragment() {
                     }.addOnFailureListener {
                         Log.v("RESET ERROR", it.cause.toString())
                     }
-
             }
 
         }

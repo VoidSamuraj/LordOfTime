@@ -36,7 +36,6 @@ class StartWorkAdapter(private val activity: MainActivity, private var toDoData:
         return LinearViewHolder(view)
     }
 
-
     override fun onBindViewHolder(holder: LinearViewHolder, position: Int) {
 
         holder.setIsRecyclable(false)
@@ -72,10 +71,7 @@ class StartWorkAdapter(private val activity: MainActivity, private var toDoData:
         }
         layout.findViewById<TextView>(R.id.category_name).text = toDoData[position].category
 
-
-
         val current = toDoData[position].currentWorkingTime.toInt()
-       // Log.v("Current",""+current)
         val todo = toDoData[position].workingTime
 
         val message = if ((todo.toInt() - current) > 0)
@@ -90,7 +86,6 @@ class StartWorkAdapter(private val activity: MainActivity, private var toDoData:
                 ) + "h"
             )
         layout.findViewById<ProgressCircle>(R.id.progressCircle).fillData(current.toFloat(), todo)
-
 
 
         layout.findViewById<ImageButton>(R.id.imageButton).setOnClickListener {
@@ -149,7 +144,6 @@ class StartWorkAdapter(private val activity: MainActivity, private var toDoData:
             }
         }
 
-
         fun setEndStyle() {
             layout.findViewById<TextView>(R.id.progress_label).setText(R.string.ya_working)
             layout.findViewById<ImageButton>(R.id.imageButton)
@@ -181,49 +175,6 @@ class StartWorkAdapter(private val activity: MainActivity, private var toDoData:
 
     }
 
-/*
-    fun deleteItem(viewHolder: RecyclerView.ViewHolder) {
-
-        val itemToRemove = toDoData[viewHolder.adapterPosition]
-        val pos = viewHolder.adapterPosition
-        CoroutineScope(Dispatchers.Default).run {
-            if (activity.isTaskStarted && activity.currentTaskId == toDoData[pos].id) {
-                updateDB(viewHolder.adapterPosition, activity.currentTaskId!!)
-                deleteObservers()
-                setIsRunning(false)
-                setTime(0)
-            }
-            CoroutineScope(Dispatchers.IO).run {
-            val list = activity.getDBOpenHelper()
-                .deleteRutinesRowAssignedToTask(toDoData[viewHolder.adapterPosition].id)
-            list.forEach { activity.rutines.delete(it) }
-            activity.getDBOpenHelper().deleteTaskRow(toDoData[viewHolder.adapterPosition].id)
-            activity.tasks.delete(toDoData[viewHolder.adapterPosition].id.toString())
-            activity.getDataFromDB()
-            }
-
-            toDoData.removeAt(pos)
-            notifyItemRemoved(pos)
-
-        }
-
-
-       // setIsRunning(false)
-        Snackbar.make(viewHolder.itemView,"Usunięto "+itemToRemove.name,Snackbar.LENGTH_LONG).setAction("Cofnij"){
-            CoroutineScope(Dispatchers.IO).run {
-                val id = activity.getDBOpenHelper().addTaskRow(itemToRemove)
-                activity.tasks.add(itemToRemove)
-
-                activity.getDataFromDB()
-                itemToRemove.id = id.toInt()
-                toDoData.add(pos, itemToRemove)
-                notifyItemInserted(pos)
-            }
-        }.show()
-
-
-    }
-*/
     fun editItem(position: Int){
         val action: WorkingFragmentDirections.ActionWorkingFragmentToEditTaskSelected =
             WorkingFragmentDirections.actionWorkingFragmentToEditTaskSelected().setDataColor(toDoData[position])
@@ -240,7 +191,6 @@ class StartWorkAdapter(private val activity: MainActivity, private var toDoData:
                 id,
                 null, null, null, 0, 0, time,-1
             )
-            //edit
             activity.tasks.add( id = id,
                 category = toDoData[position].category, name = toDoData[position].name, dateTime = toDoData[position].date.time.time, workingTime = toDoData[position].workingTime.toInt(), toDoData[position].priority, time,toDoData[position].finished)
             activity.getCurrentWorkingTime().value?.let {
@@ -260,7 +210,6 @@ class StartWorkAdapter(private val activity: MainActivity, private var toDoData:
         toDoData[position].currentWorkingTime=time.toFloat()
 
     }
-
 
     fun setObserver(layout: View, todo:Float, current:Int, position: Int, id: Int){
         if(activity.getCurrentWorkingTime().hasObservers())
@@ -285,7 +234,6 @@ class StartWorkAdapter(private val activity: MainActivity, private var toDoData:
                 updateDB(position, id)
                 deleteObservers()
                 changeFromObserverToEndObserver = true
-               // activity.startFinishedNotification(toDoData[position].id,toDoData[position].name)
                 setTime(0)
                 notifyItemChanged(position)
             }

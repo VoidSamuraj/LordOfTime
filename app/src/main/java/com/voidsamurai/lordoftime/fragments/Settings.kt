@@ -38,10 +38,8 @@ class Settings : Fragment(), AdapterView.OnItemSelectedListener {
                 val uri= it.data!!.data
                 settingsBinding.avatar.setImageURI(uri!!)
                 (activity as MainActivity).saveAvatar(uri)
-
             }
         }
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -63,8 +61,6 @@ class Settings : Fragment(), AdapterView.OnItemSelectedListener {
             intent.type = "image/*"
             intent.action = Intent.ACTION_GET_CONTENT
             getResult.launch(intent)
-
-
         }
 
         var imageSet=false
@@ -223,12 +219,10 @@ class Settings : Fragment(), AdapterView.OnItemSelectedListener {
                     itt.settings.add(main_chart_aim = it.value+1)
                 }
             }
-            // fnp.show(requireActivity().supportFragmentManager,"Hours")
             fnp.show(childFragmentManager,"Hours")
         }
 
         val isChartSettingsActive=(activity as MainActivity).getIsMainChartManual()
-       // settingsBinding.numberPicker.isClickable=!isChartSettingsActive
         settingsBinding.chartSwitch.isChecked=!isChartSettingsActive
         setChartStrings(isChartSettingsActive)
 
@@ -265,7 +259,6 @@ class Settings : Fragment(), AdapterView.OnItemSelectedListener {
         ++firstClick
 
     }
-
 
     override fun onNothingSelected(parent: AdapterView<*>?) {
     }

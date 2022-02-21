@@ -126,22 +126,5 @@ class DAORutines(mActivity: MainActivity){
                     else -> 0
                 }
         }
-        /**
-         * @param day - full name of day lowercase
-         * @return  short version of day name as in database [3 first letters in uppercase]
-         * */
-        fun getShortName(day: String): String {
-            return when (day) {
-                "monday" -> "MON"
-                "tuesday"->"TUE"
-                "wednesday"->"WED"
-                "thursday"->"THU"
-                "friday"->"FRI"
-                "saturday"->"SAT"
-                "sunday"->"SUN"
-                else ->""
-            }
-        }
-
     }
 }

@@ -9,9 +9,7 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
-import android.opengl.Visibility
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.Fragment
@@ -22,10 +20,10 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.voidsamurai.lordoftime.MainActivity
 import com.voidsamurai.lordoftime.R
+import com.voidsamurai.lordoftime.bd.DataRowWithColor
 import com.voidsamurai.lordoftime.databinding.FragmentWorkingBinding
 import com.voidsamurai.lordoftime.fragments.adapters.StartWorkAdapter
 import kotlinx.coroutines.*
-import com.voidsamurai.lordoftime.bd.DataRowWithColor
 
 
 class WorkingFragment : Fragment() {
@@ -51,7 +49,6 @@ class WorkingFragment : Fragment() {
 
     val swipeGesture=object : ItemTouchHelper.SimpleCallback(0,ItemTouchHelper.LEFT/* or  ItemTouchHelper.RIGHT*/){
 
-      //  val colorSwipeDelete:ColorDrawable= ColorDrawable(Color.parseColor("#FF0000"))
         val colorSwipeEdit:ColorDrawable= ColorDrawable(Color.parseColor("#00FF00"))
 
         override fun onMove(
@@ -66,9 +63,6 @@ class WorkingFragment : Fragment() {
             when(direction){
                 ItemTouchHelper.LEFT->
                     (workingFragmentBinding.taskList.adapter as StartWorkAdapter).editItem(viewHolder.adapterPosition)
-/*
-                ItemTouchHelper.RIGHT->
-                    (workingFragmentBinding.taskList.adapter as StartWorkAdapter).deleteItem(viewHolder)*/
             }
         }
 
@@ -105,10 +99,7 @@ class WorkingFragment : Fragment() {
             val size =itemView.height/2
             val margin = (itemView.height- size)/2
 
-            /*if(dX.toInt()==itemView.right){
-                hide(colorSwipeDelete)
-
-            }else*/ if(dX.toInt()==itemView.left){
+            if(dX.toInt()==itemView.left){
                 hide(colorSwipeEdit)
             }
             else if(dX<0){
@@ -121,17 +112,7 @@ class WorkingFragment : Fragment() {
                 c.clipRect(itemView.right+dX.toInt(),itemView.top,itemView.right,itemView.bottom)
                 editIcon!!.draw(c)
                 c.restore()
-            }/*else  if(dX>0){
-                deleteIcon!!.setBounds(itemView.left+10,itemView.top+margin,itemView.left+ size+10,itemView.bottom-margin)
-                colorSwipeDelete.setBounds(itemView.left,itemView.top,dX.toInt(),itemView.bottom)
-                if(widthPart>=dX)
-                    colorSwipeDelete.alpha= (dX/widthPart*255).toInt()
-                colorSwipeDelete.draw(c)
-                c.save()
-                c.clipRect(itemView.left,itemView.top,dX.toInt(),itemView.bottom)
-                deleteIcon!!.draw(c)
-                c.restore()
-            }*/
+            }
             super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
 
         }
@@ -293,13 +274,11 @@ class WorkingFragment : Fragment() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 workingFragmentBinding.add.let{
-                    if(dy>0&&fabVisible/*&&it.visibility==View.VISIBLE*/){
-                       // it.visibility=View.GONE
+                    if(dy>0&&fabVisible){
                            it.animate().alpha(0f).setDuration(500).withEndAction { it.hide() }. start()
                     fabVisible=false
                     }
-                    else if(dy<0&&(!fabVisible)/*&&it.visibility==View.GONE**/) {
-                        // it.visibility=View.VISIBLE
+                    else if(dy<0&&(!fabVisible)) {
                         it.animate().alpha(1f).setDuration(500).withEndAction { it.show() }.start()
                         fabVisible=true
                     }

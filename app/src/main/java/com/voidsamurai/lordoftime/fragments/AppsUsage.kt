@@ -7,17 +7,12 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Process
 import android.provider.Settings
-import android.util.Log
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.setPadding
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.voidsamurai.lordoftime.MainActivity
 import com.voidsamurai.lordoftime.R
 import com.voidsamurai.lordoftime.databinding.FragmentPieChartBinding
@@ -27,11 +22,7 @@ import java.lang.Exception
 import java.util.*
 import kotlin.collections.ArrayList
 
-
 class AppsUsage : Fragment(){
-
-
-
 
     private var _binding: FragmentPieChartBinding?=null
     private val binding get()=_binding!!
@@ -46,33 +37,8 @@ class AppsUsage : Fragment(){
         return binding.root
     }
 
-
-
-
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        //binding.myChart.setLayerType(View.LAYER_TYPE_SOFTWARE, null)
-
-        //  binding.chartDescription.addOnItemTouchListener(RecyclerViewDisabler())
-/*
-        binding.chartDescription.addOnItemTouchListener(object : RecyclerView.OnItemTouchListener{
-            override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
-                return true
-            }
-
-            override fun onTouchEvent(rv: RecyclerView, e: MotionEvent) {
-                navigate()
-            }
-            fun navigate(){
-                val parent=(binding.chartDescription.parent as View)
-                parent.performClick()
-            }
-
-            override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {
-            }
-        })*/
-
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             CoroutineScope(Dispatchers.Default ).launch {
@@ -107,8 +73,8 @@ class AppsUsage : Fragment(){
                                         } else {                                                                    //only legend displayed but everytime
                                             activity.setHaveUsagePermission(true)
                                             withContext(Dispatchers.Main){
-                                               // binding.chartDescription.visibility=View.VISIBLE
-                                               // binding.myChart.visibility=View.VISIBLE
+                                                // binding.chartDescription.visibility=View.VISIBLE
+                                                // binding.myChart.visibility=View.VISIBLE
                                                 binding.loading.visibility=View.VISIBLE
                                                 it.visibility=View.GONE
                                             }
@@ -132,25 +98,6 @@ class AppsUsage : Fragment(){
 
     }
 
-    /* private fun fillChartWithData(tab:ArrayList<DataRowWithColor>){
-
-         chartMap = TreeMap()
-         legendMap = ArrayList()
-         for(row in tab) {
-             if(chartMap.containsKey(row.category))
-                 chartMap.getValue(row.category).let {  chartMap.replace(row.category, Pair(it.first,it.second+row.workingTime/3600))}
-             else
-                 chartMap[row.category] = Pair(Color.parseColor(row.color),row.workingTime/3600)
-             legendMap.add(Pair(row.category,row.color))
-
-         }
-         binding.myChart.fillData(
-             chartMap.values.toList().sortedBy { pair ->-pair.second  },24,
-             Color.LTGRAY)
-         binding.chartDescription.adapter= LinearChartAdapter(legendMap.toMap().toList().asReversed())
-         binding.chartDescription.layoutManager=LinearLayoutManager(context)
-
-     } */
     fun fillChartWithData(tab:ArrayList<Pair<String,Long>>) {
         chartMap = TreeMap()
         legendMap = TreeMap()
@@ -184,7 +131,6 @@ class AppsUsage : Fragment(){
                         legendMap.replace(row.first,Pair(it.first,it.second+oldValue))
 
                     }
-                    //  sum += row.second.toInt()
                 }
             }
 
@@ -219,13 +165,6 @@ class AppsUsage : Fragment(){
             }
         }
     }
-    /*
-    class RecyclerViewDisabler : RecyclerView.OnItemTouchListener {
-        override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean=true
-        override fun onTouchEvent(rv: RecyclerView, e: MotionEvent) {}
-        override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {}
-    }*/
-
 
     override fun onDestroyView() {
         (activity as MainActivity).getQueryArrayByDuration().removeObservers(viewLifecycleOwner)

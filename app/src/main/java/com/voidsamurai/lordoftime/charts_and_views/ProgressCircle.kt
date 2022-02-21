@@ -22,7 +22,7 @@ class ProgressCircle(context: Context?, attributeSet: AttributeSet) : View(conte
     }
 
 
-    fun drawStats(){
+    private fun drawStats(){
         val paint= Paint()
         paint.style=Paint.Style.STROKE
 

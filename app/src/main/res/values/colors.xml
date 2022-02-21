@@ -1,29 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="work_recycler_card_background">#9F000000</color>
-    <color name="switch_back">#8DFFFFFF</color>
-    <color name="settings_switch">#FFFFFF</color>
+
     <color name="logout_button">#E6E8EC</color>
     <color name="background">#FFFFFF</color>
     <color name="background2">#EBEBEB</color>
     <color name="text">#EB222222</color>
-    <color name="purple_200">#FFBB86FC</color>
     <color name="blue_gray">#2E6F95</color>
     <color name="gray_light">#202232</color>
-    <color name="gray_dark">#1B1E23</color>
     <color name="teal_200">#FF03DAC5</color>
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="lemon">#C2E812</color>
     <color name="red">#D62839</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="light_blue_600">#FF039BE5</color>
-    <color name="light_blue_900">#FF01579B</color>
-    <color name="light_blue_A200">#FF40C4FF</color>
-    <color name="light_blue_A400">#FF00B0FF</color
-        >
+
     <color name="black_overlay">#66000000</color>
-    <color name="black_tint">#6F000000</color>
     <color name="task_color">#95B2B8</color>
     <color name="colorAccent">#276495</color>
 
@@ -32,14 +23,9 @@
     <color name="working_progress_circle">#039BE5</color>
     <color name="working_play_button">#039BE5</color><!--#673AB7-->
 
-    <color name="gold1">#BF953F</color>
-    <color name="gold2">#FCF6BA</color>
     <color name="gold3">#B38728</color>
-    <color name="gold4">#FBF5B7</color>
 
-    <color name="gold5">#AA771C</color>
     <color name="drawer_text">#4D4545</color>
-    <color name="drawer_bg">#FBC02D</color><!--#3F51B5-->
     <color name="transparent">#00F44336</color>
 
     <color name="chip_checked">#8BC34A</color>
@@ -61,8 +47,6 @@
     <color name="calendar_circle">#F1F1F1</color>
     <color name="calendar_out">#BFBFBF</color>
 
-    <color name="toggle_button_selected">#FBC02D</color>
-    <color name="toggle_button_unselected">#2DACACAC</color>
 
     <color name="thumb_selected">#FFC107</color>
     <color name="thumb_unselected">#E4E0D5</color><!-- E6D8AD -->

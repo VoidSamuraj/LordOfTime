@@ -1,6 +1,5 @@
 package com.voidsamurai.lordoftime.fragments.dialogs
 
-import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.app.Dialog
 import android.graphics.Color
@@ -38,12 +37,7 @@ class ColorDialogFragment(
     private lateinit var contentView: View
     private lateinit var colorPicker:ColorPickerView
     private lateinit var lightSlider:LightnessSlider
-    /*
-        @SuppressLint("RestrictedApi")
-        override fun setupDialog(dialog: Dialog, style: Int) {
-            super.setupDialog(dialog, style)
-        }
-    */
+
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
 
         val colors: DAOColors = (activity as MainActivity).colors
@@ -67,9 +61,9 @@ class ColorDialogFragment(
             ConfirmDialog(text,{},{
                 val state=(activity as MainActivity).getDBOpenHelper().deleteColorRow(getName(),(activity as MainActivity).userId)
                 when (state) {
-                        -1 -> {//category is currently used
+                    -1 -> {//category is currently used
                         Toast.makeText(context,resources.getText(R.string.category_in_use),Toast.LENGTH_SHORT).show()
-                        }
+                    }
                     0 -> {//no row found
                         Toast.makeText(context,resources.getText(R.string.database_processing_error),Toast.LENGTH_SHORT).show()
                     }
@@ -141,9 +135,6 @@ class ColorDialogFragment(
                 setColorToImageView(contentView, R.id.last_color, R.drawable.ic_circle_l, parseColor(oldColor))
                 setColorToImageView(contentView, R.id.new_color, R.drawable.ic_circle_r, parseColor(oldColor))
             }
-
-
-
         }
 
     }

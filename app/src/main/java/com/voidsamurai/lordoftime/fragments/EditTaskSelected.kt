@@ -7,7 +7,6 @@ import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -26,12 +25,7 @@ import com.voidsamurai.lordoftime.fragments.dialogs.ConfirmDialog
 import com.voidsamurai.lordoftime.fragments.dialogs.RepeatDialog
 import java.util.*
 
-
 class EditTaskSelected : Fragment() ,DatePickerDialog.OnDateSetListener,TimePickerDialog.OnTimeSetListener{
-
-
-
-
 
     private lateinit var adapter: ArrayColorAdapter
     private var _binding: FragmentTaskEditBinding?=null

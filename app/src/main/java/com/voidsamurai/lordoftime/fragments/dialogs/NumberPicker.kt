@@ -10,8 +10,6 @@ import com.voidsamurai.lordoftime.R
 
 class NumberPicker(private var value: Int,private val onSave:(np:NumberPicker)->Unit)  : AppCompatDialogFragment() {
 
-
-
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         super.onCreateDialog(savedInstanceState)
         val builder: AlertDialog.Builder = AlertDialog.Builder(activity)

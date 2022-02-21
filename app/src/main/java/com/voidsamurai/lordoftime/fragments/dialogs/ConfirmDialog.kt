@@ -8,7 +8,6 @@ import android.view.View
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDialogFragment
 import com.voidsamurai.lordoftime.R
 
@@ -44,13 +43,6 @@ class ConfirmDialog(private var itemName:String, private var no:()->Unit, privat
             dismiss()
         }
         builder.setView(contentView)
-           /* .setNegativeButton(resources.getText(R.string.cancel)) { _, _ ->
-                cancel()
-            }.setPositiveButton(resources.getText(R.string.save)){ _, _ ->
-                save()
-            }
-*/
-
 
         return builder.create()
     }

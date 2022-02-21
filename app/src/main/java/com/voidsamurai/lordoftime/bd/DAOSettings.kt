@@ -41,10 +41,8 @@ class DAOSettings(val mActivity: MainActivity) {
         }
 
 
-
     }
     /**
-     * S
      *@param language
      * [EN, PL, DEFAULT]
      * @param mode

@@ -1,27 +1,12 @@
 package com.voidsamurai.lordoftime
 
-import android.app.Notification
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.app.Service
-import android.app.job.JobParameters
-import android.app.job.JobService
+import android.annotation.SuppressLint
+import android.app.*
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
-import android.os.Build
 import android.os.IBinder
-import android.os.PowerManager
-import android.util.Log
 import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import java.lang.Exception
-import android.app.PendingIntent
-
-
 
 
 class BackgroundTimeService :Service() {
@@ -36,7 +21,6 @@ class BackgroundTimeService :Service() {
     /**
      * @param startTime - time in seconds
      */
-
     fun setTime(startTime:Int){this.startTime=startTime}
 
     fun setIsRunning(isRunning:Boolean){this.isRunning=isRunning }
@@ -63,21 +47,16 @@ class BackgroundTimeService :Service() {
                 updateNotification(startTime/3600,startTime/60%60,startTime%60)
             }while (this.isRunning)
 
-            // removeNotification()
             this.startTime=0
             Thread.currentThread().interrupt()
         }.start()
         return START_STICKY
     }
 
-
-
     override fun onDestroy() {
         isRunning=false
         super.onDestroy()
     }
-
-
 
     fun createNotificationChannel(descript: String){
         val importance=NotificationManager.IMPORTANCE_HIGH
@@ -85,10 +64,9 @@ class BackgroundTimeService :Service() {
             description=descript
         }
         notificationManager.createNotificationChannel(channel)
-
     }
 
-
+    @SuppressLint("UnspecifiedImmutableFlag")
     private fun displayNotification(){
         contentView = RemoteViews(packageName, R.layout.widget_layout)
         contentView.setTextViewText(R.id.hour,String.format("%02d:%02d:%02d",0,0,0))
@@ -96,7 +74,7 @@ class BackgroundTimeService :Service() {
         val intent = Intent(this, MainActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
         val pendingIntent = PendingIntent.getActivity(
-            this, 0 /* Request code */, intent,
+            this, 0, intent,
             PendingIntent.FLAG_UPDATE_CURRENT
         )
 
@@ -104,7 +82,7 @@ class BackgroundTimeService :Service() {
             .setContent(contentView)
             .setContentTitle("Tytul")
             .setContentText("TekstZawartosci")
-            .setSmallIcon(android.R.drawable.ic_dialog_info)
+            .setSmallIcon(R.mipmap.ic_launcher_round)
             .setAutoCancel(true)
             .setSilent(true)
             .setPriority(NotificationCompat.PRIORITY_MAX)
@@ -113,7 +91,6 @@ class BackgroundTimeService :Service() {
         startForeground(WIDGET_ID.toInt(),notification)
 
     }
-
 
     private fun updateNotification(hours:Int,minutes:Int,seconds:Int){
         contentView.setTextViewText(R.id.hour,String.format("%02d:%02d:%02d",hours,minutes,seconds))
@@ -124,7 +101,6 @@ class BackgroundTimeService :Service() {
         this.isRunning=false
         this.startTime=0
     }
-
 
     override fun onBind(intent: Intent?): IBinder? =null
 

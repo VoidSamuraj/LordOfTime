@@ -30,7 +30,6 @@ class AuthActivity : AppCompatActivity() {
         registerForActivityResult(
             ActivityResultContracts.StartActivityForResult()
         ) {
-            Log.v("code", "" + it.resultCode)
             if (it.resultCode == Activity.RESULT_OK) {
 
                 val task = GoogleSignIn.getLastSignedInAccount(this)
@@ -55,7 +54,6 @@ class AuthActivity : AppCompatActivity() {
                     nav.popBackStack()
                 else -> super.onBackPressed()
             }
-
         }
     }
 
@@ -76,7 +74,6 @@ class AuthActivity : AppCompatActivity() {
                     Log.e("Login", "signInWithCredential:failure", task.exception)
                     Toast.makeText(this,resources.getString(R.string.login_error),Toast.LENGTH_SHORT).show()
                 }
-
             }
     }
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -84,22 +81,13 @@ class AuthActivity : AppCompatActivity() {
         setContentView(R.layout.auth_activity)
         supportActionBar?.hide()
         auth = Firebase.auth
-
-
-
         val gso = GoogleSignInOptions
             .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(getString(R.string.defaultt_web_client_id))
             .requestEmail()
             .build()
         googleSignInClient = GoogleSignIn.getClient(this,gso)
-
-
-
     }
-
-
-
 
     fun signIn(){
         intentAuth=googleSignInClient.signInIntent

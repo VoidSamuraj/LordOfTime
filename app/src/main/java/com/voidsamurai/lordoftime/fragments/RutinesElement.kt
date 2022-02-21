@@ -121,21 +121,6 @@ class RutinesElement(private val taskId:Int,private val type:Int,private val rut
 
                 daysRow=daysRow.substring(0,daysRow.length-1)
 
-                /*mapIndexed { index, chip ->
-                    DAORutines.getShortName(
-                        when (index) {
-                            0 -> "monday"
-                            1 -> "tuesday"
-                            2 -> "wednesday"
-                            3 -> "thursday"
-                            4 -> "friday"
-                            5 -> "saturday"
-                            6 -> "sunday"
-                            else -> ""
-                        }
-                    )
-                }.joinToString(separator = ",")
-*/
                 val time = hours.children.map { view -> (view as Chip).text }
                     .joinToString(separator = ",")
 
@@ -159,7 +144,6 @@ class RutinesElement(private val taskId:Int,private val type:Int,private val rut
                             else -> {}
                         }
                     }
-
 
             }
             dismiss()
