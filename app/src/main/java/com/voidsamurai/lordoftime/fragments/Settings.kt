@@ -15,10 +15,13 @@ import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 import com.voidsamurai.lordoftime.AuthActivity
 import com.voidsamurai.lordoftime.MainActivity
 import com.voidsamurai.lordoftime.R
 import com.voidsamurai.lordoftime.databinding.FragmentSettingsBinding
+import com.voidsamurai.lordoftime.fragments.adapters.StartWorkAdapter
 import com.voidsamurai.lordoftime.fragments.dialogs.NumberPicker
 import kotlinx.coroutines.*
 
@@ -67,12 +70,12 @@ class Settings : Fragment(), AdapterView.OnItemSelectedListener {
         CoroutineScope(Dispatchers.Default).launch {
             var count=0
             do {
-                    mActivity.userImage?.let {
-                        MainScope().launch {
-                            settingsBinding.avatar.setImageBitmap(mActivity.userImage)
-                        }
-                        imageSet = true
+                mActivity.userImage?.let {
+                    MainScope().launch {
+                        settingsBinding.avatar.setImageBitmap(mActivity.userImage)
                     }
+                    imageSet = true
+                }
 
                 ++count
                 delay(1000)
@@ -153,7 +156,7 @@ class Settings : Fragment(), AdapterView.OnItemSelectedListener {
                         settingsBinding.deleteSwitch.isChecked = false
                     }.setCancelable(false).show()
 
-        }else
+            }else
                 mActivity.setIsDeletingCompleted(false)
             mActivity.settings.add(delete_completed =false )
         }
@@ -197,17 +200,17 @@ class Settings : Fragment(), AdapterView.OnItemSelectedListener {
         fun setChartStrings(state:Boolean){
             settingsBinding.numberPicker.isClickable=state
             if(!state) {
-                    settingsBinding.hours.setTextColor(Color.GRAY)
-                    settingsBinding.numberPicker.backgroundTintList= ColorStateList.valueOf(Color.GRAY)
-                }else {
-                    settingsBinding.hours.setTextColor(resources.getColor(R.color.text,null))
-                    settingsBinding.numberPicker.backgroundTintList= ColorStateList.valueOf(resources.getColor(R.color.switch_track_stroke_selected,null))
-                }
+                settingsBinding.hours.setTextColor(Color.GRAY)
+                settingsBinding.numberPicker.backgroundTintList= ColorStateList.valueOf(Color.GRAY)
+            }else {
+                settingsBinding.hours.setTextColor(resources.getColor(R.color.text,null))
+                settingsBinding.numberPicker.backgroundTintList= ColorStateList.valueOf(resources.getColor(R.color.switch_track_stroke_selected,null))
+            }
         }
         settingsBinding.chartSwitch.setOnClickListener {
             val state=(activity as MainActivity).setMainChartAuto()
-                setChartStrings(state)
-        ///make text gray or something
+            setChartStrings(state)
+            ///make text gray or something
         }
 
 
@@ -233,33 +236,83 @@ class Settings : Fragment(), AdapterView.OnItemSelectedListener {
                 .setMessage(resources.getString(R.string.confirm_logout))
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .setPositiveButton(R.string.yes) { _, _ ->
-                    (activity as MainActivity).auth.signOut()
-                    (activity as MainActivity).googleSignInClient.signOut()
-                    (activity as MainActivity).logout()
-                    val intent= Intent(activity as MainActivity, AuthActivity::class.java)
-                    intent.flags=Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                    startActivity(intent)
-                    (activity as MainActivity).finish()
-                    Toast.makeText(requireContext(),resources.getString(R.string.logout_success), Toast.LENGTH_SHORT).show()
+                    logout()
+                }
+                .setNegativeButton(R.string.no, null).show()
+
+        }
+        settingsBinding.deleteData.setOnClickListener{
+            AlertDialog.Builder(requireContext())
+                .setTitle(resources.getString(R.string.confirm))
+                .setMessage(resources.getString(R.string.confirm_delete_data))
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setPositiveButton(R.string.yes) { _, _ ->
+                    deleteData()
                 }
                 .setNegativeButton(R.string.no, null).show()
 
 
-        }
-
+           }
     }
 
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-    if(firstClick!=0) {
-        val activity=(activity as MainActivity)
-        val language=parent!!.getItemAtPosition(position).toString()
-        activity.setLanguage(parent.getItemAtPosition(position).toString())
-        activity.settings.add(language = language)
-    }else
-        ++firstClick
+        if(firstClick!=0) {
+            val activity=(activity as MainActivity)
+            val language=parent!!.getItemAtPosition(position).toString()
+            activity.setLanguage(parent.getItemAtPosition(position).toString())
+            activity.settings.add(language = language)
+        }else
+            ++firstClick
 
     }
 
     override fun onNothingSelected(parent: AdapterView<*>?) {
+    }
+    private fun deleteData() {
+
+        FirebaseAuth.getInstance().currentUser?.let {
+            FirebaseDatabase.getInstance().getReference(it.uid).removeValue().addOnCompleteListener {
+                if(it.isSuccessful) {
+
+                    Toast.makeText(
+                        requireContext(),
+                        resources.getString(R.string.data_deleted_success),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    (activity as MainActivity).let {
+                        it.getStorageReference().delete()
+
+                        if(it.isTaskStarted){
+                            StartWorkAdapter.deleteObservers(activity = activity as MainActivity, lifecycleOwner = viewLifecycleOwner)
+                            it.isTaskStarted=false
+                        }
+                        it.getDBOpenHelper().deleteData()
+                        it.getDataFromDB()
+                    }
+                }
+                else
+                    Toast.makeText(requireContext(),resources.getString(R.string.data_deleted_faliure), Toast.LENGTH_SHORT).show()
+            }
+
+        }
+
+
+    }
+    private fun logout(showMSG:Boolean=true){
+        (activity as MainActivity).let{
+            it.auth.signOut()
+            it.googleSignInClient.signOut()
+            it.logout()
+            val intent= Intent(it, AuthActivity::class.java)
+            intent.flags=Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            startActivity(intent)
+            it.finish()
+            if (showMSG)
+                Toast.makeText(requireContext(),resources.getString(R.string.logout_success), Toast.LENGTH_SHORT).show()
+
+        }
+
+
+
     }
 }

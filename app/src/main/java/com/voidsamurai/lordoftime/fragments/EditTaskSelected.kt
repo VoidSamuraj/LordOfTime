@@ -231,6 +231,12 @@ class EditTaskSelected : Fragment() ,DatePickerDialog.OnDateSetListener,TimePick
             canSave=false
         }else
             binding.priorityEdit.backgroundTintList= ColorStateList.valueOf(color)
+
+        if( binding.durationEdit.text.isNullOrEmpty()){
+            binding.durationEdit.backgroundTintList= ColorStateList.valueOf(Color.RED)
+            canSave=false
+        }else
+            binding.durationEdit.backgroundTintList= ColorStateList.valueOf(color)
         return canSave
     }
 

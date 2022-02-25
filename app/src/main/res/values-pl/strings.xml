@@ -109,5 +109,13 @@
     <string name="sound_notification">Dźwięk powiadomień</string>
     <string name="last_24_hours">Ostatnie 24 godziny</string>
     <string name="give_permission_to_display_stats">Udziel zezwolenia by wyświetlić dane</string>
-    <string name="user_profile_updated">User profile updated</string>
+    <string name="user_profile_updated">Profil użytkownika zaktualizowny</string>
+    <string name="data_deleted">usuń dane</string>
+    <string name="data_deleted_faliure">dane nie zostały usunięte</string>
+    <string name="data_deleted_success">dane zostały usunięte</string>
+    <string name="confirm_delete_data">Czy na pewno chcesz usunąć dane użytkownika</string>
+    <string name="insert_name">wprowadź nazwę</string>
+    <string name="select_color">wybierz kolor</string>
+    <string name="category_exist">wybrana nazwa jest już zajęta</string>
+    <string name="change_name_or_color">zmień nazwę lub kolor</string>
 </resources>

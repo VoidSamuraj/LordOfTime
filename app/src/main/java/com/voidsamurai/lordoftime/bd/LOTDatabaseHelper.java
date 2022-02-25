@@ -27,7 +27,7 @@ import kotlin.Triple;
 
 public class LOTDatabaseHelper extends SQLiteOpenHelper {
     private static final String DB_NAME = "LOT";
-    private static final int DB_VERSION = 18;
+    private static final int DB_VERSION = 1;
     private static SQLiteDatabase db;
     private static List<String> guide;
 
@@ -38,6 +38,17 @@ public class LOTDatabaseHelper extends SQLiteOpenHelper {
         LOTDatabaseHelper.guide =guide;
     }
 
+    public void deleteData(){
+        db.execSQL("DROP TABLE IF EXISTS TASKTABLE;");
+        db.execSQL("DROP TABLE IF EXISTS RUTINES;");
+        db.execSQL("DROP TABLE IF EXISTS OLDSTATS;");
+        db.execSQL("DROP TABLE IF EXISTS COLOR;");
+        db.execSQL("CREATE TABLE IF NOT EXISTS TASKTABLE (_id INTEGER PRIMARY KEY AUTOINCREMENT, category TEXT,name TEXT, datetime INTEGER, working_time INTEGER,priority INTEGER, current_work_time INTEGER, is_finished INTEGER,user_id TEXT);");
+        db.execSQL("CREATE TABLE IF NOT EXISTS AVATARS (user_id TEXT PRIMARY KEY, avatar BLOB);");
+        db.execSQL("CREATE TABLE IF NOT EXISTS RUTINES (_id INTEGER PRIMARY KEY AUTOINCREMENT,task_id INTEGER, days TEXT,hours TEXT,user_id TEXT);");
+        db.execSQL("CREATE TABLE IF NOT EXISTS COLOR (category_id TEXT PRIMARY KEY , color TEXT,user_id TEXT);");
+        db.execSQL("CREATE TABLE IF NOT EXISTS OLDSTATS (date_id INTEGER PRIMARY KEY , working_time INTEGER, category TEXT,user_id TEXT);");
+    }
     @Override
     public void onCreate(SQLiteDatabase db) {
         updateMyDatabase(db,0);
@@ -396,8 +407,17 @@ public class LOTDatabaseHelper extends SQLiteOpenHelper {
         db.insert("COLOR", null, createColorCValues(category,color,user_id));
     }
 
-    public  void editColorRow(String oldCategory,String newCategory, String newColor,String user_id) {
-        db.update("COLOR",createColorCValues(newCategory,newColor,""),"category_id = ? AND (user_id=? OR TRIM(user_id) IS NULL)", new String[]{oldCategory,user_id});
+    /**
+     * @return -1 when name exist, 1 when different
+     */
+    public  int editColorRow(String oldCategory,String newCategory, String newColor,String user_id) {
+        Cursor c=db.rawQuery("SELECT * FROM COLOR WHERE category_id=?",new String[]{newCategory});
+        if(c.moveToFirst())
+            return -1;
+        else {
+            db.update("COLOR", createColorCValues(newCategory, newColor, ""), "category_id = ? AND (user_id=? OR TRIM(user_id) IS NULL)", new String[]{oldCategory, user_id});
+            return 1;
+        }
     }
     /**
      * @return -1 if category is used

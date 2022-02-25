@@ -12,6 +12,7 @@ class DAOColors(mActivity: MainActivity){
 
         dbReference=db.getReference(mActivity.userId!!).child("color")
 
+
         vel=object:ValueEventListener{
 
             override fun onDataChange(snapshot: DataSnapshot) {

@@ -93,6 +93,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var firebaseDB:FirebaseDatabase
     private lateinit var analytics: FirebaseAnalytics
     private lateinit var storageReference:StorageReference
+    fun getStorageReference():StorageReference=storageReference
     private val LANGUAGE:String="Language"
     private val SHOW_OUTDATED:String="showOutdated"
     private val SETTINGS_CHANGE:String="changeColor"
@@ -124,1168 +125,1176 @@ class MainActivity : AppCompatActivity() {
     lateinit var  oldTasks: DAOOldTasks
     lateinit var settings: DAOSettings
     private lateinit var sharedPreferences:SharedPreferences
-    fun getMode()=sharedPreferences.getInt(MODE,-1)
-    fun getLanguage()=sharedPreferences.getString(LANGUAGE,"DEFAULT")
-    private lateinit var db: SQLiteDatabase
-    private lateinit var oh: LOTDatabaseHelper
-    private  var queryArrayByDate: MutableLiveData<ArrayList<DataRowWithColor>> = MutableLiveData()
-    private var queryArrayByPriority: MutableLiveData<ArrayList<DataRowWithColor>> = MutableLiveData()
-    private  var queryArrayByDuration: MutableLiveData<ArrayList<DataRowWithColor>> = MutableLiveData()
-    private  var workingTime:MutableLiveData<Int> = MutableLiveData(0)
-    private  var colorsArray: MutableLiveData<Map<String,String>> = MutableLiveData()
-    private  var rutinesArray: MutableLiveData<Map<Int,RutinesRow>> = MutableLiveData()
-    fun getCurrentWorkingTime()= workingTime
-    fun getQueryArrayByDate()= queryArrayByDate
-    fun getQueryArrayByPriority()= queryArrayByPriority
-    fun getQueryArrayByDuration()= queryArrayByDuration
-    fun getColors()= colorsArray
-    fun getRutines()= rutinesArray
-    fun getDBOpenHelper():LOTDatabaseHelper= oh
-    lateinit var auth: FirebaseAuth
-    lateinit var googleSignInClient:GoogleSignInClient
-    var change:Triple<Boolean,Boolean,Boolean> = Triple(false, false, false)
-
-    val homeFabPosition:IntArray=IntArray(2)
-
-    fun logout(){
-        sharedPreferences.edit().putBoolean("logged_in",false).apply()
-    }
-
-    fun getCurrentUserId():String{
-        return sharedPreferences.getString("user_id","")?:""
-    }
-
-    fun getSettings(sd:SettingsData) {
-
-        if (getIsUserChanged()){
-
-            sd.show_completed?.let { setIsShowingCompleted(it) }
-            sd.delete_completed?.let { setIsDeletingCompleted(it) }
-            sd.show_outdated?.let { setOutdated(it) }
-            sd.main_chart_auto?.let {
-                sharedPreferences.edit().putBoolean("MAIN_CHART_AUTO", it).apply()
-            }
-            sd.main_chart_aim?.let { setMainChartRange(it) }
-            sd.death_date?.let {setYourTime(it) }
-            sd.show_notifications?.let{setIsShowingNotifications(it)}
-            sd.notifications_sound?.let{setHaveNotificationsSound(it)}
-
-            var modeChanged = false
-            var languageChanged = false
-            sd.mode?.let {
-                sharedPreferences.edit().putInt(MODE, it).putBoolean(SETTINGS_CHANGE, true).apply()
-                modeChanged = true
-            }
-            sd.language?.let {
-                setLanguage(it)
-                languageChanged = true
-            }
-            sharedPreferences.edit().putBoolean("IS_USER_CHANGED",false).apply()
-            if (modeChanged && (!languageChanged))
-                newIntent()
-
+    fun getSharedPreferences():SharedPreferences
+        {if(!this::sharedPreferences.isInitialized)
+            sharedPreferences=application.getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE)
+        return sharedPreferences
         }
-    }
-    fun setOutdated(boolean: Boolean){
-        showOutdated=boolean
-        sharedPreferences.edit().putBoolean(SHOW_OUTDATED,boolean).apply()
-    }
-    fun setSortInWorkFragment(order:WorkingFragment.Order,sortBy:WorkingFragment.SortBy){
-        sharedPreferences.edit().putString("ORDER",order.name).putString("SORTBY",sortBy.name).apply()
-    }
-    fun setMainChartRange(range:Int=24){
-        sharedPreferences.edit().putInt("MAIN_CHART_RANGE",range).apply()
-    }
+        fun getMode()=getSharedPreferences().getInt(MODE,-1)
+        fun getLanguage()=getSharedPreferences().getString(LANGUAGE,"DEFAULT")
+        private lateinit var db: SQLiteDatabase
+        private lateinit var oh: LOTDatabaseHelper
+        private  var queryArrayByDate: MutableLiveData<ArrayList<DataRowWithColor>> = MutableLiveData()
+        private var queryArrayByPriority: MutableLiveData<ArrayList<DataRowWithColor>> = MutableLiveData()
+        private  var queryArrayByDuration: MutableLiveData<ArrayList<DataRowWithColor>> = MutableLiveData()
+        private  var workingTime:MutableLiveData<Int> = MutableLiveData(0)
+        private  var colorsArray: MutableLiveData<Map<String,String>> = MutableLiveData()
+        private  var rutinesArray: MutableLiveData<Map<Int,RutinesRow>> = MutableLiveData()
+        fun getCurrentWorkingTime()= workingTime
+        fun getQueryArrayByDate()= queryArrayByDate
+        fun getQueryArrayByPriority()= queryArrayByPriority
+        fun getQueryArrayByDuration()= queryArrayByDuration
+        fun getColors()= colorsArray
+        fun getRutines()= rutinesArray
+        fun getDBOpenHelper():LOTDatabaseHelper= oh
+        lateinit var auth: FirebaseAuth
+        lateinit var googleSignInClient:GoogleSignInClient
+        var change:Triple<Boolean,Boolean,Boolean> = Triple(false, false, false)
 
-    fun getMainChartRange():Int{
-        return sharedPreferences.getInt("MAIN_CHART_RANGE",24)
-    }
-    fun setCurrentTaskId(id:Int){
-        sharedPreferences.edit().putInt("TASK_ID",id).apply()
-    }
-    fun getCurrentTaskId():Int{
-        return sharedPreferences.getInt("TASK_ID",-1)
-    }
-    fun setIsShowingNotifications(isShowing: Boolean){
-        sharedPreferences.edit().putBoolean("IS_SHOWING_NOTIFICATIONS",isShowing).apply()
-    }
-    fun getIsShowingNotifications():Boolean{
-        return sharedPreferences.getBoolean("IS_SHOWING_NOTIFICATIONS",true)
-    }
-    fun setHaveUsagePermission(permitted: Boolean){
-        sharedPreferences.edit().putBoolean("USAGE_PERMISSION",permitted).apply()
-    }
-    fun getHaveUsagePermission():Boolean{
-        return sharedPreferences.getBoolean("USAGE_PERMISSION",false)
-    }
-    fun setHaveNotificationsSound(have: Boolean){
-        sharedPreferences.edit().putBoolean("HAVE_NOTIFICATIONS_SOUND",have).apply()
-    }
-    fun getHaveNotificationsSound():Boolean{
-        return sharedPreferences.getBoolean("HAVE_NOTIFICATIONS_SOUND",true)
-    }
-    fun setTaskCategory(category:String){
-        sharedPreferences.edit().putString("TASK_CATEGORY",category).apply()
-    }
-    fun getTaskCategory():String{
-        return sharedPreferences.getString("TASK_CATEGORY","")?:""
-    }
-    fun setIsRunningTask(isRunning: Boolean){
-        sharedPreferences.edit().putBoolean("IS_RUNNING_TASK",isRunning).apply()
-    }
-    fun getIsRunningTask():Boolean{
-        return sharedPreferences.getBoolean("IS_RUNNING_TASK",false)
-    }
-    fun getIsUserChanged():Boolean{
-        return sharedPreferences.getBoolean("IS_USER_CHANGED",false)
-    }
-    fun setStartTime(startTime: Long){
-        sharedPreferences.edit().putLong("START_TIME",startTime).apply()
-    }
-    fun getStartTime():Long{
-        return sharedPreferences.getLong("START_TIME",Calendar.getInstance(TimeZone.getTimeZone("UTC")).time.time)
-    }
-    fun setYourTime(startTime: Long){
-        sharedPreferences.edit().putLong("LIFE_TIME",startTime).apply()
-    }
-    fun getYourTime():Long{
-        return sharedPreferences.getLong("LIFE_TIME",0L)
-    }
+        val homeFabPosition:IntArray=IntArray(2)
 
-    fun setIsDeletingCompleted(isDeleting:Boolean){
-        sharedPreferences.edit().putBoolean("IS_DELETING_COMPLETED",isDeleting).apply()
-    }
-    fun getIsDeletingCompleted():Boolean{
-        return sharedPreferences.getBoolean("IS_DELETING_COMPLETED",false)
-    }
-    fun setIsShowingCompleted(isShowing:Boolean){
-        sharedPreferences.edit().putBoolean("IS_SHOWING_COMPLETED",isShowing).apply()
-    }
-    fun getIsShowingCompleted():Boolean{
-        return sharedPreferences.getBoolean("IS_SHOWING_COMPLETED",true)
-    }
-    fun setMainChartAuto():Boolean{
-        val state=getIsMainChartManual().not()
-        settings.add(main_chart_auto = state)
-        sharedPreferences.edit().putBoolean("MAIN_CHART_AUTO",state).apply()
-        return state
-    }
-    fun getIsMainChartManual():Boolean{
-        return sharedPreferences.getBoolean("MAIN_CHART_AUTO",false)
-    }
-    fun setCalendarChartRange(range:Int){
-        sharedPreferences.edit().putInt("CALENDAR_CHART_RANGE",range).apply()
-    }
-    fun getCalendarChartRange():Int{
-        return sharedPreferences.getInt("CALENDAR_CHART_RANGE",8)
-    }
-    fun getWorkSorting():Pair<String,String>{
-        val order=sharedPreferences.getString("ORDER","ASC")
-        val sort=sharedPreferences.getString("SORTBY","DATE")
-        return Pair(order!!,sort!!)
-    }
+        fun logout(){
+            getSharedPreferences().edit().putBoolean("logged_in",false).apply()
+        }
 
-    /**
-     * Sets light styles
-     *
-     * @param style
-     * -1 default mode
-     * 1 light mode
-     * 2 dark mode
-     * */
-    fun setStyle(style:Int){
-        val sharedPreferences:SharedPreferences=application.getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE)
-        val editor:SharedPreferences.Editor=sharedPreferences.edit()
-        editor.putInt(MODE,style).putBoolean(SETTINGS_CHANGE,true).apply()
-        newIntent()
-    }
-    private fun refreshHomeFragmentAndDB(){
-        getDataFromDB()
-        if(change.first&&change.second&&change.third)
-            supportFragmentManager.beginTransaction()
-                .replace(R.id.nav_host_fragment, HomeFragment()).commit()
-    }
+        fun getCurrentUserId():String{
+            return getSharedPreferences().getString("user_id","")?:""
+        }
 
-    fun updateLocalColorDB(data:Map<String,String>){
-        CoroutineScope(Dispatchers.IO).launch {
-            val localData: Map<String, String> = colorsArray.value!!
-            for (row in data) {
-                if (localData.containsKey(row.key)) {
-                    if (localData[row.key] != row.value) {
-                        oh.editColorRow(row.key, row.key, row.value,userId)
+        fun getSettings(sd:SettingsData) {
+
+            if (getIsUserChanged()){
+
+                sd.show_completed?.let { setIsShowingCompleted(it) }
+                sd.delete_completed?.let { setIsDeletingCompleted(it) }
+                sd.show_outdated?.let { setOutdated(it) }
+                sd.main_chart_auto?.let {
+                    getSharedPreferences().edit().putBoolean("MAIN_CHART_AUTO", it).apply()
+                }
+                sd.main_chart_aim?.let { setMainChartRange(it) }
+                sd.death_date?.let {setYourTime(it) }
+                sd.show_notifications?.let{setIsShowingNotifications(it)}
+                sd.notifications_sound?.let{setHaveNotificationsSound(it)}
+
+                var modeChanged = false
+                var languageChanged = false
+                sd.mode?.let {
+                    getSharedPreferences().edit().putInt(MODE, it).putBoolean(SETTINGS_CHANGE, true).apply()
+                    modeChanged = true
+                }
+                sd.language?.let {
+                    setLanguage(it)
+                    languageChanged = true
+                }
+                getSharedPreferences().edit().putBoolean("IS_USER_CHANGED",false).apply()
+                if (modeChanged && (!languageChanged))
+                    newIntent()
+
+            }
+        }
+        fun setOutdated(boolean: Boolean){
+            showOutdated=boolean
+            getSharedPreferences().edit().putBoolean(SHOW_OUTDATED,boolean).apply()
+        }
+        fun setSortInWorkFragment(order:WorkingFragment.Order,sortBy:WorkingFragment.SortBy){
+            getSharedPreferences().edit().putString("ORDER",order.name).putString("SORTBY",sortBy.name).apply()
+        }
+        fun setMainChartRange(range:Int=24){
+            getSharedPreferences().edit().putInt("MAIN_CHART_RANGE",range).apply()
+        }
+
+        fun getMainChartRange():Int{
+            return getSharedPreferences().getInt("MAIN_CHART_RANGE",24)
+        }
+        fun setCurrentTaskId(id:Int){
+            getSharedPreferences().edit().putInt("TASK_ID",id).apply()
+        }
+        fun getCurrentTaskId():Int{
+            return getSharedPreferences().getInt("TASK_ID",-1)
+        }
+        fun setIsShowingNotifications(isShowing: Boolean){
+            getSharedPreferences().edit().putBoolean("IS_SHOWING_NOTIFICATIONS",isShowing).apply()
+        }
+        fun getIsShowingNotifications():Boolean{
+            return getSharedPreferences().getBoolean("IS_SHOWING_NOTIFICATIONS",true)
+        }
+        fun setHaveUsagePermission(permitted: Boolean){
+            getSharedPreferences().edit().putBoolean("USAGE_PERMISSION",permitted).apply()
+        }
+        fun getHaveUsagePermission():Boolean{
+            return getSharedPreferences().getBoolean("USAGE_PERMISSION",false)
+        }
+        fun setHaveNotificationsSound(have: Boolean){
+            getSharedPreferences().edit().putBoolean("HAVE_NOTIFICATIONS_SOUND",have).apply()
+        }
+        fun getHaveNotificationsSound():Boolean{
+            return getSharedPreferences().getBoolean("HAVE_NOTIFICATIONS_SOUND",true)
+        }
+        fun setTaskCategory(category:String){
+            getSharedPreferences().edit().putString("TASK_CATEGORY",category).apply()
+        }
+        fun getTaskCategory():String{
+            return getSharedPreferences().getString("TASK_CATEGORY","")?:""
+        }
+        fun setIsRunningTask(isRunning: Boolean){
+            getSharedPreferences().edit().putBoolean("IS_RUNNING_TASK",isRunning).apply()
+        }
+        fun getIsRunningTask():Boolean{
+            return getSharedPreferences().getBoolean("IS_RUNNING_TASK",false)
+        }
+        fun getIsUserChanged():Boolean{
+            return getSharedPreferences().getBoolean("IS_USER_CHANGED",false)
+        }
+        fun setStartTime(startTime: Long){
+            getSharedPreferences().edit().putLong("START_TIME",startTime).apply()
+        }
+        fun getStartTime():Long{
+            return getSharedPreferences().getLong("START_TIME",Calendar.getInstance(TimeZone.getTimeZone("UTC")).time.time)
+        }
+        fun setYourTime(startTime: Long){
+            getSharedPreferences().edit().putLong("LIFE_TIME",startTime).apply()
+        }
+        fun getYourTime():Long{
+            return getSharedPreferences().getLong("LIFE_TIME",0L)
+        }
+
+        fun setIsDeletingCompleted(isDeleting:Boolean){
+            getSharedPreferences().edit().putBoolean("IS_DELETING_COMPLETED",isDeleting).apply()
+        }
+        fun getIsDeletingCompleted():Boolean{
+            return getSharedPreferences().getBoolean("IS_DELETING_COMPLETED",false)
+        }
+        fun setIsShowingCompleted(isShowing:Boolean){
+            getSharedPreferences().edit().putBoolean("IS_SHOWING_COMPLETED",isShowing).apply()
+        }
+        fun getIsShowingCompleted():Boolean{
+            return getSharedPreferences().getBoolean("IS_SHOWING_COMPLETED",true)
+        }
+        fun setMainChartAuto():Boolean{
+            val state=getIsMainChartManual().not()
+            settings.add(main_chart_auto = state)
+            getSharedPreferences().edit().putBoolean("MAIN_CHART_AUTO",state).apply()
+            return state
+        }
+        fun getIsMainChartManual():Boolean{
+            return getSharedPreferences().getBoolean("MAIN_CHART_AUTO",false)
+        }
+        fun setCalendarChartRange(range:Int){
+            getSharedPreferences().edit().putInt("CALENDAR_CHART_RANGE",range).apply()
+        }
+        fun getCalendarChartRange():Int{
+            return getSharedPreferences().getInt("CALENDAR_CHART_RANGE",8)
+        }
+        fun getWorkSorting():Pair<String,String>{
+            val order=getSharedPreferences().getString("ORDER","ASC")
+            val sort=getSharedPreferences().getString("SORTBY","DATE")
+            return Pair(order!!,sort!!)
+        }
+
+        /**
+         * Sets light styles
+         *
+         * @param style
+         * -1 default mode
+         * 1 light mode
+         * 2 dark mode
+         * */
+        fun setStyle(style:Int){
+            val sharedPreferences:SharedPreferences=application.getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE)
+            this.sharedPreferences=sharedPreferences
+            val editor:SharedPreferences.Editor=sharedPreferences.edit()
+            editor.putInt(MODE,style).putBoolean(SETTINGS_CHANGE,true).apply()
+            newIntent()
+        }
+        private fun refreshHomeFragmentAndDB(){
+            getDataFromDB()
+            if(change.first&&change.second&&change.third)
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.nav_host_fragment, HomeFragment()).commit()
+        }
+
+        fun updateLocalColorDB(data:Map<String,String>){
+            CoroutineScope(Dispatchers.IO).launch {
+                val localData: Map<String, String> = colorsArray.value!!
+                for (row in data) {
+                    if (localData.containsKey(row.key)) {
+                        if (localData[row.key] != row.value) {
+                            val ret=oh.editColorRow(row.key, row.key, row.value,userId)
+                            if(ret!=-1){
+                            change = Triple(true, change.second, change.third)
+                            refreshHomeFragmentAndDB()
+                            }
+                        }
+                    } else {
+                        oh.addColorRow(row.key, row.value,userId)
                         change = Triple(true, change.second, change.third)
                         refreshHomeFragmentAndDB()
                     }
-                } else {
-                    oh.addColorRow(row.key, row.value,userId)
-                    change = Triple(true, change.second, change.third)
-                    refreshHomeFragmentAndDB()
                 }
             }
         }
-    }
 
-    fun updateLocalRutinesDB(data:ArrayList<RutinesRow>){
-        CoroutineScope(Dispatchers.IO).launch {//
-            val localData: Map<Int, RutinesRow> = getRutines().value!!
-            for (row in data) {
-                if (localData.containsKey(row.id)) {
-                    if (localData[row.id]!!.task_id != row.task_id) {
-                        oh.editRutinesRow(row.id, row.task_id, row.days, row.hours,userId)
+        fun updateLocalRutinesDB(data:ArrayList<RutinesRow>){
+            CoroutineScope(Dispatchers.IO).launch {//
+                val localData: Map<Int, RutinesRow> = getRutines().value!!
+                for (row in data) {
+                    if (localData.containsKey(row.id)) {
+                        if (localData[row.id]!!.task_id != row.task_id) {
+                            oh.editRutinesRow(row.id, row.task_id, row.days, row.hours,userId)
+                            refreshHomeFragmentAndDB()
+                        }
+                    } else {
+                        val id = oh.addRutinesRow(
+                            row.task_id,
+                            row.days,
+                            row.hours,
+                            userId
+                        )                         //update id got in local db cloud
+                        rutines.delete(row.id)
+                        rutines.add(
+                            id.toInt(),
+                            row.task_id,
+                            row.days,
+                            row.hours
+                        )
                         refreshHomeFragmentAndDB()
                     }
-                } else {
-                    val id = oh.addRutinesRow(
-                        row.task_id,
-                        row.days,
-                        row.hours,
-                        userId
-                    )                         //update id got in local db cloud
-                    rutines.delete(row.id)
-                    rutines.add(
-                        id.toInt(),
-                        row.task_id,
-                        row.days,
-                        row.hours
-                    )
-                    refreshHomeFragmentAndDB()
                 }
             }
         }
-    }
 
-    fun updateLocalTaskDB(dataFromFirebase:ArrayList<DataRow>){
-        CoroutineScope(Dispatchers.IO).launch {
-            val localData: MutableList<DataRowWithColor> = queryArrayByDate.value!!
-            fun DataRow.compareById(array: MutableList<DataRowWithColor>): Boolean {
-                for (el in array)
-                    if (el.id == this.id)
-                        return true
-                return false
-            }
-
-            fun DataRow.compareByRestAndId(array: MutableList<DataRowWithColor>): Boolean {
-                for (el in array) {
-                    if (el.id == this.id && (el.name != this.name || el.category != this.category || el.date.time.time != this.date.time.time))
-                        return true
-
+        fun updateLocalTaskDB(dataFromFirebase:ArrayList<DataRow>){
+            CoroutineScope(Dispatchers.IO).launch {
+                val localData: MutableList<DataRowWithColor> = queryArrayByDate.value!!
+                fun DataRow.compareById(array: MutableList<DataRowWithColor>): Boolean {
+                    for (el in array)
+                        if (el.id == this.id)
+                            return true
+                    return false
                 }
-                return false
-            }
-            for (row in dataFromFirebase) {
-                if (row.compareByRestAndId(localData)) {
 
-                    oh.editTaskRow(
-                        row.id,
-                        row.category,
-                        row.name,
-                        row.date.time.time,
-                        row.workingTime.toInt(),
-                        row.priority,
-                        row.currentWorkingTime.toInt(),
-                        row.finished
-                    )
-                    change = Triple(change.first, true, change.third)
-                    refreshHomeFragmentAndDB()
+                fun DataRow.compareByRestAndId(array: MutableList<DataRowWithColor>): Boolean {
+                    for (el in array) {
+                        if (el.id == this.id && (el.name != this.name || el.category != this.category || el.date.time.time != this.date.time.time))
+                            return true
 
-                } else if (!row.compareById(localData)) {
-                    row.let {
-                        val id: Long = oh.addTaskRow(
-                            it.category,
-                            it.name,
-                            it.date.time.time,
-                            it.workingTime.toInt(),
-                            it.priority,
-                            it.currentWorkingTime.toInt(),
-                            userId
+                    }
+                    return false
+                }
+                for (row in dataFromFirebase) {
+                    if (row.compareByRestAndId(localData)) {
+
+                        oh.editTaskRow(
+                            row.id,
+                            row.category,
+                            row.name,
+                            row.date.time.time,
+                            row.workingTime.toInt(),
+                            row.priority,
+                            row.currentWorkingTime.toInt(),
+                            row.finished
                         )
-                        if (id != -1L) {
-                            tasks.delete(row.id.toString())
-                            tasks.add(
-                                id.toInt(),
+                        change = Triple(change.first, true, change.third)
+                        refreshHomeFragmentAndDB()
+
+                    } else if (!row.compareById(localData)) {
+                        row.let {
+                            val id: Long = oh.addTaskRow(
                                 it.category,
                                 it.name,
                                 it.date.time.time,
                                 it.workingTime.toInt(),
                                 it.priority,
                                 it.currentWorkingTime.toInt(),
-                                it.finished
+                                userId
                             )
-                            change = Triple(change.first, true, change.third)
-                            refreshHomeFragmentAndDB()
+                            if (id != -1L) {
+                                tasks.delete(row.id.toString())
+                                tasks.add(
+                                    id.toInt(),
+                                    it.category,
+                                    it.name,
+                                    it.date.time.time,
+                                    it.workingTime.toInt(),
+                                    it.priority,
+                                    it.currentWorkingTime.toInt(),
+                                    it.finished
+                                )
+                                change = Triple(change.first, true, change.third)
+                                refreshHomeFragmentAndDB()
+                            }
                         }
+
                     }
-
                 }
             }
         }
-    }
 
-    fun updateLocalOldTaskDB(data:ArrayList<OldData>){
-        CoroutineScope(Dispatchers.IO).launch {
-            val data2 = data.map {
-                val cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
-                cal.time = Date(it.date_id)
+        fun updateLocalOldTaskDB(data:ArrayList<OldData>){
+            CoroutineScope(Dispatchers.IO).launch {
+                val data2 = data.map {
+                    val cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
+                    cal.time = Date(it.date_id)
 
-                OldData(cal.time.time, it.category, it.workingTime)
-            } as ArrayList<*>
+                    OldData(cal.time.time, it.category, it.workingTime)
+                } as ArrayList<*>
 
-            val localData: List<Triple<Long, Float, String>> =
-                getOldData().map { Triple(it.first.time.time, it.second, it.third) }
+                val localData: List<Triple<Long, Float, String>> =
+                    getOldData().map { Triple(it.first.time.time, it.second, it.third) }
 
-            fun OldData.compareID(array: List<Triple<Long, Float, String>>): Boolean {
-                var isGood = false
-                for (el in array) {
-                    if (el.first == this.date_id)
-                        isGood = true
+                fun OldData.compareID(array: List<Triple<Long, Float, String>>): Boolean {
+                    var isGood = false
+                    for (el in array) {
+                        if (el.first == this.date_id)
+                            isGood = true
+                    }
+                    return isGood
                 }
-                return isGood
-            }
 
-            fun OldData.compareTimeWithId(array: List<Triple<Long, Float, String>>): Boolean {
-                for (el in array)
-                    if (el.first == this.date_id && el.second != this.workingTime)
-                        return true
-                return false
-            }
-            for (row in data2) {
-                row as OldData
-                if (row.compareTimeWithId(localData)) {
-                    oh.editOldstatRow(
-                        row.date_id,
-                        row.date_id,
-                        row.workingTime.toInt(),
-                        row.category,
-                        userId
-                    )
-                    change = Triple(change.first, change.second, true)
-                    refreshHomeFragmentAndDB()
-                } else if (!row.compareID(localData)) {
-                    oh.addOldstatRow(row.date_id, row.workingTime.toInt(), row.category,userId)
-                    change = Triple(change.first, change.second, true)
-                    refreshHomeFragmentAndDB()
+                fun OldData.compareTimeWithId(array: List<Triple<Long, Float, String>>): Boolean {
+                    for (el in array)
+                        if (el.first == this.date_id && el.second != this.workingTime)
+                            return true
+                    return false
+                }
+                for (row in data2) {
+                    row as OldData
+                    if (row.compareTimeWithId(localData)) {
+                        oh.editOldstatRow(
+                            row.date_id,
+                            row.date_id,
+                            row.workingTime.toInt(),
+                            row.category,
+                            userId
+                        )
+                        change = Triple(change.first, change.second, true)
+                        refreshHomeFragmentAndDB()
+                    } else if (!row.compareID(localData)) {
+                        oh.addOldstatRow(row.date_id, row.workingTime.toInt(), row.category,userId)
+                        change = Triple(change.first, change.second, true)
+                        refreshHomeFragmentAndDB()
+                    }
                 }
             }
         }
-    }
-    fun saveAvatar(uri: Uri){
-        val bmp: Bitmap? = if(Build.VERSION.SDK_INT >= Q)
-            ImageDecoder.decodeBitmap(ImageDecoder.createSource(contentResolver, uri))
-        else
-            MediaStore.Images.Media.getBitmap(contentResolver, uri)
+        fun saveAvatar(uri: Uri){
+            val bmp: Bitmap? = if(Build.VERSION.SDK_INT >= Q)
+                ImageDecoder.decodeBitmap(ImageDecoder.createSource(contentResolver, uri))
+            else
+                MediaStore.Images.Media.getBitmap(contentResolver, uri)
 
-        val stream = ByteArrayOutputStream()
-        bmp!!.compress(Bitmap.CompressFormat.JPEG, 80, stream)
-        val byteArray = stream.toByteArray()
+            val stream = ByteArrayOutputStream()
+            bmp!!.compress(Bitmap.CompressFormat.JPEG, 80, stream)
+            val byteArray = stream.toByteArray()
 
-        userImage=bmp
+            userImage=bmp
 
-        mainFragmentBinding.navView.getHeaderView(0)
-            .findViewById<ImageView>(R.id.user_avatar).setImageURI(uri)
-        storageReference.putFile(uri)
-            .addOnSuccessListener { Toast.makeText(this, resources.getString(R.string.avatar_changed), Toast.LENGTH_SHORT).show()
-            }
-            .addOnFailureListener { Log.e("AVATAR",it.cause.toString())
-            }
-        oh.addAvatar(userId,byteArray)
-
-    }
-    fun getAvatar(){
-
-        val optional=oh.getAvatar(userId)
-        if(optional.isPresent){
-            val bitmap: Bitmap=optional.get()
-            userImage=bitmap
             mainFragmentBinding.navView.getHeaderView(0)
-                .findViewById<ImageView>(R.id.user_avatar).setImageBitmap(bitmap)
-        }else{
-            val file = File.createTempFile("template", ".jpg")
-            storageReference.getFile(file).addOnSuccessListener {
+                .findViewById<ImageView>(R.id.user_avatar).setImageURI(uri)
+            storageReference.putFile(uri)
+                .addOnSuccessListener { Toast.makeText(this, resources.getString(R.string.avatar_changed), Toast.LENGTH_SHORT).show()
+                }
+                .addOnFailureListener { Log.e("AVATAR",it.cause.toString())
+                }
+            oh.addAvatar(userId,byteArray)
 
-                val bmp:Bitmap? = BitmapFactory.decodeStream(FileInputStream(file), null, null)
-                val stream = ByteArrayOutputStream()
-                bmp!!.compress(Bitmap.CompressFormat.JPEG, 100, stream)
-                userImage = bmp
+        }
+        fun getAvatar(){
 
+            val optional=oh.getAvatar(userId)
+            if(optional.isPresent){
+                val bitmap: Bitmap=optional.get()
+                userImage=bitmap
                 mainFragmentBinding.navView.getHeaderView(0)
-                    .findViewById<ImageView>(R.id.user_avatar).setImageBitmap(bmp)
+                    .findViewById<ImageView>(R.id.user_avatar).setImageBitmap(bitmap)
+            }else{
+                val file = File.createTempFile("template", ".jpg")
+                storageReference.getFile(file).addOnSuccessListener {
 
-                try{
-                    CoroutineScope(Dispatchers.IO).launch {
+                    val bmp:Bitmap? = BitmapFactory.decodeStream(FileInputStream(file), null, null)
+                    val stream = ByteArrayOutputStream()
+                    bmp!!.compress(Bitmap.CompressFormat.JPEG, 100, stream)
+                    userImage = bmp
+
+                    mainFragmentBinding.navView.getHeaderView(0)
+                        .findViewById<ImageView>(R.id.user_avatar).setImageBitmap(bmp)
+
+                    try{
+                        CoroutineScope(Dispatchers.IO).launch {
+                        }
+                    }catch (e:Exception){
+                        Log.e("IMAGE_INTERNAL_SAVING", e.cause.toString())
                     }
-                }catch (e:Exception){
-                    Log.e("IMAGE_INTERNAL_SAVING", e.cause.toString())
-                }
-            }
-
-        }
-
-    }
-
-    fun setLanguage(language:String){
-        val languageToLoad = when(language){
-            "DEFAULT","DOMYŚLNIE"-> Locale.getDefault().language
-            "PL"-> "pl"
-            "EN"->"en_EN"
-            else->{"en"}
-        }
-        application.getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE).edit().putBoolean(SETTINGS_CHANGE,true).apply()
-
-        val locale = Locale(languageToLoad)
-        Locale.setDefault(locale)
-        val config = resources.configuration
-        config.setLocale(locale)
-
-        sharedPreferences.edit().putString(LANGUAGE,language).apply()
-        resources.updateConfiguration(config, resources.displayMetrics)
-        newIntent()
-    }
-    private fun newIntent(){
-        val intent = intent
-        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
-        startActivity(intent)
-
-        finish()
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-
-        sharedPreferences=application.getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE)
-
-        val gso = GoogleSignInOptions
-            .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(getString(R.string.defaultt_web_client_id))
-            .requestEmail()
-            .build()
-        googleSignInClient = GoogleSignIn.getClient(this,gso)
-        analytics = Firebase.analytics
-        auth = Firebase.auth
-
-        userId=intent.getStringExtra("user_id")
-        emailId=intent.getStringExtra("email_id")
-        userName=intent.getStringExtra("user_name")
-        if(userId==null){
-            userId=getCurrentUserId()
-        }
-        userId?.let {
-            getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE).edit().putString("user_id",it).apply()
-        }
-        if(userId.isNullOrBlank()||userName.isNullOrBlank()){
-            auth.currentUser.let {
-                userId = auth.uid
-                it?.email.let{itt-> emailId =itt}
-
-
-                it?.displayName.let{ itt->userName =itt}
-            }
-        }
-
-        firebaseDB=Firebase.database
-        colors=DAOColors(this)
-        tasks= DAOTasks(this)
-        oldTasks= DAOOldTasks(this)
-        rutines= DAORutines(this)
-        settings= DAOSettings(this)
-        storageReference=FirebaseStorage.getInstance().reference.child("profileImages").child(userId!!+".jpg")
-
-
-        showOutdated= sharedPreferences.getBoolean(SHOW_OUTDATED,true)
-
-        if (Build.VERSION.SDK_INT >= Q)
-            AppCompatDelegate.setDefaultNightMode(sharedPreferences.getInt(MODE,-1 ))
-        super.onCreate(savedInstanceState)
-        LOTDatabaseHelper.SetGuide(resources.getStringArray(R.array.tutorial).toList())
-        oh = LOTDatabaseHelper(this)
-        db = oh.readableDatabase
-
-        val timeToadd=Calendar.getInstance(TimeZone.getTimeZone("UTC")).timeInMillis-getStartTime()
-
-        if(getIsRunningTask()){
-            if(getCurrentTaskId()!=-1&&timeToadd!=0L){
-                isTaskStarted=true
-                currentTaskId=getCurrentTaskId()
-                val row=oh.getTaskRow(currentTaskId!!,userId)
-                currentTaskCategory=getTaskCategory()
-                val wt=(timeToadd/1000).toInt()
-                workingTime.value=wt
-                // oh.addOldstatRow(getStartTime(), workingTime.value!!,getCurrentTaskId())
-                setStartTime(Calendar.getInstance(TimeZone.getTimeZone("UTC")).timeInMillis)
-                Log.v("TIME",""+wt)
-
-                row?.currentWorkingTime?.let {
-                    updateOldstats(wt+(it*3600).toInt(),wt)
                 }
 
             }
 
         }
 
-        if(getIsDeletingCompleted())
-            deleteCompleted()
-
-        getDataFromDB()
-        colors.addListeners()
-        tasks.addListeners()
-        oldTasks.addListeners()
-        rutines.addListeners()
-        settings.addListeners()
-
-        queryArrayByPriority.value = getSortedByPriority(getQueryArrayByDate().value!!)
-        queryArrayByDuration.value = getSortedByDuration(getQueryArrayByDate().value!!)
-
-        _mainFragmentBinding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(mainFragmentBinding.root)
-
-        setSupportActionBar(findViewById(R.id.toolbar))
-        supportActionBar?.setDisplayShowTitleEnabled(false)
-
-        navController = findNavController(R.id.nav_host_fragment)
-        drawerLayout = mainFragmentBinding.drawerLayout
-        mainFragmentBinding.navView.setupWithNavController(navController)
-        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
-
-        appBarConfiguration = AppBarConfiguration(navController.graph, drawerLayout)
-        setupActionBarWithNavController(navController, drawerLayout)
-
-        CoroutineScope(Dispatchers.Default).launch {
-            while (true) {
-                delay(1000)
-                getCurrentWorkingTime().postValue( getCurrentWorkingTime().value!!.inc())
-            }}
-
-        inflater = LayoutInflater.from(this)
-        getAvatar()
-
-        if((getYourTime()-Calendar.getInstance(TimeZone.getTimeZone("UTC")).timeInMillis)<0L){
-            val ydd= YourDaysDialog()
-            ydd.show(supportFragmentManager,"Memento_Mori")
-
-        }
-        val menu: Menu = mainFragmentBinding.navView.menu
-        val menuItem = menu.findItem(R.id.calendarEditFragment)
-        val calendarItem = menu.findItem(R.id.manyCharts)
-        menuItem.setOnMenuItemClickListener {
-
-            drawerLayout.closeDrawer(GravityCompat.START)
-
-            MainScope().launch {
-                delay(200)
-                val nhf = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
-                val hf= nhf.childFragmentManager.fragments[0] as HomeFragment
-                hf.homeFragmentBinding.taskChangerFAB.performClick()
+        fun setLanguage(language:String){
+            val languageToLoad = when(language){
+                "DEFAULT","DOMYŚLNIE"-> Locale.getDefault().language
+                "PL"-> "pl"
+                "EN"->"en_EN"
+                else->{"en"}
             }
-            true
-        }
-        calendarItem.setOnMenuItemClickListener {
+            application.getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE).edit().putBoolean(SETTINGS_CHANGE,true).apply()
 
-            drawerLayout.closeDrawer(GravityCompat.START)
-            MainScope().launch {
-                delay(200)
-                val nhf = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
-                val hf= nhf.childFragmentManager.fragments[0] as HomeFragment
-                hf.homeFragmentBinding.card2Click.performClick()
+            val locale = Locale(languageToLoad)
+            Locale.setDefault(locale)
+            val config = resources.configuration
+            config.setLocale(locale)
+
+            getSharedPreferences().edit().putString(LANGUAGE,language).apply()
+            resources.updateConfiguration(config, resources.displayMetrics)
+            newIntent()
+        }
+        private fun newIntent(){
+            val intent = intent
+            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
+            startActivity(intent)
+
+            finish()
+        }
+
+        override fun onCreate(savedInstanceState: Bundle?) {
+
+            sharedPreferences=application.getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE)
+
+            val gso = GoogleSignInOptions
+                .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.defaultt_web_client_id))
+                .requestEmail()
+                .build()
+            googleSignInClient = GoogleSignIn.getClient(this,gso)
+            analytics = Firebase.analytics
+            auth = Firebase.auth
+
+            userId=intent.getStringExtra("user_id")
+            emailId=intent.getStringExtra("email_id")
+            userName=intent.getStringExtra("user_name")
+            if(userId==null){
+                userId=getCurrentUserId()
             }
-            true
-        }
-    }
+            userId?.let {
+                getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE).edit().putString("user_id",it).apply()
+            }
+            if(userId.isNullOrBlank()||userName.isNullOrBlank()){
+                auth.currentUser.let {
+                    userId = auth.uid
+                    it?.email.let{itt-> emailId =itt}
 
 
-    override fun onStart() {
-        super.onStart()
-        if(sharedPreferences.getBoolean(SETTINGS_CHANGE,false)) {
-            navController.navigate(R.id.action_FirstFragment_to_settings)
-            sharedPreferences.edit().putBoolean(SETTINGS_CHANGE,false).apply()
-        }
-        findViewById<LinearLayout>(R.id.settings).setOnClickListener {
-            navController.navigate(R.id.action_FirstFragment_to_settings)
-            drawerLayout.closeDrawer(GravityCompat.START)
-        }
-        requestPermissions()
-
-        if(getIsShowingNotifications()){
-            createTodayNotifications()
-        }
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return if ( navController.currentDestination?.label=="first_fragment_label"||
-            item.itemId==R.id.category||
-            item.itemId==R.id.order)
-            super.onOptionsItemSelected(item)
-        else{
-            onBackPressed()
-            true
-        }
-
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        colors.removeListeners()
-        tasks.removeListeners()
-        oldTasks.removeListeners()
-        rutines.removeListeners()
-        settings.removeListeners()
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-
-        findViewById<TextView>(R.id.user_email).text=emailId
-        findViewById<TextView>(R.id.user_name).text=userName
-        fillMementoMori()
-        menuInflater.inflate(R.menu.menu_main, menu)
-
-        return true
-    }
-
-    fun fillMementoMori() {
-        val mTime = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
-        val now = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
-        if (getYourTime() != 0L){
-            mTime.time = Date(getYourTime())
-
-            var mYears = mTime.get(Calendar.YEAR) - now.get(Calendar.YEAR)
-            var mMonths = mTime.get(Calendar.MONTH) - now.get(Calendar.MONTH)
-            if (mMonths < 0) {
-                mMonths += 12
-                --mYears
+                    it?.displayName.let{ itt->userName =itt}
+                }
             }
 
-            var mDays = mTime.get(Calendar.DAY_OF_MONTH) - now.get(Calendar.DAY_OF_MONTH)
+            firebaseDB=Firebase.database
+            colors=DAOColors(this)
+            tasks= DAOTasks(this)
+            oldTasks= DAOOldTasks(this)
+            rutines= DAORutines(this)
+            settings= DAOSettings(this)
+            storageReference=FirebaseStorage.getInstance().reference.child("profileImages").child(userId!!+".jpg")
 
-            if (mDays < 0) {
-                mDays =
-                    (mTime.get(Calendar.DAY_OF_MONTH) + now.getActualMaximum(Calendar.DAY_OF_MONTH)) - now.get(
-                        Calendar.DAY_OF_MONTH
-                    )
-                --mMonths
+
+            showOutdated= getSharedPreferences().getBoolean(SHOW_OUTDATED,true)
+
+            if (Build.VERSION.SDK_INT >= Q)
+                AppCompatDelegate.setDefaultNightMode(getSharedPreferences().getInt(MODE,-1 ))
+            super.onCreate(savedInstanceState)
+            LOTDatabaseHelper.SetGuide(resources.getStringArray(R.array.tutorial).toList())
+            oh = LOTDatabaseHelper(this)
+            db = oh.readableDatabase
+
+            val timeToadd=Calendar.getInstance(TimeZone.getTimeZone("UTC")).timeInMillis-getStartTime()
+
+            if(getIsRunningTask()){
+                if(getCurrentTaskId()!=-1&&timeToadd!=0L){
+                    isTaskStarted=true
+                    currentTaskId=getCurrentTaskId()
+                    val row=oh.getTaskRow(currentTaskId!!,userId)
+                    currentTaskCategory=getTaskCategory()
+                    val wt=(timeToadd/1000).toInt()
+                    workingTime.value=wt
+                    // oh.addOldstatRow(getStartTime(), workingTime.value!!,getCurrentTaskId())
+                    setStartTime(Calendar.getInstance(TimeZone.getTimeZone("UTC")).timeInMillis)
+                    Log.v("TIME",""+wt)
+
+                    row?.currentWorkingTime?.let {
+                        updateOldstats(wt+(it*3600).toInt(),wt)
+                    }
+
+                }
+
+            }
+
+            if(getIsDeletingCompleted())
+                deleteCompleted()
+
+            getDataFromDB()
+            colors.addListeners()
+            tasks.addListeners()
+            oldTasks.addListeners()
+            rutines.addListeners()
+            settings.addListeners()
+
+            queryArrayByPriority.value = getSortedByPriority(getQueryArrayByDate().value!!)
+            queryArrayByDuration.value = getSortedByDuration(getQueryArrayByDate().value!!)
+
+            _mainFragmentBinding = ActivityMainBinding.inflate(layoutInflater)
+            setContentView(mainFragmentBinding.root)
+
+            setSupportActionBar(findViewById(R.id.toolbar))
+            supportActionBar?.setDisplayShowTitleEnabled(false)
+
+            navController = findNavController(R.id.nav_host_fragment)
+            drawerLayout = mainFragmentBinding.drawerLayout
+            mainFragmentBinding.navView.setupWithNavController(navController)
+            drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+
+            appBarConfiguration = AppBarConfiguration(navController.graph, drawerLayout)
+            setupActionBarWithNavController(navController, drawerLayout)
+
+            CoroutineScope(Dispatchers.Default).launch {
+                while (true) {
+                    delay(1000)
+                    getCurrentWorkingTime().postValue( getCurrentWorkingTime().value!!.inc())
+                }}
+
+            inflater = LayoutInflater.from(this)
+            getAvatar()
+
+            if((getYourTime()-Calendar.getInstance(TimeZone.getTimeZone("UTC")).timeInMillis)<0L){
+                val ydd= YourDaysDialog()
+                ydd.show(supportFragmentManager,"Memento_Mori")
+
+            }
+            val menu: Menu = mainFragmentBinding.navView.menu
+            val menuItem = menu.findItem(R.id.calendarEditFragment)
+            val calendarItem = menu.findItem(R.id.manyCharts)
+            menuItem.setOnMenuItemClickListener {
+
+                drawerLayout.closeDrawer(GravityCompat.START)
+
+                MainScope().launch {
+                    delay(200)
+                    val nhf = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+                    val hf= nhf.childFragmentManager.fragments[0] as HomeFragment
+                    hf.homeFragmentBinding.taskChangerFAB.performClick()
+                }
+                true
+            }
+            calendarItem.setOnMenuItemClickListener {
+
+                drawerLayout.closeDrawer(GravityCompat.START)
+                MainScope().launch {
+                    delay(200)
+                    val nhf = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+                    val hf= nhf.childFragmentManager.fragments[0] as HomeFragment
+                    hf.homeFragmentBinding.card2Click.performClick()
+                }
+                true
+            }
+        }
+
+
+        override fun onStart() {
+            super.onStart()
+            if(getSharedPreferences().getBoolean(SETTINGS_CHANGE,false)) {
+                navController.navigate(R.id.action_FirstFragment_to_settings)
+                getSharedPreferences().edit().putBoolean(SETTINGS_CHANGE,false).apply()
+            }
+            findViewById<LinearLayout>(R.id.settings).setOnClickListener {
+                navController.navigate(R.id.action_FirstFragment_to_settings)
+                drawerLayout.closeDrawer(GravityCompat.START)
+            }
+            requestPermissions()
+
+            if(getIsShowingNotifications()){
+                createTodayNotifications()
+            }
+        }
+
+        override fun onOptionsItemSelected(item: MenuItem): Boolean {
+            return if ( navController.currentDestination?.label=="first_fragment_label"||
+                item.itemId==R.id.category||
+                item.itemId==R.id.order)
+                super.onOptionsItemSelected(item)
+            else{
+                onBackPressed()
+                true
+            }
+
+        }
+
+        override fun onDestroy() {
+            super.onDestroy()
+            colors.removeListeners()
+            tasks.removeListeners()
+            oldTasks.removeListeners()
+            rutines.removeListeners()
+            settings.removeListeners()
+        }
+
+        override fun onCreateOptionsMenu(menu: Menu): Boolean {
+
+            findViewById<TextView>(R.id.user_email).text=emailId
+            findViewById<TextView>(R.id.user_name).text=userName
+            fillMementoMori()
+            menuInflater.inflate(R.menu.menu_main, menu)
+
+            return true
+        }
+
+        fun fillMementoMori() {
+            val mTime = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
+            val now = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
+            if (getYourTime() != 0L){
+                mTime.time = Date(getYourTime())
+
+                var mYears = mTime.get(Calendar.YEAR) - now.get(Calendar.YEAR)
+                var mMonths = mTime.get(Calendar.MONTH) - now.get(Calendar.MONTH)
                 if (mMonths < 0) {
                     mMonths += 12
                     --mYears
                 }
+
+                var mDays = mTime.get(Calendar.DAY_OF_MONTH) - now.get(Calendar.DAY_OF_MONTH)
+
+                if (mDays < 0) {
+                    mDays =
+                        (mTime.get(Calendar.DAY_OF_MONTH) + now.getActualMaximum(Calendar.DAY_OF_MONTH)) - now.get(
+                            Calendar.DAY_OF_MONTH
+                        )
+                    --mMonths
+                    if (mMonths < 0) {
+                        mMonths += 12
+                        --mYears
+                    }
+                }
+
+                findViewById<TextView>(R.id.year_val).text = mYears.toString()
+                findViewById<TextView>(R.id.month_val).text = mMonths.toString()
+                findViewById<TextView>(R.id.day_val).text = mDays.toString()
+
+                if (mYears == 1)
+                    findViewById<TextView>(R.id.year_label).text = resources.getText(R.string.year)
+
+                if (mMonths == 1)
+                    findViewById<TextView>(R.id.month_label).text = resources.getText(R.string.month)
+                if (mMonths in 3..4)
+                    findViewById<TextView>(R.id.month_label).text = resources.getText(R.string.months2)
+
+                if (mDays == 1)
+                    findViewById<TextView>(R.id.day_label).text = resources.getText(R.string.day)
+            }else{
+
+                findViewById<TextView>(R.id.year_val).text ="0"
+                findViewById<TextView>(R.id.month_val).text ="0"
+                findViewById<TextView>(R.id.day_val).text = "0"
             }
 
-            findViewById<TextView>(R.id.year_val).text = mYears.toString()
-            findViewById<TextView>(R.id.month_val).text = mMonths.toString()
-            findViewById<TextView>(R.id.day_val).text = mDays.toString()
-
-            if (mYears == 1)
-                findViewById<TextView>(R.id.year_label).text = resources.getText(R.string.year)
-
-            if (mMonths == 1)
-                findViewById<TextView>(R.id.month_label).text = resources.getText(R.string.month)
-            if (mMonths in 3..4)
-                findViewById<TextView>(R.id.month_label).text = resources.getText(R.string.months2)
-
-            if (mDays == 1)
-                findViewById<TextView>(R.id.day_label).text = resources.getText(R.string.day)
-        }else{
-
-            findViewById<TextView>(R.id.year_val).text ="0"
-            findViewById<TextView>(R.id.month_val).text ="0"
-            findViewById<TextView>(R.id.day_val).text = "0"
         }
 
-    }
+        override fun onSupportNavigateUp(): Boolean {
+            return navController.navigateUp(appBarConfiguration)
+                    || super.onSupportNavigateUp()
+        }
 
-    override fun onSupportNavigateUp(): Boolean {
-        return navController.navigateUp(appBarConfiguration)
-                || super.onSupportNavigateUp()
-    }
-
-    override fun onBackPressed() {
-        navController.currentDestination?.label.let {
-            when {
-                drawerLayout.isDrawerOpen(GravityCompat.START) -> drawerLayout.closeDrawer(GravityCompat.START)
-                it == "WorkingFragment" -> {
-                    isFromWorkFragment=true
-                    super.onBackPressed()
-                }
-                it == "first_fragment_label" ->{
-                    val nh= supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
-                    val fragment=nh.childFragmentManager.primaryNavigationFragment
-                    if(fragment is HomeFragment){
-                        if(!fragment.isButtonHidden) {
-                            fragment.homeFragmentBinding.view.performClick()
-                        }
-                    }else
+        override fun onBackPressed() {
+            navController.currentDestination?.label.let {
+                when {
+                    drawerLayout.isDrawerOpen(GravityCompat.START) -> drawerLayout.closeDrawer(GravityCompat.START)
+                    it == "WorkingFragment" -> {
+                        isFromWorkFragment=true
                         super.onBackPressed()
-                }
-                it=="fragment_calendar_edit"->{
-                    isFromCalendarFragment=true
-                    super.onBackPressed()
-                }
-
-                else -> {
-                    super.onBackPressed()
-                }
-            }
-        }
-    }
-
-    /**
-     * @author Karol Robak
-     *
-     * **/
-
-
-    fun getDataFromDB(){
-        CoroutineScope(Dispatchers.IO).run {
-            val selectionQuery: String =
-                "SELECT TASKTABLE._id, TASKTABLE.category, TASKTABLE.name, TASKTABLE.datetime,TASKTABLE.working_time,TASKTABLE.priority, TASKTABLE.current_work_time, COLOR.color, TASKTABLE.is_finished " +
-                        "FROM TASKTABLE LEFT JOIN COLOR on TASKTABLE.category=COLOR.category_id WHERE TASKTABLE.user_id=? OR TRIM(TASKTABLE.user_id) IS NULL ORDER BY TASKTABLE.datetime, TASKTABLE.priority DESC"
-
-            val query: ArrayList<DataRowWithColor> = ArrayList()
-            var c: Cursor = db.rawQuery(selectionQuery, arrayOf(userId))
-            var array: Map<String, String> = HashMap()
-
-            if (c.moveToFirst())
-                do {
-                    val calendar: Calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
-
-                    calendar.time = Date(c.getLong(3))
-                    if (showOutdated&&getIsShowingCompleted())
-                        query.add(
-                            DataRowWithColor(
-                                c.getInt(0),
-                                c.getString(1),
-                                c.getString(2),
-                                calendar,
-                                c.getFloat(4),
-                                c.getInt(5),
-                                c.getFloat(6),
-                                c.getString(7) ?: "#FFFFFF",
-                                finished = c.getInt(8)
-                            )
-                        )
-                    else if (getIsShowingCompleted()&&(!calendar.before(Calendar.getInstance(TimeZone.getTimeZone("UTC")))))
-                        query.add(
-                            DataRowWithColor(
-                                c.getInt(0),
-                                c.getString(1),
-                                c.getString(2),
-                                calendar,
-                                c.getFloat(4),
-                                c.getInt(5),
-                                c.getFloat(6),
-                                c.getString(7) ?: "#FFFFFF",
-                                finished = c.getInt(8)
-                            )
-                        )
-                    else if (c.getInt(8)==0&&(c.getFloat(4)-c.getFloat(6))>0&&showOutdated)
-                        query.add(
-                            DataRowWithColor(
-                                c.getInt(0),
-                                c.getString(1),
-                                c.getString(2),
-                                calendar,
-                                c.getFloat(4),
-                                c.getInt(5),
-                                c.getFloat(6),
-                                c.getString(7) ?: "#FFFFFF",
-                                finished = c.getInt(8)
-                            )
-                        )
-                    else if (c.getInt(8)==0&&(c.getFloat(4)-c.getFloat(6))>0&&(!calendar.before(Calendar.getInstance(TimeZone.getTimeZone("UTC")))))
-                        query.add(
-                            DataRowWithColor(
-                                c.getInt(0),
-                                c.getString(1),
-                                c.getString(2),
-                                calendar,
-                                c.getFloat(4),
-                                c.getInt(5),
-                                c.getFloat(6),
-                                c.getString(7) ?: "#FFFFFF",
-                                finished = c.getInt(8)
-                            )
-                        )
-
-                } while (c.moveToNext())
-            c.close()
-            c = db.rawQuery("SELECT * FROM COLOR WHERE COLOR.user_id=? OR TRIM(COLOR.user_id) IS NULL", arrayOf(userId))
-            if (c.moveToFirst())
-                do
-                    array = array.plus(Pair(c.getString(0), c.getString(1)))
-                while (c.moveToNext())
-            c.close()
-            colorsArray.value = array
-            query.forEach { dataRowWithColor ->
-                if (dataRowWithColor.date.before(Calendar.getInstance(TimeZone.getTimeZone("UTC"))))
-                    dataRowWithColor.outdated = true
-            }
-            rutinesArray.value=oh.getUserRutinesArray(userId)
-            queryArrayByDate.value = query
-            queryArrayByPriority.value = getSortedByPriority(query)
-            queryArrayByDuration.value = getSortedByDuration(query)
-        }
-
-    }
-
-    private fun getSortedByDuration(qa: ArrayList<DataRowWithColor>): ArrayList<DataRowWithColor> {
-        CoroutineScope(Dispatchers.IO).run {
-            qa.sortWith(compareBy<DataRowWithColor> { it.workingTime }.thenBy { it.name })
-            val na: ArrayList<DataRowWithColor> = ArrayList()
-            na.addAll(qa.toList())
-            qa.sortWith(compareBy<DataRowWithColor> { it.date.time.time }.thenByDescending { it.priority })
-            return na
-        }
-    }
-
-    private fun getSortedByPriority(querryArray:ArrayList<DataRowWithColor>):ArrayList<DataRowWithColor>{
-        CoroutineScope(Dispatchers.IO).run {
-            querryArray.sortWith(compareByDescending<DataRowWithColor> { it.priority }.thenBy { it.date.time.time })
-
-            return  ArrayList(querryArray.toList())
-        }
-    }
-    fun getOldData():ArrayList<Triple<Calendar,Float,String>> {
-        CoroutineScope(Dispatchers.IO).run {
-            val selectionQuery =
-                "SELECT OLDSTATS.date_id, OLDSTATS.working_time, OLDSTATS.category from OLDSTATS WHERE OLDSTATS.user_id=? OR TRIM(OLDSTATS.user_id) IS NULL "
-            val c: Cursor = db.rawQuery(selectionQuery, arrayOf(userId))
-            val map: MutableMap<Calendar, Pair<Float, String>> = HashMap()
-            val list: ArrayList<Triple<Calendar, Float, String>> = arrayListOf()
-            if (c.moveToFirst())
-                do {
-                    val cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
-                    cal.time = Date(c.getLong(0))
-                    cal.set(Calendar.HOUR_OF_DAY, 0)
-                    cal.set(Calendar.MINUTE, 0)
-                    cal.set(Calendar.SECOND, 0)
-                    cal.set(Calendar.MILLISECOND, 0)
-                    map.putIfAbsent(cal, Pair(c.getInt(1).toFloat() / 3600, c.getString(2)))?.let {
-                        map.replace(
-                            cal,
-                            Pair(it.first + c.getInt(1).toFloat() / 3600, c.getString(2))
-                        )
+                    }
+                    it == "first_fragment_label" ->{
+                        val nh= supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+                        val fragment=nh.childFragmentManager.primaryNavigationFragment
+                        if(fragment is HomeFragment){
+                            if(!fragment.isButtonHidden) {
+                                fragment.homeFragmentBinding.view.performClick()
+                            }
+                        }else
+                            super.onBackPressed()
+                    }
+                    it=="fragment_calendar_edit"->{
+                        isFromCalendarFragment=true
+                        super.onBackPressed()
                     }
 
-                } while (c.moveToNext())
-            c.close()
-            for (element in map)
-                list.add(Triple(element.key, element.value.first, element.value.second))
-
-            return list
-        }
-    }
-
-    /**
-     * sets currentWorkingTime of CurrentTask
-     * add row for old tasks
-     * @param currentTime - summary time of  task to change in CurrentTask progress
-     * @param timeToAdd - time to add in OldTasks table
-     */
-    fun updateOldstats(currentTime:Int, timeToAdd:Int){
-        CoroutineScope(Dispatchers.IO).run {
-            if(currentTime!=0&&currentTaskId!=null) {
-                //update current task time
-
-                oh.editTaskRow(
-                    currentTaskId!!,
-                    null, null, null, 0, 0, currentTime,-1
-                )
-
-                tasks.update(currentTaskId!!,null,null,null,null,null,currentTime,-1)
-                //add oldstats row
-                if (currentTaskCategory.isNullOrEmpty())
-                    currentTaskCategory=getTaskCategory()
-                timeToAdd.let {
-                    oh.addOldstatRow(
-                        Calendar.getInstance(TimeZone.getTimeZone("UTC")).time.time, it,
-                        currentTaskCategory,
-                        userId
-                    )
-                    oldTasks.add(
-                        dateTime = Calendar.getInstance(TimeZone.getTimeZone("UTC")).time.time,
-                        currentWorkingTime = it,
-                        category = currentTaskCategory!!
-                    )
+                    else -> {
+                        super.onBackPressed()
+                    }
                 }
             }
         }
-    }
-    /**
-     * @return ArrayList<Ntuple<Calendar,Int,String,String>>
-     *         ArrayList<Ntuple<start_date, working_time_sec, category, color>>
-     * */
-    fun getOldDataWithColors(currentDay:Boolean):ArrayList<NTuple4<Calendar, Int, String, String>>{
-        CoroutineScope(Dispatchers.IO).run {
-            val selectionQuery =
-                "SELECT OLDSTATS.date_id, OLDSTATS.working_time, OLDSTATS.category, COLOR.color from OLDSTATS  JOIN COLOR ON OLDSTATS.category=COLOR.category_id"
-            val c: Cursor = db.rawQuery(selectionQuery, null)
-            var map: MutableMap<Calendar, Triple<Int, String, String>> = HashMap()
-            val list: ArrayList<NTuple4<Calendar, Int, String, String>> = arrayListOf()
-            val calC = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
-            if (c.moveToFirst())
-                do {
-                    val cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
-                    cal.time = Date(c.getLong(0))
-                    if ((!currentDay) || (cal.get(Calendar.YEAR) == calC.get(Calendar.YEAR) && cal.get(
-                            Calendar.MONTH
-                        ) == calC.get(Calendar.MONTH) && cal.get(Calendar.DAY_OF_MONTH) == calC.get(
-                            Calendar.DAY_OF_MONTH
-                        ))
-                    ) {
 
-                        map.putIfAbsent(
-                            cal,
-                            Triple(c.getInt(1), c.getString(2), c.getString(3))
-                        )?.let {
+        /**
+         * @author Karol Robak
+         *
+         * **/
+
+
+        fun getDataFromDB(){
+            CoroutineScope(Dispatchers.IO).run {
+                val selectionQuery: String =
+                    "SELECT TASKTABLE._id, TASKTABLE.category, TASKTABLE.name, TASKTABLE.datetime,TASKTABLE.working_time,TASKTABLE.priority, TASKTABLE.current_work_time, COLOR.color, TASKTABLE.is_finished " +
+                            "FROM TASKTABLE LEFT JOIN COLOR on TASKTABLE.category=COLOR.category_id WHERE TASKTABLE.user_id=? OR TRIM(TASKTABLE.user_id) IS NULL ORDER BY TASKTABLE.datetime, TASKTABLE.priority DESC"
+
+                val query: ArrayList<DataRowWithColor> = ArrayList()
+                var c: Cursor = db.rawQuery(selectionQuery, arrayOf(userId))
+                var array: Map<String, String> = HashMap()
+
+                if (c.moveToFirst())
+                    do {
+                        val calendar: Calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
+
+                        calendar.time = Date(c.getLong(3))
+                        if (showOutdated&&getIsShowingCompleted())
+                            query.add(
+                                DataRowWithColor(
+                                    c.getInt(0),
+                                    c.getString(1),
+                                    c.getString(2),
+                                    calendar,
+                                    c.getFloat(4),
+                                    c.getInt(5),
+                                    c.getFloat(6),
+                                    c.getString(7) ?: "#FFFFFF",
+                                    finished = c.getInt(8)
+                                )
+                            )
+                        else if (getIsShowingCompleted()&&(!calendar.before(Calendar.getInstance(TimeZone.getTimeZone("UTC")))))
+                            query.add(
+                                DataRowWithColor(
+                                    c.getInt(0),
+                                    c.getString(1),
+                                    c.getString(2),
+                                    calendar,
+                                    c.getFloat(4),
+                                    c.getInt(5),
+                                    c.getFloat(6),
+                                    c.getString(7) ?: "#FFFFFF",
+                                    finished = c.getInt(8)
+                                )
+                            )
+                        else if (c.getInt(8)==0&&(c.getFloat(4)-c.getFloat(6))>0&&showOutdated)
+                            query.add(
+                                DataRowWithColor(
+                                    c.getInt(0),
+                                    c.getString(1),
+                                    c.getString(2),
+                                    calendar,
+                                    c.getFloat(4),
+                                    c.getInt(5),
+                                    c.getFloat(6),
+                                    c.getString(7) ?: "#FFFFFF",
+                                    finished = c.getInt(8)
+                                )
+                            )
+                        else if (c.getInt(8)==0&&(c.getFloat(4)-c.getFloat(6))>0&&(!calendar.before(Calendar.getInstance(TimeZone.getTimeZone("UTC")))))
+                            query.add(
+                                DataRowWithColor(
+                                    c.getInt(0),
+                                    c.getString(1),
+                                    c.getString(2),
+                                    calendar,
+                                    c.getFloat(4),
+                                    c.getInt(5),
+                                    c.getFloat(6),
+                                    c.getString(7) ?: "#FFFFFF",
+                                    finished = c.getInt(8)
+                                )
+                            )
+
+                    } while (c.moveToNext())
+                c.close()
+                c = db.rawQuery("SELECT * FROM COLOR WHERE COLOR.user_id=? OR TRIM(COLOR.user_id) IS NULL", arrayOf(userId))
+                if (c.moveToFirst())
+                    do
+                        array = array.plus(Pair(c.getString(0), c.getString(1)))
+                    while (c.moveToNext())
+                c.close()
+                colorsArray.value = array
+                query.forEach { dataRowWithColor ->
+                    if (dataRowWithColor.date.before(Calendar.getInstance(TimeZone.getTimeZone("UTC"))))
+                        dataRowWithColor.outdated = true
+                }
+                rutinesArray.value=oh.getUserRutinesArray(userId)
+                queryArrayByDate.value = query
+                queryArrayByPriority.value = getSortedByPriority(query)
+                queryArrayByDuration.value = getSortedByDuration(query)
+            }
+
+        }
+
+        private fun getSortedByDuration(qa: ArrayList<DataRowWithColor>): ArrayList<DataRowWithColor> {
+            CoroutineScope(Dispatchers.IO).run {
+                qa.sortWith(compareBy<DataRowWithColor> { it.workingTime }.thenBy { it.name })
+                val na: ArrayList<DataRowWithColor> = ArrayList()
+                na.addAll(qa.toList())
+                qa.sortWith(compareBy<DataRowWithColor> { it.date.time.time }.thenByDescending { it.priority })
+                return na
+            }
+        }
+
+        private fun getSortedByPriority(querryArray:ArrayList<DataRowWithColor>):ArrayList<DataRowWithColor>{
+            CoroutineScope(Dispatchers.IO).run {
+                querryArray.sortWith(compareByDescending<DataRowWithColor> { it.priority }.thenBy { it.date.time.time })
+
+                return  ArrayList(querryArray.toList())
+            }
+        }
+        fun getOldData():ArrayList<Triple<Calendar,Float,String>> {
+            CoroutineScope(Dispatchers.IO).run {
+                val selectionQuery =
+                    "SELECT OLDSTATS.date_id, OLDSTATS.working_time, OLDSTATS.category from OLDSTATS WHERE OLDSTATS.user_id=? OR TRIM(OLDSTATS.user_id) IS NULL "
+                val c: Cursor = db.rawQuery(selectionQuery, arrayOf(userId))
+                val map: MutableMap<Calendar, Pair<Float, String>> = HashMap()
+                val list: ArrayList<Triple<Calendar, Float, String>> = arrayListOf()
+                if (c.moveToFirst())
+                    do {
+                        val cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
+                        cal.time = Date(c.getLong(0))
+                        cal.set(Calendar.HOUR_OF_DAY, 0)
+                        cal.set(Calendar.MINUTE, 0)
+                        cal.set(Calendar.SECOND, 0)
+                        cal.set(Calendar.MILLISECOND, 0)
+                        map.putIfAbsent(cal, Pair(c.getInt(1).toFloat() / 3600, c.getString(2)))?.let {
                             map.replace(
                                 cal,
-                                Triple(
-                                    it.first + c.getInt(1),
-                                    c.getString(2),
-                                    c.getString(3)
-                                )
+                                Pair(it.first + c.getInt(1).toFloat() / 3600, c.getString(2))
                             )
                         }
-                    }
-                } while (c.moveToNext())
-            c.close()
-            if (currentDay)
-                map = map.filterKeys { calendar ->
-                    calendar.get(Calendar.DAY_OF_MONTH) == calC.get(Calendar.DAY_OF_MONTH)
-                }.toMutableMap()
-            for (element in map)
-                list.add(
-                    NTuple4(
-                        element.key,
-                        element.value.first,
-                        element.value.second,
-                        element.value.third
+
+                    } while (c.moveToNext())
+                c.close()
+                for (element in map)
+                    list.add(Triple(element.key, element.value.first, element.value.second))
+
+                return list
+            }
+        }
+
+        /**
+         * sets currentWorkingTime of CurrentTask
+         * add row for old tasks
+         * @param currentTime - summary time of  task to change in CurrentTask progress
+         * @param timeToAdd - time to add in OldTasks table
+         */
+        fun updateOldstats(currentTime:Int, timeToAdd:Int){
+            CoroutineScope(Dispatchers.IO).run {
+                if(currentTime!=0&&currentTaskId!=null) {
+                    //update current task time
+
+                    oh.editTaskRow(
+                        currentTaskId!!,
+                        null, null, null, 0, 0, currentTime,-1
                     )
-                )
 
-            return list
-        }
-    }
-    fun deleteCompleted(){
-        CoroutineScope(Dispatchers.IO).run {
-            val selectionQuery =
-                "SELECT TASKTABLE._id, TASKTABLE.working_time, TASKTABLE.current_work_time, RUTINES._id FROM TASKTABLE LEFT JOIN RUTINES ON TASKTABLE._id=RUTINES.task_id "
-            val c: Cursor = db.rawQuery(selectionQuery, null)
-            val array: ArrayList<Int> = ArrayList()
-            if (c.moveToFirst())
-                do {
-                    if ((c.getInt(1) - c.getInt(2)) < 0 && (c.isNull(3)))
-                        array.add(c.getInt(0))
-
-                } while (c.moveToNext())
-
-            for (id in array) {
-                oh.deleteTaskRow(id)
-                tasks.delete(id)
-            }
-            c.close()
-        }
-    }
-
-
-    fun updateRutines(){
-        CoroutineScope(Dispatchers.IO).run {
-            val selectionQuery =
-                "SELECT TASKTABLE._id, TASKTABLE.datetime, RUTINES._id, RUTINES.days,RUTINES.hours,TASKTABLE.working_time FROM TASKTABLE JOIN RUTINES ON TASKTABLE._id=RUTINES.task_id "
-            val c: Cursor = db.rawQuery(selectionQuery, null)
-            val cCalendar = Calendar.getInstance(/*TimeZone.getTimeZone("UTC")*/)
-
-            val dow = cCalendar.get(Calendar.DAY_OF_WEEK)
-            val currentDayOfWeek = if (isMondayFirstDay) when (dow) {
-                1 -> 7
-                else -> dow - 1
-            } else dow
-
-            val currentHour = cCalendar.get(Calendar.HOUR_OF_DAY)
-            val currentMinute = cCalendar.get(Calendar.MINUTE)
-            var daysArray: List<Int>
-
-            var hoursArray: List<String>
-
-            fun getCalendarTime(
-                calendar: Calendar,
-                dayShort: Int,
-                hour: Int,
-                minute: Int,
-                nextWeek: Boolean? = false
-            ): Long {
-                var day = dayShort
-                if (isMondayFirstDay)
-                    day = when (dayShort) {
-                        7 -> 1
-                        else -> dayShort + 1
+                    tasks.update(currentTaskId!!,null,null,null,null,null,currentTime,-1)
+                    //add oldstats row
+                    if (currentTaskCategory.isNullOrEmpty())
+                        currentTaskCategory=getTaskCategory()
+                    timeToAdd.let {
+                        oh.addOldstatRow(
+                            Calendar.getInstance(TimeZone.getTimeZone("UTC")).time.time, it,
+                            currentTaskCategory,
+                            userId
+                        )
+                        oldTasks.add(
+                            dateTime = Calendar.getInstance(TimeZone.getTimeZone("UTC")).time.time,
+                            currentWorkingTime = it,
+                            category = currentTaskCategory!!
+                        )
                     }
-                val cal = calendar.clone() as Calendar
-                cal.set(Calendar.DAY_OF_WEEK, day)
-                nextWeek.let {
-                    if (nextWeek!!)
-                        cal.add(Calendar.WEEK_OF_YEAR, 1)
                 }
-                cal.set(Calendar.HOUR_OF_DAY, hour)
-                cal.set(Calendar.MINUTE, minute)
-                cal.set(Calendar.SECOND, 0)
-                cal.set(Calendar.MILLISECOND, 0)
-
-                cal.timeZone = TimeZone.getTimeZone("UTC")
-
-                return cal.timeInMillis
             }
+        }
+        /**
+         * @return ArrayList<Ntuple<Calendar,Int,String,String>>
+         *         ArrayList<Ntuple<start_date, working_time_sec, category, color>>
+         * */
+        fun getOldDataWithColors(currentDay:Boolean):ArrayList<NTuple4<Calendar, Int, String, String>>{
+            CoroutineScope(Dispatchers.IO).run {
+                val selectionQuery =
+                    "SELECT OLDSTATS.date_id, OLDSTATS.working_time, OLDSTATS.category, COLOR.color from OLDSTATS  JOIN COLOR ON OLDSTATS.category=COLOR.category_id"
+                val c: Cursor = db.rawQuery(selectionQuery, null)
+                var map: MutableMap<Calendar, Triple<Int, String, String>> = HashMap()
+                val list: ArrayList<NTuple4<Calendar, Int, String, String>> = arrayListOf()
+                val calC = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
+                if (c.moveToFirst())
+                    do {
+                        val cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
+                        cal.time = Date(c.getLong(0))
+                        if ((!currentDay) || (cal.get(Calendar.YEAR) == calC.get(Calendar.YEAR) && cal.get(
+                                Calendar.MONTH
+                            ) == calC.get(Calendar.MONTH) && cal.get(Calendar.DAY_OF_MONTH) == calC.get(
+                                Calendar.DAY_OF_MONTH
+                            ))
+                        ) {
 
-            var anyChanges = false
-            if (c.moveToFirst())
-                do {
-                    val localCal = Calendar.getInstance()
-                    localCal.timeInMillis = c.getLong(1) + (c.getLong(5) * 1000)
-                    val durationMinutes = (c.getInt(5) / 60)
-                    val durationHours = (durationMinutes / 60)
-                    if ((localCal.timeInMillis/*-localCal.timeZone.rawOffset*/) < (cCalendar.timeInMillis + cCalendar.timeZone.rawOffset)
-                    ) {
-
-                        daysArray = c.getString(3).split(',')
-                            .sortedWith(compareBy { DAORutines.getDayNr(it, isMondayFirstDay) })
-                            .map {
-                                DAORutines.getDayNr(
-                                    it,
-                                    isMondayFirstDay
+                            map.putIfAbsent(
+                                cal,
+                                Triple(c.getInt(1), c.getString(2), c.getString(3))
+                            )?.let {
+                                map.replace(
+                                    cal,
+                                    Triple(
+                                        it.first + c.getInt(1),
+                                        c.getString(2),
+                                        c.getString(3)
+                                    )
                                 )
                             }
-                        if (isMondayFirstDay) {
-                            daysArray.sorted()
                         }
-                        hoursArray = c.getString(4).split(',')
-                            .sortedWith(compareBy { it: String -> it.split(':')[0].toInt() }.thenBy { it: String ->
-                                it.split(':')[1].toInt()
-                            })
+                    } while (c.moveToNext())
+                c.close()
+                if (currentDay)
+                    map = map.filterKeys { calendar ->
+                        calendar.get(Calendar.DAY_OF_MONTH) == calC.get(Calendar.DAY_OF_MONTH)
+                    }.toMutableMap()
+                for (element in map)
+                    list.add(
+                        NTuple4(
+                            element.key,
+                            element.value.first,
+                            element.value.second,
+                            element.value.third
+                        )
+                    )
 
-                        val daysBefore = daysArray.filter { it < currentDayOfWeek }
-                        val daysAfter = daysArray.filter { it > currentDayOfWeek }
-                        val today = daysArray.filter { it == currentDayOfWeek }
+                return list
+            }
+        }
+        fun deleteCompleted(){
+            CoroutineScope(Dispatchers.IO).run {
+                val selectionQuery =
+                    "SELECT TASKTABLE._id, TASKTABLE.working_time, TASKTABLE.current_work_time, RUTINES._id FROM TASKTABLE LEFT JOIN RUTINES ON TASKTABLE._id=RUTINES.task_id "
+                val c: Cursor = db.rawQuery(selectionQuery, null)
+                val array: ArrayList<Int> = ArrayList()
+                if (c.moveToFirst())
+                    do {
+                        if ((c.getInt(1) - c.getInt(2)) < 0 && (c.isNull(3)))
+                            array.add(c.getInt(0))
 
-                        var changed = false
+                    } while (c.moveToNext())
 
-                        if (!today.isNullOrEmpty())
-                            hoursArray.forEach {
-                                if (!changed) {
-                                    val time = it.split(':')
-                                    val hour = time[0].toInt()
-                                    val minute = time[1].toInt()
-                                    if (currentHour < (hour + durationHours) || (currentHour == (hour + durationHours) && currentMinute < (minute + durationMinutes))) {
+                for (id in array) {
+                    oh.deleteTaskRow(id)
+                    tasks.delete(id)
+                }
+                c.close()
+            }
+        }
+
+
+        fun updateRutines(){
+            CoroutineScope(Dispatchers.IO).run {
+                val selectionQuery =
+                    "SELECT TASKTABLE._id, TASKTABLE.datetime, RUTINES._id, RUTINES.days,RUTINES.hours,TASKTABLE.working_time FROM TASKTABLE JOIN RUTINES ON TASKTABLE._id=RUTINES.task_id "
+                val c: Cursor = db.rawQuery(selectionQuery, null)
+                val cCalendar = Calendar.getInstance(/*TimeZone.getTimeZone("UTC")*/)
+
+                val dow = cCalendar.get(Calendar.DAY_OF_WEEK)
+                val currentDayOfWeek = if (isMondayFirstDay) when (dow) {
+                    1 -> 7
+                    else -> dow - 1
+                } else dow
+
+                val currentHour = cCalendar.get(Calendar.HOUR_OF_DAY)
+                val currentMinute = cCalendar.get(Calendar.MINUTE)
+                var daysArray: List<Int>
+
+                var hoursArray: List<String>
+
+                fun getCalendarTime(
+                    calendar: Calendar,
+                    dayShort: Int,
+                    hour: Int,
+                    minute: Int,
+                    nextWeek: Boolean? = false
+                ): Long {
+                    var day = dayShort
+                    if (isMondayFirstDay)
+                        day = when (dayShort) {
+                            7 -> 1
+                            else -> dayShort + 1
+                        }
+                    val cal = calendar.clone() as Calendar
+                    cal.set(Calendar.DAY_OF_WEEK, day)
+                    nextWeek.let {
+                        if (nextWeek!!)
+                            cal.add(Calendar.WEEK_OF_YEAR, 1)
+                    }
+                    cal.set(Calendar.HOUR_OF_DAY, hour)
+                    cal.set(Calendar.MINUTE, minute)
+                    cal.set(Calendar.SECOND, 0)
+                    cal.set(Calendar.MILLISECOND, 0)
+
+                    cal.timeZone = TimeZone.getTimeZone("UTC")
+
+                    return cal.timeInMillis
+                }
+
+                var anyChanges = false
+                if (c.moveToFirst())
+                    do {
+                        val localCal = Calendar.getInstance()
+                        localCal.timeInMillis = c.getLong(1) + (c.getLong(5) * 1000)
+                        val durationMinutes = (c.getInt(5) / 60)
+                        val durationHours = (durationMinutes / 60)
+                        if ((localCal.timeInMillis/*-localCal.timeZone.rawOffset*/) < (cCalendar.timeInMillis + cCalendar.timeZone.rawOffset)
+                        ) {
+
+                            daysArray = c.getString(3).split(',')
+                                .sortedWith(compareBy { DAORutines.getDayNr(it, isMondayFirstDay) })
+                                .map {
+                                    DAORutines.getDayNr(
+                                        it,
+                                        isMondayFirstDay
+                                    )
+                                }
+                            if (isMondayFirstDay) {
+                                daysArray.sorted()
+                            }
+                            hoursArray = c.getString(4).split(',')
+                                .sortedWith(compareBy { it: String -> it.split(':')[0].toInt() }.thenBy { it: String ->
+                                    it.split(':')[1].toInt()
+                                })
+
+                            val daysBefore = daysArray.filter { it < currentDayOfWeek }
+                            val daysAfter = daysArray.filter { it > currentDayOfWeek }
+                            val today = daysArray.filter { it == currentDayOfWeek }
+
+                            var changed = false
+
+                            if (!today.isNullOrEmpty())
+                                hoursArray.forEach {
+                                    if (!changed) {
+                                        val time = it.split(':')
+                                        val hour = time[0].toInt()
+                                        val minute = time[1].toInt()
+                                        if (currentHour < (hour + durationHours) || (currentHour == (hour + durationHours) && currentMinute < (minute + durationMinutes))) {
+                                            val newDate =
+                                                getCalendarTime(cCalendar, today[0], hour, minute)
+                                            oh.editTaskRow(
+                                                c.getInt(0),
+                                                null,
+                                                null,
+                                                newDate,
+                                                0,
+                                                0,
+                                                -1,
+                                                0
+                                            )
+                                            tasks.update(
+                                                c.getInt(0),
+                                                dateTime = newDate,
+                                                workingTime = 0
+                                            )
+                                            changed = true
+                                            anyChanges = true
+                                        }
+                                    }
+                                }
+
+                            if ((!changed) && (!daysAfter.isNullOrEmpty())) {
+                                hoursArray.forEach {
+                                    if (!changed) {
+                                        val time = it.split(':')
+                                        val hour = time[0].toInt()
+                                        val minute = time[1].toInt()
                                         val newDate =
-                                            getCalendarTime(cCalendar, today[0], hour, minute)
-                                        oh.editTaskRow(
-                                            c.getInt(0),
-                                            null,
-                                            null,
-                                            newDate,
-                                            0,
-                                            0,
-                                            -1,
-                                            0
-                                        )
-                                        tasks.update(
-                                            c.getInt(0),
-                                            dateTime = newDate,
-                                            workingTime = 0
-                                        )
+                                            getCalendarTime(cCalendar, daysAfter[0], hour, minute)
+                                        oh.editTaskRow(c.getInt(0), null, null, newDate, 0, 0, -1, 0)
+                                        tasks.update(c.getInt(0), dateTime = newDate, workingTime = 0)
                                         changed = true
                                         anyChanges = true
                                     }
                                 }
                             }
-
-                        if ((!changed) && (!daysAfter.isNullOrEmpty())) {
-                            hoursArray.forEach {
-                                if (!changed) {
+                            if ((!changed) && (!daysBefore.isNullOrEmpty())) {
+                                hoursArray[0].let {
                                     val time = it.split(':')
                                     val hour = time[0].toInt()
                                     val minute = time[1].toInt()
-                                    val newDate =
-                                        getCalendarTime(cCalendar, daysAfter[0], hour, minute)
+                                    val newDate = getCalendarTime(cCalendar, daysBefore[0], hour, minute, true)
                                     oh.editTaskRow(c.getInt(0), null, null, newDate, 0, 0, -1, 0)
                                     tasks.update(c.getInt(0), dateTime = newDate, workingTime = 0)
                                     changed = true
                                     anyChanges = true
                                 }
+
                             }
-                        }
-                        if ((!changed) && (!daysBefore.isNullOrEmpty())) {
-                            hoursArray[0].let {
-                                val time = it.split(':')
+                            if ((!changed) && (!today.isNullOrEmpty()) && (!hoursArray.isNullOrEmpty())) {
+                                val time = hoursArray[0].split(':')
                                 val hour = time[0].toInt()
                                 val minute = time[1].toInt()
-                                val newDate = getCalendarTime(cCalendar, daysBefore[0], hour, minute, true)
+                                val newDate = getCalendarTime(cCalendar, today[0], hour, minute, true)
                                 oh.editTaskRow(c.getInt(0), null, null, newDate, 0, 0, -1, 0)
                                 tasks.update(c.getInt(0), dateTime = newDate, workingTime = 0)
                                 changed = true
                                 anyChanges = true
                             }
-
                         }
-                        if ((!changed) && (!today.isNullOrEmpty()) && (!hoursArray.isNullOrEmpty())) {
-                            val time = hoursArray[0].split(':')
-                            val hour = time[0].toInt()
-                            val minute = time[1].toInt()
-                            val newDate = getCalendarTime(cCalendar, today[0], hour, minute, true)
-                            oh.editTaskRow(c.getInt(0), null, null, newDate, 0, 0, -1, 0)
-                            tasks.update(c.getInt(0), dateTime = newDate, workingTime = 0)
-                            changed = true
-                            anyChanges = true
-                        }
-                    }
-                } while (c.moveToNext())
-            if (anyChanges)
-                getDataFromDB()
-            c.close()
+                    } while (c.moveToNext())
+                if (anyChanges)
+                    getDataFromDB()
+                c.close()
+            }
         }
-    }
 
 
-    private fun requestPermission(permission:String, onSuccess:()->Unit,onFailure:()->Unit) {
-        if(
-            ContextCompat.checkSelfPermission(this, permission)
-            == PackageManager.PERMISSION_DENIED ){
-            registerForActivityResult(
-                ActivityResultContracts.RequestPermission()
-            ) { isGranted: Boolean ->
-                if (isGranted)
-                    onSuccess()
-                else
-                    onFailure()
-            }.launch(permission)
+        private fun requestPermission(permission:String, onSuccess:()->Unit,onFailure:()->Unit) {
+            if(
+                ContextCompat.checkSelfPermission(this, permission)
+                == PackageManager.PERMISSION_DENIED ){
+                registerForActivityResult(
+                    ActivityResultContracts.RequestPermission()
+                ) { isGranted: Boolean ->
+                    if (isGranted)
+                        onSuccess()
+                    else
+                        onFailure()
+                }.launch(permission)
 
+            }
         }
-    }
 
 
-    private fun requestPermissions(){
-        CoroutineScope(Dispatchers.Default).run {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && (!sharedPreferences.getBoolean(
-                    "dont_show " + Manifest.permission.FOREGROUND_SERVICE,
-                    false
-                ))
-            )
-                requestPermission(Manifest.permission.FOREGROUND_SERVICE, {}, {
-                    // createDialog(Manifest.permission.FOREGROUND_SERVICE)
-                })
+        private fun requestPermissions(){
+            CoroutineScope(Dispatchers.Default).run {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && (!getSharedPreferences().getBoolean(
+                        "dont_show " + Manifest.permission.FOREGROUND_SERVICE,
+                        false
+                    ))
+                )
+                    requestPermission(Manifest.permission.FOREGROUND_SERVICE, {}, {
+                        // createDialog(Manifest.permission.FOREGROUND_SERVICE)
+                    })
 
-            if (!sharedPreferences.getBoolean("dont_show " + Manifest.permission.INTERNET, false))
-                requestPermission(Manifest.permission.INTERNET, {}, {
-                })
+                if (!getSharedPreferences().getBoolean("dont_show " + Manifest.permission.INTERNET, false))
+                    requestPermission(Manifest.permission.INTERNET, {}, {
+                    })
 
+            }
         }
-    }
 
 
-    fun startTaskNotification(timeToAlarm:Long,taskId:Int,taskName:String){
-        val myIntent = Intent(this, TimeBroadcastReceiver::class.java)
-        myIntent.putExtra("taskId",taskId).putExtra("taskName",taskName)
-        val pendingIntent = PendingIntent.getBroadcast(
-            this.applicationContext, taskId, myIntent, 0)
-        val alarmManager:AlarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
+        fun startTaskNotification(timeToAlarm:Long,taskId:Int,taskName:String){
+            val myIntent = Intent(this, TimeBroadcastReceiver::class.java)
+            myIntent.putExtra("taskId",taskId).putExtra("taskName",taskName)
+            val pendingIntent = PendingIntent.getBroadcast(
+                this.applicationContext, taskId, myIntent, 0)
+            val alarmManager:AlarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
 
-        alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC, timeToAlarm, pendingIntent)
+            alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC, timeToAlarm, pendingIntent)
 
-    } fun deleteTaskNotification(timeToAlarm:Long,taskId:Int,taskName:String){
+        } fun deleteTaskNotification(timeToAlarm:Long,taskId:Int,taskName:String){
         val myIntent = Intent(this, TimeBroadcastReceiver::class.java)
         myIntent.putExtra("taskId",taskId).putExtra("taskName",taskName)
         val pendingIntent = PendingIntent.getBroadcast(
@@ -1295,98 +1304,98 @@ class MainActivity : AppCompatActivity() {
         alarmManager.cancel(pendingIntent)
 
     }
-    fun startFinishedNotification(taskId:Int,taskName:String){
-        val myIntent = Intent(this, TimeBroadcastReceiver::class.java)
-        myIntent.putExtra("taskId",taskId).putExtra("taskName",taskName).putExtra("finished",true)
-        val pendingIntent = PendingIntent.getBroadcast(
-            this.applicationContext, taskId, myIntent, 0)            //multiply maybe not necessary
-        val alarmManager:AlarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
+        fun startFinishedNotification(taskId:Int,taskName:String){
+            val myIntent = Intent(this, TimeBroadcastReceiver::class.java)
+            myIntent.putExtra("taskId",taskId).putExtra("taskName",taskName).putExtra("finished",true)
+            val pendingIntent = PendingIntent.getBroadcast(
+                this.applicationContext, taskId, myIntent, 0)            //multiply maybe not necessary
+            val alarmManager:AlarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
 
-        alarmManager.setExact(AlarmManager.RTC, 1, pendingIntent)
+            alarmManager.setExact(AlarmManager.RTC, 1, pendingIntent)
 
-    }
-
-    fun createTodayNotifications(){
-        val data=oh.getServiceTaskInfo(userId)
-        val now=Calendar.getInstance().timeInMillis+   TimeZone.getDefault().rawOffset
-
-        for(row in data){
-            val time=row.third-now
-
-            if(time>0)
-                startTaskNotification(row.third-TimeZone.getDefault().rawOffset,row.first,row.second)
         }
 
-    }
+        fun createTodayNotifications(){
+            val data=oh.getServiceTaskInfo(userId)
+            val now=Calendar.getInstance().timeInMillis+   TimeZone.getDefault().rawOffset
 
-    fun deleteTodayNotifications(){
-        val data=oh.getServiceTaskInfo(userId)
-        val now=Calendar.getInstance().timeInMillis+   TimeZone.getDefault().rawOffset
+            for(row in data){
+                val time=row.third-now
 
-        for(row in data){
-            val time=row.third-now
-            if(time>0)
-                deleteTaskNotification(row.third-TimeZone.getDefault().rawOffset,row.first,row.second)
-        }
-
-    }
-
-    @RequiresApi(Q)
-    fun createDailyUsageStats(): ArrayList<Pair<String, Long>> {
-
-        val usageStasManager = getSystemService(USAGE_STATS_SERVICE) as UsageStatsManager
-        val pm = applicationContext.packageManager
-        val cal = Calendar.getInstance()
-        cal.set(Calendar.HOUR_OF_DAY, 0)
-        cal.set(Calendar.MINUTE, 0)
-        cal.set(Calendar.SECOND, 0)
-        cal.set(Calendar.MILLISECOND, 0)
-        val queryUsageState = usageStasManager.queryUsageStats(
-            UsageStatsManager.INTERVAL_BEST,
-            cal.timeInMillis,
-            System.currentTimeMillis()
-        )
-        val arrayList: ArrayList<Pair<String, Long>> = arrayListOf()
-
-        for (element in queryUsageState) {
-            val ai: ApplicationInfo? = try {
-                pm.getApplicationInfo(element.packageName, 0)
-            } catch (e: PackageManager.NameNotFoundException) {
-                null
+                if(time>0)
+                    startTaskNotification(row.third-TimeZone.getDefault().rawOffset,row.first,row.second)
             }
 
-            arrayList.add(
-                Pair(
-                    (if (ai != null) pm.getApplicationLabel(ai) else element.packageName) as String,
-                    element.totalTimeVisible
-                )
+        }
+
+        fun deleteTodayNotifications(){
+            val data=oh.getServiceTaskInfo(userId)
+            val now=Calendar.getInstance().timeInMillis+   TimeZone.getDefault().rawOffset
+
+            for(row in data){
+                val time=row.third-now
+                if(time>0)
+                    deleteTaskNotification(row.third-TimeZone.getDefault().rawOffset,row.first,row.second)
+            }
+
+        }
+
+        @RequiresApi(Q)
+        fun createDailyUsageStats(): ArrayList<Pair<String, Long>> {
+
+            val usageStasManager = getSystemService(USAGE_STATS_SERVICE) as UsageStatsManager
+            val pm = applicationContext.packageManager
+            val cal = Calendar.getInstance()
+            cal.set(Calendar.HOUR_OF_DAY, 0)
+            cal.set(Calendar.MINUTE, 0)
+            cal.set(Calendar.SECOND, 0)
+            cal.set(Calendar.MILLISECOND, 0)
+            val queryUsageState = usageStasManager.queryUsageStats(
+                UsageStatsManager.INTERVAL_BEST,
+                cal.timeInMillis,
+                System.currentTimeMillis()
             )
+            val arrayList: ArrayList<Pair<String, Long>> = arrayListOf()
 
-        }
-        val noSystem= arrayListOf<String>()
-        val pinfoList = pm.getInstalledPackages(0)
-        for (element in pinfoList){
-            val ai: ApplicationInfo? = try {
-                pm.getApplicationInfo(element.packageName, 0)
-            } catch (e: PackageManager.NameNotFoundException) {
-                null
-            }
-            var isSystem = false
-            isSystem = (element.applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM ) != 0
-            if (element.applicationInfo.sourceDir.startsWith("/data/app/") && isSystem)
-                isSystem = false
-            if(!isSystem) {
-                noSystem.add((if (ai != null) pm.getApplicationLabel(ai) else element.packageName) as String)
-            }
+            for (element in queryUsageState) {
+                val ai: ApplicationInfo? = try {
+                    pm.getApplicationInfo(element.packageName, 0)
+                } catch (e: PackageManager.NameNotFoundException) {
+                    null
+                }
 
+                arrayList.add(
+                    Pair(
+                        (if (ai != null) pm.getApplicationLabel(ai) else element.packageName) as String,
+                        element.totalTimeVisible
+                    )
+                )
+
+            }
+            val noSystem= arrayListOf<String>()
+            val pinfoList = pm.getInstalledPackages(0)
+            for (element in pinfoList){
+                val ai: ApplicationInfo? = try {
+                    pm.getApplicationInfo(element.packageName, 0)
+                } catch (e: PackageManager.NameNotFoundException) {
+                    null
+                }
+                var isSystem = false
+                isSystem = (element.applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM ) != 0
+                if (element.applicationInfo.sourceDir.startsWith("/data/app/") && isSystem)
+                    isSystem = false
+                if(!isSystem) {
+                    noSystem.add((if (ai != null) pm.getApplicationLabel(ai) else element.packageName) as String)
+                }
+
+            }
+            val filteredList=(arrayList.filter { it.second >= 0L } as ArrayList<Pair<String, Long>>).filter {
+                noSystem.contains(it.first)
+            } as ArrayList<Pair<String, Long>>
+            return  filteredList
         }
-        val filteredList=(arrayList.filter { it.second >= 0L } as ArrayList<Pair<String, Long>>).filter {
-            noSystem.contains(it.first)
-        } as ArrayList<Pair<String, Long>>
-        return  filteredList
     }
 
-}
 private fun createNotificationChannel(taskId: Int,taskName: String):NotificationChannel{
     val importance=NotificationManager.IMPORTANCE_HIGH
     val channel = NotificationChannel(taskId.toString(),taskName,importance).apply {

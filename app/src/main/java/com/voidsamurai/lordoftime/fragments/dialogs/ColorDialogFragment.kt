@@ -33,6 +33,7 @@ class ColorDialogFragment(
         const val EDIT=2
     }
 
+    private var colorchanged:Boolean=false
     private var newColor: Int? = null
     private lateinit var contentView: View
     private lateinit var colorPicker:ColorPickerView
@@ -85,37 +86,66 @@ class ColorDialogFragment(
 
                 setColorToImageView(contentView, R.id.last_color, R.drawable.ic_circle_l, it)
                 setColorToImageView(contentView, R.id.new_color, R.drawable.ic_circle_r, it)
+                colorchanged=true
             }
             lightSlider.setOnValueChangedListener {
                 setColorToImageView(contentView, R.id.last_color, R.drawable.ic_circle_l, colorPicker.selectedColor)
                 setColorToImageView(contentView, R.id.new_color, R.drawable.ic_circle_r, colorPicker.selectedColor)
-            }
-            builder.setPositiveButton(resources.getText(R.string.save)) { _, _ ->
-                (activity as MainActivity).getDBOpenHelper().addColorRow(getName(), getColor(),(activity as MainActivity).userId)
-                colors.add(getName(),getColor())
-                update()
+                colorchanged=true
 
             }
+            builder.setPositiveButton(resources.getText(R.string.save)) { _, _ -> }
         }
         else if(dialogType==2){
             newColor=null
             colorPicker.addOnColorSelectedListener {
                 newColor=it
                 setColorToImageView(contentView, R.id.new_color, R.drawable.ic_circle_r, it)
+                colorchanged=true
             }
             lightSlider.setOnValueChangedListener {
                 setColorToImageView(contentView, R.id.new_color, R.drawable.ic_circle_r, colorPicker.selectedColor)
+                colorchanged=true
             }
-            builder.setPositiveButton(resources.getText(R.string.save)) { _, _ ->
-                if (oldCategory != null && oldColor != null && newColor != null && newColor!=parseColor(oldColor)) {
-                    (activity as MainActivity).getDBOpenHelper()
-                        .editColorRow(oldCategory, getName(), getColor(),(activity as MainActivity).userId)
-                    colors.add(getName(),getColor())
-                    update()
+            builder.setPositiveButton(resources.getText(R.string.save)) { _, _ -> }
+
+        }
+        val build=builder.create()
+            build.setOnShowListener {
+            build.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener { view->
+                if(dialogType==1){
+                    if (getName().isEmpty() || (!colorchanged)){
+                        if (getName().isEmpty())
+                            showNotification(resources.getString(R.string.insert_name))
+                        if(!colorchanged)
+                            showNotification(resources.getString(R.string.select_color))
+                    }else {
+                        (activity as MainActivity).getDBOpenHelper()
+                            .addColorRow(getName(), getColor(), (activity as MainActivity).userId)
+                        colors.add(getName(), getColor())
+                        update()
+                        it.dismiss()
+                    }
+                }else{
+                    if (getName()==oldCategory && (!colorchanged)){
+                        showNotification(resources.getString(R.string.change_name_or_color))
+                    }else {
+                        val color=if(colorchanged)getColor()else oldColor
+                        val ret=(activity as MainActivity).getDBOpenHelper()
+                            .editColorRow(oldCategory, getName(), color,(activity as MainActivity).userId)
+                        if(ret!=-1){
+                        colors.add(getName(),getColor())
+                        update()
+                        it.dismiss()
+                        }else{
+                            showNotification(resources.getString(R.string.category_exist))
+                        }
+                    }
                 }
+
             }
         }
-        return builder.create()
+        return build
     }
 
     override fun onResume() {
@@ -146,6 +176,10 @@ class ColorDialogFragment(
 
     private fun update(){
         (context as MainActivity).getDataFromDB()
+    }
+    private fun showNotification(text:String){
+        Toast.makeText(context, text,
+            Toast.LENGTH_SHORT).show()
     }
 
     private fun getColoredCircle(id: Int, color: Int):Drawable{
