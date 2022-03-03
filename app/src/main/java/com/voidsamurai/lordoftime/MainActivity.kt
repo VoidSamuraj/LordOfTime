@@ -1294,7 +1294,7 @@ class MainActivity : AppCompatActivity() {
 
             alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC, timeToAlarm, pendingIntent)
 
-        } fun deleteTaskNotification(timeToAlarm:Long,taskId:Int,taskName:String){
+        } fun deleteTaskNotification(taskId: Int, taskName: String){
         val myIntent = Intent(this, TimeBroadcastReceiver::class.java)
         myIntent.putExtra("taskId",taskId).putExtra("taskName",taskName)
         val pendingIntent = PendingIntent.getBroadcast(
@@ -1335,7 +1335,7 @@ class MainActivity : AppCompatActivity() {
             for(row in data){
                 val time=row.third-now
                 if(time>0)
-                    deleteTaskNotification(row.third-TimeZone.getDefault().rawOffset,row.first,row.second)
+                    deleteTaskNotification(row.first, row.second)
             }
 
         }
