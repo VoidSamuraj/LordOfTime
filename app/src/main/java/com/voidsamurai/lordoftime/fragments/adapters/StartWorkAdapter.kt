@@ -3,14 +3,12 @@ package com.voidsamurai.lordoftime.fragments.adapters
 
 import android.content.Intent
 import android.graphics.Color
+import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
-import android.widget.LinearLayout
-import android.widget.TextSwitcher
-import android.widget.TextView
+import android.widget.*
 import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.Navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
@@ -20,16 +18,21 @@ import com.voidsamurai.lordoftime.MainActivity
 import com.voidsamurai.lordoftime.R
 import com.voidsamurai.lordoftime.bd.DataRowWithColor
 import com.voidsamurai.lordoftime.charts_and_views.ProgressCircle
+import com.voidsamurai.lordoftime.fragments.WorkingFragment
 import com.voidsamurai.lordoftime.fragments.WorkingFragmentDirections
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
+import java.lang.Error
 import java.util.*
+import kotlin.coroutines.coroutineContext
 
-class StartWorkAdapter(private val activity: MainActivity, private var toDoData: ArrayList<DataRowWithColor>, private val lifecycleOwner: LifecycleOwner):RecyclerView.Adapter<LinearViewHolder>() {
+class StartWorkAdapter(private val activity: MainActivity, private var toDoData: ArrayList<DataRowWithColor>, private val lifecycleOwner: LifecycleOwner,private val fragment:WorkingFragment):RecyclerView.Adapter<LinearViewHolder>() {
 
     private lateinit var layout: LinearLayout
     private var changeFromObserverToEndObserver = false
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LinearViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -79,6 +82,9 @@ class StartWorkAdapter(private val activity: MainActivity, private var toDoData:
             (todo - current.toFloat()) / 3600f
         else
             current.toFloat() / 3600f
+        Log.v("TIMENOWs",""+toDoData[position].id+" "+message+" "+current+" ")
+
+
         layout.findViewById<TextSwitcher>(R.id.progressPercent)
             .setText(
                 String.format(
@@ -92,6 +98,8 @@ class StartWorkAdapter(private val activity: MainActivity, private var toDoData:
         layout.findViewById<ImageButton>(R.id.imageButton).setOnClickListener {
             layout = holder.layout
             activity.currentTaskId = toDoData[position].id
+
+            fragment.isFromOtherFragment=false
 
             if (activity.isTaskStarted) {
 
@@ -109,25 +117,35 @@ class StartWorkAdapter(private val activity: MainActivity, private var toDoData:
                     activity.lastTaskId = activity.currentTaskId
                     activity.lastButton!!.setImageResource(R.drawable.ic_baseline_play_arrow_24)
                     activity.lastButton = layout.findViewById(R.id.imageButton)
+                    CoroutineScope(Dispatchers.Main).run {
                     notifyItemChanged(pos)
                     notifyItemChanged(position)
+                    }
                     setTime(0)
-                    activity.setStartTime(Calendar.getInstance(TimeZone.getTimeZone("UTC")).time.time)
+
+                    activity.setLastTimeUpdated(Calendar.getInstance(TimeZone.getTimeZone("UTC")).timeInMillis)
+                    activity.setTimeStarted(Calendar.getInstance(TimeZone.getTimeZone("UTC")).timeInMillis)
                     setObserver(layout, todo, current, position, activity.currentTaskId!!)
 
                 } else {
                     updateDB(position, activity.currentTaskId!!)
+                    activity.setLastTimeUpdated(Calendar.getInstance(TimeZone.getTimeZone("UTC")).timeInMillis)
                     deleteObservers()
                     setIsRunning(false)
                     activity.getDataFromDB()
-                    notifyItemChanged(position)
+                    CoroutineScope(Dispatchers.Main).run {
+                        notifyItemChanged(position)
+                    }
                     setTime(0)
 
 
                 }
+                activity.setIsRunningService(false)
             } else {
-                activity.setStartTime(Calendar.getInstance(TimeZone.getTimeZone("UTC")).time.time)
+                activity.setLastTimeUpdated(Calendar.getInstance(TimeZone.getTimeZone("UTC")).timeInMillis)
+                activity.setTimeStarted(Calendar.getInstance(TimeZone.getTimeZone("UTC")).timeInMillis)
                 setTime(0)
+
                 setIsRunning(true)
                 activity.setCurrentTaskId(toDoData[position].id)
                 activity.setTaskCategory(toDoData[position].category)
@@ -145,36 +163,36 @@ class StartWorkAdapter(private val activity: MainActivity, private var toDoData:
             }
         }
 
-        fun setEndStyle() {
-            layout.findViewById<TextView>(R.id.progress_label).setText(R.string.ya_working)
-            layout.findViewById<ImageButton>(R.id.imageButton)
-                .setColorFilter(Color.parseColor("#D1A441"))
 
-        }
 
+        //initialize view
         if (activity.isTaskStarted && position == activity.lastTaskPositioon) {
-            val currentFull = activity.getCurrentWorkingTime().value as Int + current
+            Log.v("CURRENTTIMEE",""+activity.getCurrentWorkingTime().value+" "+((Calendar.getInstance().timeInMillis-activity.getLastTimeUpdated())/1000)+" "+current)
+            val currentFull = (((Calendar.getInstance().timeInMillis-activity.getLastTimeUpdated())/1000)/*activity.getCurrentWorkingTime().value as Int*/ + current).toInt()
+            if (activity.getCurrentWorkingTime().hasObservers())
+                activity.getCurrentWorkingTime().removeObservers(lifecycleOwner)
+            setIsRunning(true)
+
             if ((todo - currentFull) > 0) {
-                setIsRunning(true)
                 layout.findViewById<TextView>(R.id.progress_label).setText(R.string.left)
-                if (!activity.getCurrentWorkingTime().hasObservers())
-                    activity.getCurrentWorkingTime().removeObservers(lifecycleOwner)
                 setObserver(
-                    layout, todo, currentFull, position, activity.currentTaskId!!
+                    layout, todo, current, position, activity.currentTaskId!!
                 )
             } else {
-                setIsRunning(true)
                 setEndStyle()
-                if (!activity.getCurrentWorkingTime().hasObservers())
-                    activity.getCurrentWorkingTime().removeObservers(lifecycleOwner)
-                setEndedObserver(position, layout, currentFull, !changeFromObserverToEndObserver)
-                changeFromObserverToEndObserver = false
+                setEndedObserver(position, layout, current, true)
+              //  changeFromObserverToEndObserver = false
             }
         } else if (todo - current <= 0)
             setEndStyle()
 
     }
+    fun setEndStyle() {
+        layout.findViewById<TextView>(R.id.progress_label).setText(R.string.ya_working)
+        layout.findViewById<ImageButton>(R.id.imageButton)
+            .setColorFilter(Color.parseColor("#D1A441"))
 
+    }
     fun editItem(position: Int) {
         val action: WorkingFragmentDirections.ActionWorkingFragmentToEditTaskSelected =
             WorkingFragmentDirections.actionWorkingFragmentToEditTaskSelected()
@@ -185,8 +203,11 @@ class StartWorkAdapter(private val activity: MainActivity, private var toDoData:
     fun updateDB(position: Int, id: Int) {
         if (activity.getCurrentWorkingTime().hasObservers())
             deleteObservers()
-        val time =
-            activity.getCurrentWorkingTime().value!! + toDoData[position].currentWorkingTime.toInt()
+        val now=Calendar.getInstance().timeInMillis
+        val nowDone=((now-activity.getLastTimeUpdated())/1000).toInt()
+        activity.setLastTimeUpdated(now)
+        Log.v("CURRENTTIMEE",""+nowDone+" "+toDoData[position].currentWorkingTime.toInt())
+        val time =nowDone+/* activity.getCurrentWorkingTime().value!! +*/ toDoData[position].currentWorkingTime.toInt()
         if (time != 0) {
             val oh = activity.getDBOpenHelper()
             oh.editTaskRow(
@@ -197,24 +218,23 @@ class StartWorkAdapter(private val activity: MainActivity, private var toDoData:
                 id = id,
                 category = toDoData[position].category,
                 name = toDoData[position].name,
-                dateTime = toDoData[position].date.time.time,
+                dateTime = toDoData[position].date.timeInMillis,
                 workingTime = toDoData[position].workingTime.toInt(),
-                toDoData[position].priority,
-                time,
-                toDoData[position].finished
+                priority = toDoData[position].priority,
+                currentWorkingTime = time,
+                finished = toDoData[position].finished
             )
-            activity.getCurrentWorkingTime().value?.let {
                 oh.addOldstatRow(
-                    Calendar.getInstance(TimeZone.getTimeZone("UTC")).time.time, it,
-                    toDoData[position].category,
-                    activity.userId
+                    Calendar.getInstance(TimeZone.getTimeZone("UTC")).timeInMillis, //date
+                    nowDone,  //it                                                           //duration
+                    toDoData[position].category,                                    //category
+                    activity.userId                                                 //uid
                 )
                 activity.oldTasks.add(
-                    dateTime = Calendar.getInstance(TimeZone.getTimeZone("UTC")).time.time,
-                    currentWorkingTime = it,
+                    dateTime = Calendar.getInstance(TimeZone.getTimeZone("UTC")).timeInMillis,
+                    currentWorkingTime = nowDone,    //it
                     category = toDoData[position].category
                 )
-            }
         }
 
         toDoData[position].currentWorkingTime = time.toFloat()
@@ -222,17 +242,27 @@ class StartWorkAdapter(private val activity: MainActivity, private var toDoData:
     }
 
     fun setObserver(layout: View, todo: Float, current: Int, position: Int, id: Int) {
-        if (activity.getCurrentWorkingTime().hasObservers())
-            deleteObservers()
-        setTime(0)
-        setIsRunning(true)
-        startIntent()
+        Log.v("observing","c "+current+" t "+todo)
+       // val time= if(activity.getIsRunningTask())((Calendar.getInstance().timeInMillis-activity/*.getTimeStarted()*/.getLastTimeUpdated())/1000).toInt() else 0
 
-        activity.getCurrentWorkingTime().observe(lifecycleOwner) {
-            val curr = it.toFloat() + current
+
+        //setTime(time)
+        setTime(0)
+
+        if(!activity.getIsRunningService()) {
+            if (activity.getCurrentWorkingTime().hasObservers())
+                deleteObservers()
+            startIntent()
+            activity.setIsRunningService(true)
+        }
+        setIsRunning(true)
+
+        activity.getCurrentWorkingTime().observe(lifecycleOwner) {time->
+            val curr = time.toFloat() + current
             var left = (todo - curr)
+            Log.v("TIMENOW",""+toDoData[position].id+" "+time+" "+current+" "+curr+" "+(left/3600))
             if (left > 0) {
-                left /= 3600
+                left /= 3600f
 
                 CoroutineScope(Dispatchers.Main).launch {
                     layout.findViewById<TextSwitcher>(R.id.progressPercent)
@@ -241,64 +271,102 @@ class StartWorkAdapter(private val activity: MainActivity, private var toDoData:
                         .fillData(curr, todo)
                 }
             } else {
+
                 updateDB(position, id)
-                deleteObservers()
-                changeFromObserverToEndObserver = true
-                setTime(0)
-                notifyItemChanged(position)
+                deleteObservers(false)
+                changeFromObserverToEndObserver = false
+                //setTime(0)
+               /* CoroutineScope(Dispatchers.Main).run {
+                    notifyItemChanged(position)
+
+                }*/
+                setIsRunning(true)
+                setEndStyle()
+
+                if (activity.getCurrentWorkingTime().hasObservers())
+                    activity.getCurrentWorkingTime().removeObservers(lifecycleOwner)
+                setEndedObserver(position, layout, time, !changeFromObserverToEndObserver)
+                changeFromObserverToEndObserver = false
+
             }
         }
     }
 
-    fun deleteObservers(stopService: Boolean = true) {
 
-        if (stopService) {
-            val intent = startIntent()
-            activity.stopService(intent)
-            activity.notificationService.removeNotification()
-        }
-        activity.getCurrentWorkingTime().removeObservers(lifecycleOwner)
-    }
     companion object{
         fun deleteObservers(activity: MainActivity, lifecycleOwner: LifecycleOwner) {
+            Log.v("observing","d")
+
             val intent = startIntent(activity)
             activity.stopService(intent)
+            activity.setIsRunningService(false)
             activity.notificationService.removeNotification()
             activity.getCurrentWorkingTime().removeObservers(lifecycleOwner)
+            activity.setIsRunningTask(false)
+            activity.notificationService.setIsRunning(false)
+            activity.isTaskStarted=false
+
         }
 
         private fun startIntent(activity: MainActivity): Intent =
             Intent(activity, BackgroundTimeService::class.java).also {
                 activity.startService(it)
+                activity.stopService(it)
+                activity.startService(it)
             }
+    }
+    fun deleteObservers(stopService: Boolean = true) {
+        Log.v("observing","d")
+
+        if (stopService) {
+            val intent = startIntent()
+            setIsRunning(false)
+            activity.stopService(intent)
+            activity.setIsRunningService(false)
+            activity.notificationService.removeNotification()
+        }
+        activity.getCurrentWorkingTime().removeObservers(lifecycleOwner)
     }
     private fun startIntent(): Intent =
         Intent(activity, BackgroundTimeService::class.java).also {
+           // it
+            activity.startService(it)
+            activity.stopService(it)
             activity.startService(it)
         }
-
 
     /**
      * Observer witch completed task style
      *
      * @param cleanStart - if true starting from 0, if false starts from currentTime
      * */
-    fun setEndedObserver(position: Int,layout:View, currentTime:Int, cleanStart:Boolean=false){
+    fun setEndedObserver(position: Int,layout:View, currentTime:Int, cleanStart:Boolean=false) {
+        Log.v("observing","e")
 
         layout.findViewById<ProgressCircle>(R.id.progressCircle).fillData(1f, 1f)
-        if(activity.getCurrentWorkingTime().hasObservers())
-            deleteObservers()
 
-        val t=if(cleanStart)
+
+
+        val t = if (cleanStart)
             0
         else {
-            activity.startFinishedNotification(toDoData[position].id,toDoData[position].name)
+            activity.startFinishedNotification(toDoData[position].id, toDoData[position].name)
             currentTime
         }
-
         setTime(t)
+        if(!fragment.isFromOtherFragment)
+        {
+        if (activity.getCurrentWorkingTime().hasObservers())
+            deleteObservers()
+
+
+        if(!activity.getIsRunningService()) {
+            startIntent()
+            activity.setIsRunningService(true)
+        }
         setIsRunning(true)
-        startIntent()
+
+    }
         activity.getCurrentWorkingTime().observe(lifecycleOwner) {
             val curr = (it.toFloat() + currentTime) / 3600
             CoroutineScope(Dispatchers.Main).launch {
@@ -306,7 +374,6 @@ class StartWorkAdapter(private val activity: MainActivity, private var toDoData:
                     .setCurrentText(String.format("%2.2f", curr) + "h")
             }
         }
-
     }
 
 

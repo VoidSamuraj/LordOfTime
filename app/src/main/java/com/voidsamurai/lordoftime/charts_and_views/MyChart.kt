@@ -60,9 +60,9 @@ class MyChart(context: Context?, attributeSet: AttributeSet ):
                 }
                 if(maxVal==null||dur>maxVal!!.toFloat())
                     maxVal=-1
-                dur =0.0f
+              //  dur =0.0f
                 for (item in it){
-                    dur+=item.second
+                  //  dur+=item.second
                     width=scale*item.second
                     drawArc1(canvas!!,startAngle,width,item.first,item.second)
                     startAngle+=width
@@ -75,27 +75,23 @@ class MyChart(context: Context?, attributeSet: AttributeSet ):
         paint.style=Paint.Style.FILL
         val duration:Float
         if(data!=null&&canvas!=null){
+            paint.setShadowLayer(15f,0f,0f,Color.BLACK)
+            drawArc1(canvas,0.0f,360.0f,fillColorDefault?:Color.WHITE)
+            paint.setShadowLayer(0f,0f,0f,Color.BLACK)
+
             if(maxVal!=null&&maxVal!=-1){
-                paint.setShadowLayer(15f,0f,0f,Color.BLACK)
-                drawArc1(canvas,0.0f,360.0f,fillColorDefault?:Color.WHITE)
-                paint.setShadowLayer(0f,0f,0f,Color.BLACK)
                 val scale:Float = 360.0f/ maxVal!!
                 duration=fillRound(scale)
 
 
             }else{
-                paint.setShadowLayer(15f,0f,0f,Color.BLACK)
-                drawArc1(canvas,0.0f,360.0f,fillColorDefault?:Color.WHITE)
-                paint.setShadowLayer(0f,0f,0f,Color.BLACK)
                 var dur =0.0f
                 for (item in data!!)
                     dur += item.second
-
                 val scale:Float = 360.0f/dur
-
                 duration=fillRound(scale)
             }
-
+            Log.v("DURATIONCH",""+duration+" "+(duration%1)*60)
             paint.setShadowLayer(8f,0f,0f,Color.BLACK)
             paint.textAlign=Paint.Align.CENTER
             paint.style= Paint.Style.FILL
@@ -104,7 +100,11 @@ class MyChart(context: Context?, attributeSet: AttributeSet ):
             paint.setShadowLayer(0f,0f,0f,Color.BLACK)
             paint.color = Color.BLACK
             paint.textSize=20f
-            val text:String=String.format("%02d",duration.toInt())+":"+String.format("%02d",(duration%1*60).toInt())+"h"
+            val hours=duration.toInt()
+           // val hours=duration.toInt()//+((duration%1*100).toInt()/60)
+            val minutes=((duration*60f)%60).toInt()//+((duration%1*100).toInt()/60)
+          //  val minutes=(duration%1f*60).toInt()
+            val text:String=String.format("%02d",hours)+"h "+String.format("%02d",minutes)+"m"
             canvas.drawText(text,width/2f , height/2.0f- ((paint.descent() + paint.ascent()) / 2),paint)
 
         }

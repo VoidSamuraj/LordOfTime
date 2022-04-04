@@ -28,12 +28,13 @@ import kotlinx.coroutines.*
 
 class WorkingFragment : Fragment() {
 
-    private val resetReceiver = ResetBroadcast()
+    //  private val resetReceiver = ResetBroadcast()
     private var _workingFragmentBinding : FragmentWorkingBinding?=null
     private var fabVisible=true
     val workingFragmentBinding get() =_workingFragmentBinding!!
     private var currentOrder=Order.ASC
     private var currentSortBy=SortBy.DATE
+    var isFromOtherFragment = true
     var currentArray:ArrayList<DataRowWithColor> = ArrayList()
 
     enum class Order(order:Int){
@@ -135,6 +136,7 @@ class WorkingFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        isFromOtherFragment = true
         (activity as MainActivity).getDataFromDB()
         val (order,sort)=(activity as MainActivity).getWorkSorting()
         currentOrder= Order.valueOf(order)
@@ -155,13 +157,7 @@ class WorkingFragment : Fragment() {
                 currentArray.sortByDescending { dataRowWithColor -> dataRowWithColor.date }
 
             //   (activity as MainActivity).getQueryArrayByDate().observe(viewLifecycleOwner, {
-            workingFragmentBinding.taskList.adapter = StartWorkAdapter(
-                requireActivity() as MainActivity,
-                currentArray,
-                lifecycleOwner = viewLifecycleOwner
-            )
-            workingFragmentBinding.taskList.layoutManager =
-                LinearLayoutManager(requireContext())
+
 
             //  })
         }else{
@@ -172,14 +168,16 @@ class WorkingFragment : Fragment() {
                 currentArray.sortByDescending { dataRowWithColor -> dataRowWithColor.priority }
 
             // (activity as MainActivity).getQueryArrayByPriority().observe(viewLifecycleOwner,{
-            workingFragmentBinding.taskList.let{
-                it.adapter=StartWorkAdapter(requireActivity() as MainActivity,currentArray,lifecycleOwner = viewLifecycleOwner)
-                it.layoutManager=LinearLayoutManager(requireContext())
-                it.isNestedScrollingEnabled = false
-            }
 
+        }
+        workingFragmentBinding.taskList.let{
+            it.adapter=StartWorkAdapter(requireActivity() as MainActivity,currentArray,lifecycleOwner = viewLifecycleOwner,this)
+            it.layoutManager=LinearLayoutManager(requireContext())
+            it.isNestedScrollingEnabled = false
             //    })
         }
+
+
         val touchListner=ItemTouchHelper(swipeGesture)
         touchListner.attachToRecyclerView(workingFragmentBinding.taskList)
 
@@ -187,13 +185,13 @@ class WorkingFragment : Fragment() {
     private fun sortList(){
         if(currentSortBy==SortBy.DATE) {
             if (currentOrder == Order.ASC)
-               currentArray.sortBy { dataRowWithColor -> dataRowWithColor.date }
+                currentArray.sortBy { dataRowWithColor -> dataRowWithColor.date }
             else
                 currentArray.sortByDescending { dataRowWithColor -> dataRowWithColor.date }
         }
         else{
             if(currentOrder==Order.ASC)
-               currentArray.sortBy { dataRowWithColor ->dataRowWithColor.priority  }
+                currentArray.sortBy { dataRowWithColor ->dataRowWithColor.priority  }
             else
                 currentArray.sortByDescending { dataRowWithColor ->dataRowWithColor.priority  }
 
@@ -209,10 +207,10 @@ class WorkingFragment : Fragment() {
         else
             menu.findItem(R.id.order).icon=resources.getDrawable(R.drawable.ic_baseline_arrow_drop_down_24,null)
 
-            menu.findItem(R.id.category).title=resources.getString(when(currentSortBy){
-                SortBy.DATE->R.string.date
-                else ->R.string.priority
-            })
+        menu.findItem(R.id.category).title=resources.getString(when(currentSortBy){
+            SortBy.DATE->R.string.date
+            else ->R.string.priority
+        })
 
         super.onCreateOptionsMenu(menu, inflater)
     }
@@ -255,15 +253,15 @@ class WorkingFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-       // deleteIcon=AppCompatResources.getDrawable(requireContext(),R.drawable.ic_delete)
+        // deleteIcon=AppCompatResources.getDrawable(requireContext(),R.drawable.ic_delete)
         editIcon=AppCompatResources.getDrawable(requireContext(),R.drawable.ic_edit)
-        val iFilter=IntentFilter("RESET_COUNTER")
-        requireActivity().registerReceiver(resetReceiver,iFilter)
-        workingFragmentBinding.taskList.let{
-            it.adapter?.notifyDataSetChanged()
-            it.setHasFixedSize(true)
-            it.setItemViewCacheSize(10)
-        }
+        /* val iFilter=IntentFilter("RESET_COUNTER")
+         requireActivity().registerReceiver(resetReceiver,iFilter)
+         workingFragmentBinding.taskList.let{
+             it.adapter?.notifyDataSetChanged()
+             it.setHasFixedSize(true)
+             it.setItemViewCacheSize(10)
+         }*/
 
         workingFragmentBinding.add.setOnClickListener {
             it.findNavController().navigate(R.id.action_workingFragment_to_editTaskSelected)
@@ -275,8 +273,8 @@ class WorkingFragment : Fragment() {
                 super.onScrolled(recyclerView, dx, dy)
                 workingFragmentBinding.add.let{
                     if(dy>0&&fabVisible){
-                           it.animate().alpha(0f).setDuration(500).withEndAction { it.hide() }. start()
-                    fabVisible=false
+                        it.animate().alpha(0f).setDuration(500).withEndAction { it.hide() }. start()
+                        fabVisible=false
                     }
                     else if(dy<0&&(!fabVisible)) {
                         it.animate().alpha(1f).setDuration(500).withEndAction { it.show() }.start()
@@ -288,11 +286,25 @@ class WorkingFragment : Fragment() {
         })
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        (activity as MainActivity).getDataFromDB()
+    /**
+     * Called when the Fragment is no longer started.  This is generally
+     * tied to [Activity.onStop] of the containing
+     * Activity's lifecycle.
+     */
+    override fun onStop(){
+    (activity as MainActivity).getCurrentWorkingTime().removeObservers(viewLifecycleOwner)
+        super.onStop()
     }
 
+    override fun onDestroyView() {
+        (activity as MainActivity).let{
+            it.getDataFromDB()
+            it.getCurrentWorkingTime().removeObservers(viewLifecycleOwner)
+        }
+        super.onDestroyView()
+
+    }
+/*
     inner class ResetBroadcast : BroadcastReceiver(){
 
         override fun onReceive(context: Context?, intent: Intent?) {
@@ -307,6 +319,6 @@ class WorkingFragment : Fragment() {
 
         }
 
-    }
+    }*/
 
 }

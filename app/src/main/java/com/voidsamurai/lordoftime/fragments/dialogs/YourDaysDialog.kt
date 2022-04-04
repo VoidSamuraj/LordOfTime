@@ -96,7 +96,7 @@ class YourDaysDialog : DialogFragment() ,DatePickerDialog.OnDateSetListener {
     }
 
     override fun onDateSet(view: DatePicker?, year: Int, month: Int, dayOfMonth: Int) {
-     birthDate.setText("${year}/${month}/${dayOfMonth}")
+     birthDate.setText("${year}/${month+1}/${dayOfMonth}")
     }
 
 

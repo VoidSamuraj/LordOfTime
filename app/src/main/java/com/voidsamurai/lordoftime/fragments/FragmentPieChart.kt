@@ -64,9 +64,9 @@ class FragmentPieChart : Fragment() {
         var sum=0
         for(row in tab) {
             if(chartMap.containsKey(row.t3))
-                chartMap.getValue(row.t3).let {  chartMap.replace(row.t3, Pair(it.first,it.second+row.t2.toFloat()/3600f))}
+                chartMap.getValue(row.t3).let {  chartMap.replace(row.t3, Pair(it.first,it.second+row.t2.toFloat()))}
             else
-                chartMap[row.t3] = Pair(Color.parseColor(row.t4),row.t2.toFloat()/3600f)
+                chartMap[row.t3] = Pair(Color.parseColor(row.t4),row.t2.toFloat())
             legendMap.add(Pair(row.t3,row.t4))
             sum+=row.t2
 
@@ -89,6 +89,10 @@ class FragmentPieChart : Fragment() {
            binding.none.visibility=View.GONE
            binding.chartDescription.visibility = View.VISIBLE
            binding.myChart.visibility = View.VISIBLE
+
+           chartMap.forEach { entry: Map.Entry<String, Pair<Int, Float>> ->
+               chartMap.replace(entry.key, Pair(entry.value.first,entry.value.second/3600f))
+           }
 
 
            binding.myChart.fillData(

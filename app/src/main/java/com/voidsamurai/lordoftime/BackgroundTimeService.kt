@@ -7,6 +7,7 @@ import android.content.Intent
 import android.os.IBinder
 import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
+import java.util.*
 
 
 class BackgroundTimeService :Service() {
@@ -28,23 +29,34 @@ class BackgroundTimeService :Service() {
     override fun onCreate() {
 
         notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        createNotificationChannel("Opis")
+        createNotificationChannel("LOT")
         super.onCreate()
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Thread{
             displayNotification()
+            intent?.let{
 
+                startTime=it.getIntExtra("time", 0)
+             }
             //synchronize witch activity counter
             val resetIntent=Intent("RESET_COUNTER")
             resetIntent.putExtra("time",startTime)
             sendBroadcast(resetIntent)
-
+            var secondsCount = startTime // Calendar.getInstance().timeInMillis
+            val startTimeCal= (Calendar.getInstance().timeInMillis/1000).toInt()
+            var counter=0
             do {
+                if(counter%300==0){
+                    secondsCount=(Calendar.getInstance().timeInMillis/1000).toInt()-startTimeCal
+                    counter=0
+                }
+                counter++
+                secondsCount++
                 startTime++
                 Thread.sleep(1000)
-                updateNotification(startTime/3600,startTime/60%60,startTime%60)
+                updateNotification(secondsCount/3600,secondsCount/60%60,secondsCount%60)
             }while (this.isRunning)
 
             this.startTime=0

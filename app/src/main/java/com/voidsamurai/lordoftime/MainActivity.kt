@@ -212,6 +212,12 @@ class MainActivity : AppCompatActivity() {
         fun getCurrentTaskId():Int{
             return getSharedPreferences().getInt("TASK_ID",-1)
         }
+        fun setIsRunningService(isRunning:Boolean){
+            getSharedPreferences().edit().putBoolean("IS_SERVICE_RUNNING",isRunning).apply()
+        }
+        fun getIsRunningService():Boolean{
+            return getSharedPreferences().getBoolean("IS_SERVICE_RUNNING",false)
+        }
         fun setIsShowingNotifications(isShowing: Boolean){
             getSharedPreferences().edit().putBoolean("IS_SHOWING_NOTIFICATIONS",isShowing).apply()
         }
@@ -245,10 +251,17 @@ class MainActivity : AppCompatActivity() {
         fun getIsUserChanged():Boolean{
             return getSharedPreferences().getBoolean("IS_USER_CHANGED",false)
         }
-        fun setStartTime(startTime: Long){
+
+        fun setTimeStarted(startTime: Long){
+            getSharedPreferences().edit().putLong("TIME_TO_UPDATE",startTime).apply()
+        }
+        fun getTimeStarted():Long{
+            return getSharedPreferences().getLong("TIME_TO_UPDATE",0)
+        }
+        fun setLastTimeUpdated(startTime: Long){
             getSharedPreferences().edit().putLong("START_TIME",startTime).apply()
         }
-        fun getStartTime():Long{
+        fun getLastTimeUpdated():Long{
             return getSharedPreferences().getLong("START_TIME",Calendar.getInstance(TimeZone.getTimeZone("UTC")).time.time)
         }
         fun setYourTime(startTime: Long){
@@ -607,7 +620,8 @@ class MainActivity : AppCompatActivity() {
             oh = LOTDatabaseHelper(this)
             db = oh.readableDatabase
 
-            val timeToadd=Calendar.getInstance(TimeZone.getTimeZone("UTC")).timeInMillis-getStartTime()
+            val now=Calendar.getInstance(TimeZone.getTimeZone("UTC")).timeInMillis
+            val timeToadd=now-getLastTimeUpdated()
 
             if(getIsRunningTask()){
                 if(getCurrentTaskId()!=-1&&timeToadd!=0L){
@@ -616,10 +630,11 @@ class MainActivity : AppCompatActivity() {
                     val row=oh.getTaskRow(currentTaskId!!,userId)
                     currentTaskCategory=getTaskCategory()
                     val wt=(timeToadd/1000).toInt()
-                    workingTime.value=wt
+                    workingTime.value=((now-getTimeStarted())/1000).toInt() //=wt
                     // oh.addOldstatRow(getStartTime(), workingTime.value!!,getCurrentTaskId())
-                    setStartTime(Calendar.getInstance(TimeZone.getTimeZone("UTC")).timeInMillis)
-                    Log.v("TIME",""+wt)
+                    setLastTimeUpdated(Calendar.getInstance(TimeZone.getTimeZone("UTC")).timeInMillis)
+                    //setTimeStarted(Calendar.getInstance(TimeZone.getTimeZone("UTC")).timeInMillis)
+                 //   Log.v("TIME",""+wt)
 
                     row?.currentWorkingTime?.let {
                         updateOldstats(wt+(it*3600).toInt(),wt)
@@ -657,9 +672,24 @@ class MainActivity : AppCompatActivity() {
             setupActionBarWithNavController(navController, drawerLayout)
 
             CoroutineScope(Dispatchers.Default).launch {
+                var olddate=Calendar.getInstance().timeInMillis
+                if(getIsRunningTask()) {
+                    olddate = getTimeStarted()
+                    Log.v("ZACZĘTO",""+olddate)
+                }
+                Log.v("STARTTTNOW",""+Calendar.getInstance().timeInMillis)
+                var counter=0
                 while (true) {
                     delay(1000)
-                    getCurrentWorkingTime().postValue( getCurrentWorkingTime().value!!.inc())
+                    if(counter%300==0){
+                        val now=Calendar.getInstance().timeInMillis
+                        val dif=(now-olddate)/1000
+                        workingTime.postValue( workingTime.value?:0 + (dif-counter).toInt())
+                        counter=0
+                        olddate=now
+                    }else
+                        workingTime.postValue( workingTime.value!!.inc())
+                    counter++
                 }}
 
             inflater = LayoutInflater.from(this)
@@ -1057,6 +1087,7 @@ class MainActivity : AppCompatActivity() {
                     map = map.filterKeys { calendar ->
                         calendar.get(Calendar.DAY_OF_MONTH) == calC.get(Calendar.DAY_OF_MONTH)
                     }.toMutableMap()
+
                 for (element in map)
                     list.add(
                         NTuple4(
@@ -1066,6 +1097,7 @@ class MainActivity : AppCompatActivity() {
                             element.value.third
                         )
                     )
+
 
                 return list
             }

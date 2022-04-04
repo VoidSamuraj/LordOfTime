@@ -55,8 +55,8 @@ class HomeFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
-        hiddenWidth=resources.getDimension(R.dimen.button_group_width).toInt()
-        cornerWidth =resources.getDimension(R.dimen.button_corners).toInt()
+        hiddenWidth = resources.getDimension(R.dimen.button_group_width).toInt()
+        cornerWidth = resources.getDimension(R.dimen.button_corners).toInt()
 
         activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
 
@@ -87,9 +87,12 @@ class HomeFragment : Fragment() {
         homeFragmentBinding.switcherSeconds1.text = "0"
         homeFragmentBinding.switcherSeconds2.text = "0"
 
-        val updateIntervalSeconds=1*30
-        if((activity as MainActivity).isTaskStarted)
-            (activity as MainActivity).getCurrentWorkingTime().observe(viewLifecycleOwner) {
+        val updateIntervalSeconds = 1 * 30
+
+        if ((activity as MainActivity).isTaskStarted){
+
+            (activity as MainActivity).getCurrentWorkingTime().observe(viewLifecycleOwner) {timenow->
+                val it=((Calendar.getInstance().timeInMillis-(activity as MainActivity).getTimeStarted())/1000).toInt()
                 var currentFormatedTime = ((it - (it % 3600)) / 3600)
                 homeFragmentBinding.switcherHour.text = currentFormatedTime.toString()
                 hours = currentFormatedTime
@@ -105,8 +108,8 @@ class HomeFragment : Fragment() {
 
                 if (it % updateIntervalSeconds == 0) {
                     val wt =
-                        ((Calendar.getInstance(TimeZone.getTimeZone("UTC")).timeInMillis - (activity as MainActivity).getStartTime()) / 1000).toInt()
-                    (activity as MainActivity).setStartTime(
+                        ((Calendar.getInstance(TimeZone.getTimeZone("UTC")).timeInMillis - (activity as MainActivity).getLastTimeUpdated()) / 1000).toInt()
+                    (activity as MainActivity).setLastTimeUpdated(
                         Calendar.getInstance(
                             TimeZone.getTimeZone(
                                 "UTC"
@@ -131,7 +134,7 @@ class HomeFragment : Fragment() {
                 }
                 seconds = currentFormatedTime
             }
-
+            }
         enterTransition=null
 
     }
