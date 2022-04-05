@@ -102,7 +102,8 @@ class StartWorkAdapter(private val activity: MainActivity, private var toDoData:
 
                 if (pos != null && pos != position) {
 
-                    updateDB(pos, activity.lastTaskId!!)
+                    if(activity.lastTaskId!=null&&activity.getDBOpenHelper().getTaskRow(activity.lastTaskId!!,activity.userId) != null)
+                        updateDB(pos, activity.lastTaskId!!)
                     deleteObservers()
                     activity.setCurrentTaskId(toDoData[position].id)
                     activity.setTaskCategory(toDoData[position].category)

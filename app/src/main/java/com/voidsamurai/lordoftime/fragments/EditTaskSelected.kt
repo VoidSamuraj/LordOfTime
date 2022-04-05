@@ -70,6 +70,9 @@ class EditTaskSelected : Fragment() ,DatePickerDialog.OnDateSetListener,TimePick
      //       Log.v("POSITION",""+lastElementPos+" "+adapter.count)
             lastElementCategory=adapter.getItem(lastElementPos)!!.first
 
+            if(data!!.id==(activity as MainActivity).currentTaskId)
+                binding.deleteEditButton.isEnabled=false
+
             binding.checkCategory.setSelection(lastElementPos)
             binding.priorityEdit.setText(data!!.priority.toString())
             binding.dateEdit.setText(dateFormat.format(data!!.date.time))

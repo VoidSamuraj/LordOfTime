@@ -108,6 +108,8 @@ class EditTaskDialog(
                 cal.add(Calendar.MINUTE,((baseTime%1)*60).toInt())
                 if((activity as MainActivity).getDBOpenHelper().getRutinesArray(id).size>0)
                     isRutineChecked.value=true
+                if(dataRow!!.id==(activity as MainActivity).currentTaskId)
+                    deleteButton.isEnabled=false
 
 
                 endHourCalendar=cal.clone() as Calendar
