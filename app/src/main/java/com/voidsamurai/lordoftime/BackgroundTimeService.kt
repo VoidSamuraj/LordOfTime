@@ -109,11 +109,6 @@ class BackgroundTimeService :Service() {
         startForeground(WIDGET_ID.toInt(), notification)
     }
 
-    fun removeNotification(){
-        this.isRunning=false
-        this.startTime=0
-    }
-
     override fun onBind(intent: Intent?): IBinder? =null
 
 }

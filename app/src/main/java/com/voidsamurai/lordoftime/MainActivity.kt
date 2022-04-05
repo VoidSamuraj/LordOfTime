@@ -78,7 +78,6 @@ class MainActivity : AppCompatActivity() {
         const val isMondayFirstDay=true
         const val SHARED_PREFERENCES:String="sharedPreferences"
         fun String.formatToFloat():Float{
-            // return
             val str=toString()
                 .replace(',','.')
                 .replace('-','.')
@@ -107,7 +106,6 @@ class MainActivity : AppCompatActivity() {
     var showOutdated:Boolean =true
     var notificationService:BackgroundTimeService=BackgroundTimeService()
     var isTaskStarted:Boolean=false
-    //var isFromEditFragment:Boolean=false
     var isFromWorkFragment:Boolean=false
     var isFromCalendarFragment:Boolean=false
     var currentTaskId:Int?=null
@@ -631,11 +629,7 @@ class MainActivity : AppCompatActivity() {
                     currentTaskCategory=getTaskCategory()
                     val wt=(timeToadd/1000).toInt()
                     workingTime.value=((now-getTimeStarted())/1000).toInt() //=wt
-                    // oh.addOldstatRow(getStartTime(), workingTime.value!!,getCurrentTaskId())
                     setLastTimeUpdated(Calendar.getInstance(TimeZone.getTimeZone("UTC")).timeInMillis)
-                    //setTimeStarted(Calendar.getInstance(TimeZone.getTimeZone("UTC")).timeInMillis)
-                 //   Log.v("TIME",""+wt)
-
                     row?.currentWorkingTime?.let {
                         updateOldstats(wt+(it*3600).toInt(),wt)
                     }
@@ -675,9 +669,7 @@ class MainActivity : AppCompatActivity() {
                 var olddate=Calendar.getInstance().timeInMillis
                 if(getIsRunningTask()) {
                     olddate = getTimeStarted()
-                    Log.v("ZACZĘTO",""+olddate)
                 }
-                Log.v("STARTTTNOW",""+Calendar.getInstance().timeInMillis)
                 var counter=0
                 while (true) {
                     delay(1000)

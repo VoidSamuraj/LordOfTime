@@ -1,10 +1,6 @@
 package com.voidsamurai.lordoftime.fragments
 
 import android.annotation.SuppressLint
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -28,7 +24,6 @@ import kotlinx.coroutines.*
 
 class WorkingFragment : Fragment() {
 
-    //  private val resetReceiver = ResetBroadcast()
     private var _workingFragmentBinding : FragmentWorkingBinding?=null
     private var fabVisible=true
     val workingFragmentBinding get() =_workingFragmentBinding!!
@@ -84,7 +79,6 @@ class WorkingFragment : Fragment() {
                     for( i in 255 downTo 0 step 2){
                         MainScope().launch {
                             cd.alpha=i
-                            // icon!!.alpha=i
                         }
                         delay(10)
                     }
@@ -253,15 +247,7 @@ class WorkingFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        // deleteIcon=AppCompatResources.getDrawable(requireContext(),R.drawable.ic_delete)
         editIcon=AppCompatResources.getDrawable(requireContext(),R.drawable.ic_edit)
-        /* val iFilter=IntentFilter("RESET_COUNTER")
-         requireActivity().registerReceiver(resetReceiver,iFilter)
-         workingFragmentBinding.taskList.let{
-             it.adapter?.notifyDataSetChanged()
-             it.setHasFixedSize(true)
-             it.setItemViewCacheSize(10)
-         }*/
 
         workingFragmentBinding.add.setOnClickListener {
             it.findNavController().navigate(R.id.action_workingFragment_to_editTaskSelected)
@@ -304,21 +290,6 @@ class WorkingFragment : Fragment() {
         super.onDestroyView()
 
     }
-/*
-    inner class ResetBroadcast : BroadcastReceiver(){
 
-        override fun onReceive(context: Context?, intent: Intent?) {
-            intent?.let {it ->
-                if(it.action.equals("RESET_COUNTER"))
-                        activity?.let {
-                            (it as MainActivity).getCurrentWorkingTime().value=intent.getIntExtra("time",0)
-                            it.unregisterReceiver(resetReceiver)
-
-                        }
-            }
-
-        }
-
-    }*/
 
 }
