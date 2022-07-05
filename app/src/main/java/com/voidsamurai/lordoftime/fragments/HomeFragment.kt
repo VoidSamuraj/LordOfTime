@@ -4,7 +4,6 @@ import android.animation.Animator
 import android.animation.ValueAnimator
 import android.os.Bundle
 import android.transition.TransitionInflater
-import android.util.Log
 import android.view.*
 import android.view.animation.AnticipateOvershootInterpolator
 import androidx.core.graphics.drawable.toDrawable
@@ -76,7 +75,8 @@ class HomeFragment : Fragment() {
                     ArrayList(
                         it
                             .subList(0, if (it.size >= 3) 3 else it.size).toList()
-                    )
+                    ),
+                    requireContext()
                 ), LinearLayoutManager(requireContext())
             )
         }
@@ -116,7 +116,6 @@ class HomeFragment : Fragment() {
                             )
                         ).timeInMillis
                     )
-                    Log.v("TIME", "" + wt)
                     (activity as MainActivity).updateOldstats(
                         wt + ((activity as MainActivity).getDBOpenHelper().getTaskRow(
                             (activity as MainActivity).getCurrentTaskId(),

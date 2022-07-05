@@ -38,7 +38,7 @@ class LoginFragment : Fragment() {
             var isGood = true
             if (email.isBlank()) {
                 Toast.makeText(
-                    context,
+                    requireContext(),
                     resources.getString(R.string.no_data) + " " + resources.getString(R.string.login)
                         .lowercase(),
                     Toast.LENGTH_SHORT
@@ -47,7 +47,7 @@ class LoginFragment : Fragment() {
             }
             if (password.isBlank()) {
                 Toast.makeText(
-                    context,
+                    requireContext(),
                     resources.getString(R.string.no_data) + " " + resources.getString(R.string.password)
                         .lowercase(),
                     Toast.LENGTH_SHORT
@@ -59,7 +59,7 @@ class LoginFragment : Fragment() {
                 FirebaseAuth.getInstance().signInWithEmailAndPassword(email.toString(),password.toString())
                     .addOnCompleteListener {
                         if(it.isSuccessful){
-                            Toast.makeText(context,
+                            Toast.makeText(requireContext(),
                                 resources.getString(R.string.logged_in),
                                 Toast.LENGTH_SHORT).show()
 
@@ -68,13 +68,13 @@ class LoginFragment : Fragment() {
                             val intent = Intent(activity as AuthActivity, MainActivity::class.java)
                             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                             intent.putExtra("user_id",firebaseUser.uid)
-                            intent.putExtra("email_id",email)
+                            intent.putExtra("email_id",email.toString())
                             (activity as AuthActivity).setLoggedIn()
                             startActivity(intent)
                             (activity as AuthActivity).finish()
 
                         }else{
-                            Toast.makeText(context,
+                            Toast.makeText(requireContext(),
                                 it.exception!!.message,
                                 Toast.LENGTH_SHORT).show()
                         }

@@ -14,7 +14,6 @@ import com.voidsamurai.lordoftime.MainActivity
 import com.voidsamurai.lordoftime.R
 import com.voidsamurai.lordoftime.bd.RutinesRow
 import com.voidsamurai.lordoftime.fragments.EditTaskSelected
-import com.voidsamurai.lordoftime.fragments.RutinesElement
 import com.voidsamurai.lordoftime.fragments.adapters.RepeatAdapter
 
 class RepeatDialog(

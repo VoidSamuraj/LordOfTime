@@ -59,7 +59,7 @@
     <color name="fab_settings_tint">#B8DBD9</color>
     <color name="gray">#D5ACACAC</color>
     <color name="dark_gray">#9E414345</color>
-
+    <color name="task_to_do">#17A0D6</color>
 </resources>
 
 

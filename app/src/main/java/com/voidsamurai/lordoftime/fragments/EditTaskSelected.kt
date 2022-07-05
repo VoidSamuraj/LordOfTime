@@ -21,6 +21,7 @@ import com.voidsamurai.lordoftime.R
 import com.voidsamurai.lordoftime.databinding.FragmentTaskEditBinding
 import com.voidsamurai.lordoftime.fragments.adapters.ArrayColorAdapter
 import com.voidsamurai.lordoftime.bd.DataRowWithColor
+import com.voidsamurai.lordoftime.calendarToRead
 import com.voidsamurai.lordoftime.fragments.dialogs.ConfirmDialog
 import com.voidsamurai.lordoftime.fragments.dialogs.RepeatDialog
 import java.util.*
@@ -67,7 +68,6 @@ class EditTaskSelected : Fragment() ,DatePickerDialog.OnDateSetListener,TimePick
             binding.deleteEditButton.visibility=View.VISIBLE
             binding.nameEdit.setText(data!!.name)
             val lastElementPos=adapter.getPosition(Pair(data!!.category,data!!.color))
-     //       Log.v("POSITION",""+lastElementPos+" "+adapter.count)
             lastElementCategory=adapter.getItem(lastElementPos)!!.first
 
             if(data!!.id==(activity as MainActivity).currentTaskId)
@@ -75,12 +75,12 @@ class EditTaskSelected : Fragment() ,DatePickerDialog.OnDateSetListener,TimePick
 
             binding.checkCategory.setSelection(lastElementPos)
             binding.priorityEdit.setText(data!!.priority.toString())
-            binding.dateEdit.setText(dateFormat.format(data!!.date.time))
+            binding.dateEdit.setText(dateFormat.format(data!!.date.calendarToRead().time))
             binding.durationEdit.setText((((data!!.workingTime/3600)*100).toInt().toFloat()/100).toString())
-            binding.hourEdit.setText(String.format("%02d:%02d",data!!.date.get(Calendar.HOUR_OF_DAY),data!!.date.get(Calendar.MINUTE)))
+            binding.hourEdit.setText(String.format("%02d:%02d",data!!.date.calendarToRead().get(Calendar.HOUR_OF_DAY),data!!.date.calendarToRead().get(Calendar.MINUTE)))
             binding.isFinished.isChecked=data!!.finished==1
-            newDate= Calendar.getInstance(TimeZone.getTimeZone("UTC"))
-            data!!.date.let {newDate.set(
+            newDate= Calendar.getInstance()
+            data!!.date.calendarToRead().let {newDate.set(
                 it.get(Calendar.YEAR),
                 it.get(Calendar.MONTH),
                 it.get(Calendar.DAY_OF_MONTH),
@@ -121,7 +121,7 @@ class EditTaskSelected : Fragment() ,DatePickerDialog.OnDateSetListener,TimePick
                 }
             }
         }else{
-            newDate= Calendar.getInstance(TimeZone.getTimeZone("UTC"))
+            newDate= Calendar.getInstance()
             newDate.set(Calendar.SECOND, 0)
             newDate.set(Calendar.MILLISECOND, 0)
             binding.dateEdit.setText(dateFormat.format(newDate.time))
@@ -134,7 +134,7 @@ class EditTaskSelected : Fragment() ,DatePickerDialog.OnDateSetListener,TimePick
                 addRow(
                     (binding.checkCategory.selectedItem as Pair<*, *>).first.toString(),
                     binding.nameEdit.text.toString(),
-                    newDate.time.time,
+                    newDate.timeInMillis,
                     binding.durationEdit.text.toString(),
                     binding.priorityEdit.text.toString().toInt()
                 )
@@ -148,12 +148,11 @@ class EditTaskSelected : Fragment() ,DatePickerDialog.OnDateSetListener,TimePick
                     val id=addRow(
                         (binding.checkCategory.selectedItem as Pair<*, *>).first.toString(),
                         binding.nameEdit.text.toString(),
-                        newDate.time.time,
+                        newDate.timeInMillis,
                         binding.durationEdit.text.toString(),
                         binding.priorityEdit.text.toString().toInt()
                     ).toInt()
                     update()
-                   // it.findNavController().navigateUp()
                     if(id!=-1){
                         (activity as MainActivity).let {
                             it.repeatDialog = RepeatDialog(id,this)
@@ -289,7 +288,6 @@ class EditTaskSelected : Fragment() ,DatePickerDialog.OnDateSetListener,TimePick
         val id=(activity as MainActivity).getDBOpenHelper().addTaskRow(category, name, startDateTime, (hours.toFloat()*3600).toInt(), priority,0,(activity as MainActivity).userId)
         if(id!=-1L)
             (activity as MainActivity).tasks.add  ( id=id.toInt(),category, name, startDateTime, (hours.toFloat()*3600).toInt(), priority,0, finished =if(binding.isFinished.isChecked)1 else 0 )
-        //(activity as MainActivity).getDBOpenHelper().addOldstatRow(startDateTime,(hours.toFloat()*3600).toInt())
         update()
         return id
     }

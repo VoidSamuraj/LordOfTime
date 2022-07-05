@@ -16,15 +16,17 @@ import androidx.fragment.app.Fragment
 import com.voidsamurai.lordoftime.MainActivity
 import com.voidsamurai.lordoftime.R
 import com.voidsamurai.lordoftime.bd.DataRowWithColor
+import com.voidsamurai.lordoftime.calendarToRead
 import com.voidsamurai.lordoftime.databinding.FragmentCalendarDayEditBinding
 import com.voidsamurai.lordoftime.fragments.dialogs.EditTaskDialog
+import com.voidsamurai.lordoftime.timeToRead
 import java.util.*
 
 
 class CalendarDayEdit : Fragment() {
     private var x:Float?=null
     private var y:Float?=null
-    private var daysData:Calendar= Calendar.getInstance(TimeZone.getTimeZone("UTC"))
+    private var daysData:Calendar= Calendar.getInstance()
     private var _CalendarBinding:FragmentCalendarDayEditBinding?=null
     private val calendarBinding get() = _CalendarBinding!!
 
@@ -90,17 +92,10 @@ class CalendarDayEdit : Fragment() {
         setDimens(marginTop,button)
     }
     private fun addElement(drwc: DataRowWithColor){
-        val button=Button(requireContext())
-        button.id=drwc.id
-        button.text=drwc.name
-        button.backgroundTintList= ColorStateList.valueOf(Color.parseColor(drwc.color))
-        setButtonListener(button,drwc)
-        button.minHeight=getHeight(drwc.workingTime)
-        val h=drwc.date.get(Calendar.HOUR_OF_DAY)
-        val m=drwc.date.get(Calendar.MINUTE).toFloat()/60
-        calendarBinding.parent.addView(button)
-        setDimens(((m+h)*(calendarBinding.parent.height/24)).toInt(),button)
-
+        val ctr=drwc.date.calendarToRead()
+        val h=ctr.get(Calendar.HOUR_OF_DAY)
+        val m=ctr.get(Calendar.MINUTE).toFloat()/60
+        addElement(drwc,((m+h)*(calendarBinding.parent.height/24)).toInt())
     }
     fun editElement(drwc: DataRowWithColor){
 
@@ -114,8 +109,9 @@ class CalendarDayEdit : Fragment() {
         button2.minHeight=getHeight(drwc.workingTime)
         val h=drwc.date.get(Calendar.HOUR_OF_DAY)
         val m=drwc.date.get(Calendar.MINUTE).toFloat()/60
+        val hour=(drwc.date.timeToRead()-drwc.date.timeInMillis).toFloat()/3600_000f+h+m
         calendarBinding.parent.addView(button2)
-        setDimens(((m+h)*resources.getDimension(R.dimen.scroll)/24f).toInt(),button)
+        setDimens(((hour)*resources.getDimension(R.dimen.scroll)/24f).toInt(),button)
     }
 
     fun getHeight(dur: Float):Int{
@@ -163,8 +159,6 @@ class CalendarDayEdit : Fragment() {
         for(child in calendarBinding.parent.children){
             if(child is Button&&child.id!=id) {
                 val topCMargin = child.marginTop
-            //    if (!((topCMargin>y&&(topCMargin+child.height)>(y+dur))||(topCMargin<y&&(topCMargin+child.height)<(y+dur))))
-
                 if (!((topCMargin>y&&(topCMargin/*+child.height*/)>(y+dur))||((topCMargin)<y&&(topCMargin+child.height)<y)))
                     canBe = false
 
@@ -175,27 +169,7 @@ class CalendarDayEdit : Fragment() {
         else
             -1
     }
-/*
-    private fun getButtonY(y:Int, pref:Int, id:Int?=null):Int{
-        var max:Int=calendarBinding.parent.height-y
-        if (id != null)
-            for(child in calendarBinding.parent.children){
-                if(child is Button&&id!=child.id) {
-                    val topC = child.marginTop
-                    if (topC>y&&(topC-y)<max)
-                        max = topC-y
-                }
-            }
-        else
-            for(child in calendarBinding.parent.children){
-                if(child is Button) {
-                    val topC = child.marginTop
-                    if (topC>y&&(topC-y)<max)
-                        max = topC-y
-                }
-            }
-        return if(max<pref)max else pref
-    }*/
+
     private fun getButtonY(y:Int, prefDuration:Int, id:Int?=null):Int{
         var max:Int=calendarBinding.parent.height-y
         if (id != null)

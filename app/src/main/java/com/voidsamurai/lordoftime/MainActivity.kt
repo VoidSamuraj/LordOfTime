@@ -52,7 +52,6 @@ import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
@@ -72,6 +71,8 @@ import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
+
+
     lateinit var repeatDialog: RepeatDialog
 
     companion object{
@@ -88,7 +89,7 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    lateinit var homeDrawable: Drawable
+    var homeDrawable: Drawable?=null
     private lateinit var firebaseDB:FirebaseDatabase
     private lateinit var analytics: FirebaseAnalytics
     private lateinit var storageReference:StorageReference
@@ -113,6 +114,7 @@ class MainActivity : AppCompatActivity() {
     var lastTaskId:Int?=null
     var lastTaskPositioon:Int?=null
     var lastButton:ImageButton?=null
+    var dbAdress:String?=null
     var userId:String?=null
     var emailId:String?=null
     var userName:String?=null
@@ -600,7 +602,8 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
-            firebaseDB=Firebase.database
+           // firebaseDB=Firebase.database
+            firebaseDB= FirebaseDatabase.getInstance()
             colors=DAOColors(this)
             tasks= DAOTasks(this)
             oldTasks= DAOOldTasks(this)
@@ -759,17 +762,26 @@ class MainActivity : AppCompatActivity() {
             settings.removeListeners()
         }
 
-        override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        /*override fun onCreateOptionsMenu(menu: Menu): Boolean {
 
-            findViewById<TextView>(R.id.user_email).text=emailId
-            findViewById<TextView>(R.id.user_name).text=userName
+            findViewById<TextView>(R.id.user_email)?.text=emailId
+            findViewById<TextView>(R.id.user_name)?.text=userName
             fillMementoMori()
             menuInflater.inflate(R.menu.menu_main, menu)
 
             return true
-        }
+        }*/
 
-        fun fillMementoMori() {
+    override fun onPrepareOptionsMenu(menu: Menu): Boolean {
+        findViewById<TextView>(R.id.user_email)?.text=emailId
+        findViewById<TextView>(R.id.user_name)?.text=userName
+        fillMementoMori()
+        menuInflater.inflate(R.menu.menu_main, menu)
+
+        return true
+    }
+
+    fun fillMementoMori() {
             val mTime = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
             val now = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
             if (getYourTime() != 0L){
@@ -1341,20 +1353,19 @@ class MainActivity : AppCompatActivity() {
 
         fun createTodayNotifications(){
             val data=oh.getServiceTaskInfo(userId)
-            val now=Calendar.getInstance().timeInMillis+   TimeZone.getDefault().rawOffset
+            val now=Calendar.getInstance().timeInMillis//+   2*TimeZone.getDefault().rawOffset
 
             for(row in data){
-                val time=row.third-now
-
+                val time=row.third-now//-TimeZone.getDefault().rawOffset
                 if(time>0)
-                    startTaskNotification(row.third-TimeZone.getDefault().rawOffset,row.first,row.second)
+                    startTaskNotification(row.third/*-TimeZone.getDefault().rawOffset*/,row.first,row.second)
             }
 
         }
 
         fun deleteTodayNotifications(){
             val data=oh.getServiceTaskInfo(userId)
-            val now=Calendar.getInstance().timeInMillis+   TimeZone.getDefault().rawOffset
+            val now=Calendar.getInstance().timeInMillis//+   TimeZone.getDefault().rawOffset
 
             for(row in data){
                 val time=row.third-now
@@ -1404,8 +1415,7 @@ class MainActivity : AppCompatActivity() {
                 } catch (e: PackageManager.NameNotFoundException) {
                     null
                 }
-                var isSystem = false
-                isSystem = (element.applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM ) != 0
+                var isSystem = (element.applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM ) != 0
                 if (element.applicationInfo.sourceDir.startsWith("/data/app/") && isSystem)
                     isSystem = false
                 if(!isSystem) {
@@ -1466,8 +1476,24 @@ class TimeBroadcastReceiver : BroadcastReceiver() {
             )
     }
 }
+fun Calendar.timeToSave():Long{
+    return  (timeInMillis-(TimeZone.getDefault().rawOffset+TimeZone.getDefault().dstSavings))
+}
+fun Calendar.calendarToSave():Calendar{
+       val cal= this.clone() as Calendar
+        cal.timeInMillis-=(TimeZone.getDefault().rawOffset+TimeZone.getDefault().dstSavings)
+    return cal
+}
 
+fun Calendar.timeToRead():Long{
+    return  (timeInMillis+TimeZone.getDefault().rawOffset+TimeZone.getDefault().dstSavings)
+}
+fun Calendar.calendarToRead():Calendar{
+    val cal= this.clone() as Calendar
+    cal.timeInMillis+=(TimeZone.getDefault().rawOffset+TimeZone.getDefault().dstSavings)
 
+    return cal
+}
 
 
 

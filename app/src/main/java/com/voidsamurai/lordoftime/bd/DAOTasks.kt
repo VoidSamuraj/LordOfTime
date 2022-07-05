@@ -6,15 +6,19 @@ import com.voidsamurai.lordoftime.MainActivity
 import java.util.*
 import kotlin.collections.ArrayList
 
-class DAOTasks(mActivity: MainActivity){
+class DAOTasks(val mActivity: MainActivity){
     private val data:ArrayList<DataRow> = arrayListOf()
     private var dbReference: DatabaseReference
     private var vel:ValueEventListener
-    init {
 
-        val db=FirebaseDatabase.getInstance()
+
+
+    init {
+       val db=FirebaseDatabase.getInstance()
+
 
         dbReference=db.getReference(mActivity.userId!!).child("task")
+
 
         vel=object:ValueEventListener{
 
@@ -47,6 +51,7 @@ class DAOTasks(mActivity: MainActivity){
         }
     }
 
+
     fun add(id:Int,category: String,name:String, dateTime:Long, workingTime:Int, priority:Int, currentWorkingTime:Int,finished: Int){
         val ref=dbReference.child(id.toString())
         ref.child("category").setValue(category)
@@ -60,7 +65,6 @@ class DAOTasks(mActivity: MainActivity){
 
     fun add(data: DataRowWithColor){
         val ref=dbReference.child(data.id.toString())
-        ref.child("category").setValue(data.category)
         ref.child("name").setValue(data.name)
         ref.child("dateTime").setValue(data.date.time.time)
         ref.child("workingTime").setValue(data.workingTime)
@@ -70,7 +74,7 @@ class DAOTasks(mActivity: MainActivity){
 
     }
     /**
-     * @param null-not changes attribute
+     * @params null-not changes attribute
      * */
     fun update(id:Int,category: String?=null,name:String?=null, dateTime:Long?=null, workingTime:Int?=null, priority:Int?=null, currentWorkingTime:Int?=null,finished: Int?=null){
         val ref=dbReference.child(id.toString())

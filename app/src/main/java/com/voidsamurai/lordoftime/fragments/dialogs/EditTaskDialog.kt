@@ -8,6 +8,7 @@ import android.content.DialogInterface
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.*
@@ -17,9 +18,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
-import com.voidsamurai.lordoftime.MainActivity
+import com.voidsamurai.lordoftime.*
 import com.voidsamurai.lordoftime.MainActivity.Companion.formatToFloat
-import com.voidsamurai.lordoftime.R
 import com.voidsamurai.lordoftime.bd.DataRowWithColor
 import com.voidsamurai.lordoftime.fragments.CalendarDayEdit
 import com.voidsamurai.lordoftime.fragments.adapters.ArrayColorAdapter
@@ -90,6 +90,7 @@ class EditTaskDialog(
         saveButton=contentView.findViewById(R.id.save)
 
         setColorSpinner()
+        //init
         if(mode== MODE.SAVE &&startTime!=null){
             startHourCalendar=startTime.clone() as Calendar
             endHourCalendar=startTime.clone() as Calendar
@@ -97,11 +98,11 @@ class EditTaskDialog(
             startHour.setText(time)
             endHour.setText(time)
         }else{
-            startHourCalendar= Calendar.getInstance(TimeZone.getTimeZone("UTC"))
-            endHourCalendar= Calendar.getInstance(TimeZone.getTimeZone("UTC"))
+            startHourCalendar= Calendar.getInstance()
+            endHourCalendar= Calendar.getInstance()
             dataRow=(activity as MainActivity).getDBOpenHelper().getTaskRow(id!!,(activity as MainActivity).userId)
             if(dataRow!=null){
-                startHourCalendar= dataRow!!.date.clone() as Calendar
+                startHourCalendar= (dataRow!!.date.clone() as Calendar).calendarToRead()
                 val cal  =dataRow!!.date.clone() as Calendar
                 val baseTime=dataRow!!.workingTime
                 cal.add(Calendar.HOUR_OF_DAY,(baseTime/1).toInt())
@@ -112,7 +113,7 @@ class EditTaskDialog(
                     deleteButton.isEnabled=false
 
 
-                endHourCalendar=cal.clone() as Calendar
+                endHourCalendar=(cal.clone() as Calendar).calendarToRead()
                 startHour.setText(String.format("%02d:%02d", startHourCalendar.get(Calendar.HOUR_OF_DAY),startHourCalendar.get(Calendar.MINUTE)))
                 endHour.setText(String.format("%02d:%02d", endHourCalendar.get(Calendar.HOUR_OF_DAY),endHourCalendar.get(Calendar.MINUTE)))
                 nameEdit.setText(dataRow!!.name)
@@ -317,6 +318,10 @@ class EditTaskDialog(
         val start = hour.toFloat()+min.toFloat()/60
         val m=(fragment as CalendarDayEdit).getStartMargin(start,dura)
 
+        val timeInUTC= startHourCalendar.timeInMillis//timeToSave()
+        val calUTC=Calendar.getInstance()
+        calUTC.timeInMillis=timeInUTC
+
         if(m==-1)
         {
             Toast.makeText(context,resources.getText(R.string.time_occupied),Toast.LENGTH_SHORT).show()
@@ -324,33 +329,29 @@ class EditTaskDialog(
             val (id, dur) = addRow(
                 (category.selectedItem as Pair<*, *>).first.toString(),
                 nameEdit.text.toString(),
-                startHourCalendar.time.time,
+                timeInUTC,
                 durationEdit.text.toString(),
                 priority.text.toString().toInt()
             )
             idReturn=id
             if (id != -1L) {
                 val category = (category.selectedItem as Pair<*, *>).first.toString()
+                
                 val drwc = DataRowWithColor(
                     name = nameEdit.text.toString(),
                     category = category,
-                    date = startHourCalendar,
+                    date = calUTC,
                     workingTime = dur,
                     currentWorkingTime = 0f,
-                    outdated = startHourCalendar.time.time < Calendar.getInstance(
-                        TimeZone.getTimeZone(
-                            "UTC"
-                        )
-                    ).time.time,
+                    outdated = timeInUTC < Calendar.getInstance().timeInMillis,
                     color = (activity as MainActivity).getColors().value!![category]!!,
                     priority = priority.text.toString().toInt(),
                     id = id.toInt()
 
                 )
-                // add to layout
                 (fragment as CalendarDayEdit).addElement(
                     drwc,
-                    m//margin?.toInt() ?: 1
+                    m
                 )
 
             }
@@ -399,13 +400,15 @@ class EditTaskDialog(
                 )
             }
 
-            //edit element in layout
+            val calUTC=(startHourCalendar.clone() as Calendar).calendarToSave()
+            val timeInUTC= calUTC.timeInMillis
+
             (fragment as CalendarDayEdit).editElement(
                 DataRowWithColor(
                     data.id,
                     (category.selectedItem as Pair<*, *>).first.toString(),
                     nameEdit.text.toString(),
-                    startHourCalendar.clone() as Calendar,
+                    calUTC,
                     dur,
                     priority.text.toString().toInt(),
                     0f,
@@ -418,7 +421,7 @@ class EditTaskDialog(
                 data.id,
                 (category.selectedItem as Pair<*, *>).first.toString(),
                 nameEdit.text.toString(),
-                startHourCalendar.time.time,
+                timeInUTC,
                 dur.toInt(),
                 priority.text.toString().toInt(),
                 0,
@@ -429,7 +432,7 @@ class EditTaskDialog(
                 id = data.id,
                 category = (category.selectedItem as Pair<*, *>).first.toString(),
                 name = nameEdit.text.toString(),
-                dateTime = startHourCalendar.time.time,
+                dateTime = timeInUTC,
                 workingTime = dur.toInt(),
                 priority = priority.text.toString().toInt(),
                 currentWorkingTime = 0,
@@ -449,7 +452,6 @@ class EditTaskDialog(
     ):Pair<Long,Float> {
         val dur = hours.toFloat()*3600
         val d=(fragment as CalendarDayEdit).getMaxDur((hours.toFloat()*resources.getDimension(R.dimen.scroll)/24f).toInt(), (fragment as CalendarDayEdit).getHeight(hours.toFloat()))
-        // dur= d*3600f
 
         val id=(activity as MainActivity).getDBOpenHelper().addTaskRow(category, name, startDateTime,dur.toInt(), priority,0,(activity as MainActivity).userId)
         if(id!=-1L)

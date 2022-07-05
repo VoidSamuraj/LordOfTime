@@ -4,7 +4,6 @@ import com.google.firebase.database.*
 import com.voidsamurai.lordoftime.MainActivity
 
 class DAOSettings(val mActivity: MainActivity) {
-    private val data:MutableMap<String,String> = mutableMapOf()
     private var dbReference: DatabaseReference
     private var vel: ValueEventListener
     init {

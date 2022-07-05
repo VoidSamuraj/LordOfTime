@@ -1,4 +1,4 @@
-package com.voidsamurai.lordoftime.fragments
+package com.voidsamurai.lordoftime.fragments.dialogs
 
 
 import android.app.AlertDialog
@@ -59,9 +59,11 @@ class RutinesElement(private val taskId:Int,private val type:Int,private val rut
             val data=(activity as MainActivity).getDBOpenHelper().getRutinesArray(taskId).filter { rutinesRow -> rutinesRow.id==rutinesRowId }[0]
             val hours=data.hours.split(',')
             val daysNames=data.days.split(',').map { s -> resources.getString(DAORutines.getDayID(s))  }
+
             days.forEach {
                 if(daysNames.contains(it.text))
                     it.isChecked=true
+
             }
             hours.forEach {
                 createChip(it)
@@ -103,13 +105,8 @@ class RutinesElement(private val taskId:Int,private val type:Int,private val rut
             days.forEach { if(it.isChecked)isDaySelected=true }
             if(hours.size>0)
                 isHourSelected=true
-            Log.v("ISSELECTED",""+isDaySelected+" "+isHourSelected)
             if(isDaySelected&&isHourSelected) {
-                //days.filter { chip -> chip.isChecked }.forEach { Log.v("ELEMENT",""+it.text) }
-                /*
-                val daysRow = days.filter { chip -> chip.isChecked }
-                    .map {  DAORutines.getShortName(it.text.toString()) }.joinToString(separator = ",")
-                */
+
                 var daysRow=""
                 if(monday.isChecked)daysRow+="MON,"
                 if(tuesday.isChecked)daysRow+="TUE,"
@@ -156,6 +153,7 @@ class RutinesElement(private val taskId:Int,private val type:Int,private val rut
     }
     fun createChip(hourOfDay:Int,minute:Int)= createChip(String.format("%02d:%02d", hourOfDay,minute))
 
+    //hour chip
     fun createChip(text:String){
         val chip=Chip(requireContext())
         chip.text=text

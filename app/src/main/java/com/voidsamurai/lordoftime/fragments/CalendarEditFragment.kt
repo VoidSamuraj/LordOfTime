@@ -2,7 +2,6 @@ package com.voidsamurai.lordoftime.fragments
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -152,7 +151,9 @@ class CalendarEditFragment : Fragment() {
         background = binding.background
 
         background.visibility = View.INVISIBLE
-        binding.bg.background=(activity as MainActivity).homeDrawable
+        (activity as MainActivity).homeDrawable?.let {
+            binding.bg.background=it
+        }
 
 
 
@@ -169,7 +170,9 @@ class CalendarEditFragment : Fragment() {
     }
 
     override fun onPause() {
-        (activity as MainActivity).homeDrawable=background.drawToBitmap().toDrawable(resources)
+        background.drawToBitmap().toDrawable(resources).let{
+            (activity as MainActivity).homeDrawable=it
+        }
         super.onPause()
     }
 
@@ -199,7 +202,6 @@ class CalendarEditFragment : Fragment() {
         val data = (activity as MainActivity).getQueryArrayByDate().value
         data?.let {
             for (x in it) {
-                // Log.v("DataRAW",""+nr+++" "+x.date.get(Calendar.MONTH)+"/"+x.date.get(Calendar.DAY_OF_MONTH)+" "+x.name+" "+x.id)
                 val value =
                     NTuple6(x.date, x.workingTime / 3600f, x.priority, x.name, x.category, x.color)
                 val rest = allData.putIfAbsent(x.date, arrayListOf(value))
@@ -238,7 +240,6 @@ class CalendarEditFragment : Fragment() {
             else
                 currentCalendar.get(Calendar.DAY_OF_WEEK)
 
-        Log.v("Monthdata", ""+monthData)
         val lastMonth: Calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
         lastMonth.add(Calendar.MONTH,-1)
         var lastMonthDays=lastMonth.getActualMaximum(Calendar.DAY_OF_MONTH)-(firstMonthDay-1)

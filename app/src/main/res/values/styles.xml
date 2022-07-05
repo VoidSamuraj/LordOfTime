@@ -52,7 +52,9 @@
         <item name="android:layout_marginEnd">50dp</item>
         <item name="android:textSize">20sp</item>
     </style>
-
+    <style name="chipStyle" parent="Widget.MaterialComponents.Chip.Filter">
+        <item name="chipBackgroundColor">@color/chip_background_color</item>
+    </style>
 
 </resources>
 

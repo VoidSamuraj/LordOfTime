@@ -25,13 +25,14 @@ class SplashScreenActivity : AppCompatActivity(), Animation.AnimationListener{
     private var animEnd=false
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+
         setContentView(R.layout.activity_splash_screen)
         supportActionBar?.hide()
 
         auth = Firebase.auth
 
          currentUser = auth.currentUser
+        super.onCreate(savedInstanceState)
     }
 
     override fun onStart() {
@@ -81,8 +82,8 @@ class SplashScreenActivity : AppCompatActivity(), Animation.AnimationListener{
                 intent.flags =
                     Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                 intent.putExtra("user_id", auth.uid)
-                intent.putExtra("user_name", auth.currentUser!!.displayName)
-                intent.putExtra("email_id", auth.currentUser!!.email)
+                intent.putExtra("user_name", auth.currentUser!!.displayName.toString())
+                intent.putExtra("email_id", auth.currentUser!!.email.toString())
                 startActivity(intent)
                 finish()
             } else {

@@ -92,7 +92,7 @@
     <string name="friday">Piątek</string>
     <string name="saturday">Sobota</string>
     <string name="sunday">Niedziela</string>
-    <string name="hours">Hours</string>
+    <string name="hours">Godziny</string>
     <string name="select_hour">Dodaj godzinę</string>
     <string name="nohour">0 godzin</string>
     <string name="category_in_use">Kategoria jest używana przez zadanie</string>

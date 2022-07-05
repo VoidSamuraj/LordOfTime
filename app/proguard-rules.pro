@@ -38,6 +38,7 @@
 
 -keep class com.voidsamurai.lordoftime.bd.*{*;}
 -keep class com.crashlytics.** { *; }
+-keep class com.voidsamurai.lordoftime.AuthActivity
 -dontwarn com.crashlytics.**
 -keepattributes SourceFile,LineNumberTable,*Annotation*,Signature
 -keep class com.crashlytics.android.**
