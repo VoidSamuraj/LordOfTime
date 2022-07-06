@@ -27,7 +27,6 @@ class RepeatAdapter (private val data:List<RutinesRow>): RecyclerView.Adapter<Li
         val layout: LinearLayout = holder.layout
         val resources = holder.itemView.resources
         val days=data[position].days.split(',')
-        Log.v("DAYS",""+days)
         val dates= days.map { s ->  resources.getText(DAORutines.getDayID(s))}.joinToString(separator = "\n")
 
         layout.findViewById<TextView>(R.id.day).text = dates

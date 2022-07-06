@@ -67,7 +67,6 @@ class CalendarEditAdapter (private val context: Context, private val dataSet: Ar
                 date.setShadowLayer(10f,0f,0f,Color.BLACK)
             }
             date.text=it[0].t1.get(Calendar.DAY_OF_MONTH).toString()
-            Log.v("IT",""+it.size+" "+it.map { nTuple6: NTuple6<Calendar, Float, Int, String, String, String> -> arrayListOf(nTuple6.t2,nTuple6.t3,nTuple6.t4,nTuple6.t5,nTuple6.t6)  })
             if(it.size>0&&it[0].t2!=null){
                 var dur=0f
                 for(r in it){

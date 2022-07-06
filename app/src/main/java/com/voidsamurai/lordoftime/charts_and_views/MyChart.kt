@@ -5,7 +5,6 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.util.AttributeSet
-import android.util.Log
 import android.view.View
 import com.voidsamurai.lordoftime.R
 import kotlin.math.cos
@@ -91,7 +90,6 @@ class MyChart(context: Context?, attributeSet: AttributeSet ):
                 val scale:Float = 360.0f/dur
                 duration=fillRound(scale)
             }
-            Log.v("DURATIONCH",""+duration+" "+(duration%1)*60)
             paint.setShadowLayer(8f,0f,0f,Color.BLACK)
             paint.textAlign=Paint.Align.CENTER
             paint.style= Paint.Style.FILL

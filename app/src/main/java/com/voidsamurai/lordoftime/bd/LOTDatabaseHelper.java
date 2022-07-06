@@ -7,18 +7,14 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.util.Log;
 import androidx.annotation.Nullable;
 import org.jetbrains.annotations.NotNull;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.TimeZone;
 
@@ -217,7 +213,6 @@ public class LOTDatabaseHelper extends SQLiteOpenHelper {
                 list.add(c.getInt(0));
             }while(c.moveToNext());
         int licz=db.delete("RUTINES","task_id = ?", new String[]{String.valueOf(task_id)});
-        Log.v("DELETED",""+licz+" rows   "+list);
         c.close();
         return list;
     }
