@@ -24,7 +24,7 @@ class DAORutines(mActivity: MainActivity){
                         data.add(
                             RutinesRow(
                                 child.key!!.toInt(),
-                                child.child("task_id").value as Int,
+                                (child.child("task_id").value as Long).toInt(),
                                 child.child("days").value.toString(),
                                 child.child("hour").value.toString()
                             )

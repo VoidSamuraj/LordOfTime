@@ -42,17 +42,21 @@ class SplashScreenActivity : AppCompatActivity(), Animation.AnimationListener{
         findViewById<ImageView>(R.id.logo).startAnimation(animation)
         findViewById<LottieAnimationView>(R.id.logo_animation).addAnimatorListener(object:
             Animator.AnimatorListener {
-            override fun onAnimationStart(p0: Animator?) {}
 
-            override fun onAnimationEnd(p0: Animator?) {
+            override fun onAnimationStart(p0: Animator) {
+            }
+
+            override fun onAnimationEnd(p0: Animator) {
                 if (animEnd)
                     navigateToMainActivity()
                 animEnd=true
             }
 
-            override fun onAnimationCancel(p0: Animator?) {}
+            override fun onAnimationCancel(p0: Animator) {
+            }
 
-            override fun onAnimationRepeat(p0: Animator?) {}
+            override fun onAnimationRepeat(p0: Animator) {
+            }
 
         })
         super.onStart()
