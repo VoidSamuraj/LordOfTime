@@ -20,12 +20,12 @@ class DAOSettings(val mActivity: MainActivity) {
                         mActivity.getSettings(SettingsData(
                             mActivity.userId!!,
                             children.child("language").value.toString(),
-                            children.child("mode").value as Int,
+                            (children.child("mode").value as Long).toInt(),
                             children.child("show_outdated").value as Boolean,
                             children.child("show_completed").value as Boolean,
                             children.child("delete_completed").value as Boolean,
                             children.child("main_chart_auto").value as Boolean,
-                            children.child("main_chart_aim").value as Int,
+                            (children.child("main_chart_aim").value as Long).toInt(),
                             children.child("death_date").value as Long,
                             children.child("show_notifications").value as Boolean,
                             children.child("notifications_sound").value as Boolean
