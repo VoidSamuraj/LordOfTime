@@ -376,10 +376,11 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        fun updateLocalTaskDB(dataFromFirebase:ArrayList<DataRow>){
+        fun updateLocalTaskDB(dataFromFirebase:ArrayList<DataRow>) {
             CoroutineScope(Dispatchers.IO).launch {
-                val localData: MutableList<DataRowWithColor> = queryArrayByDate.value!!
-                fun DataRow.compareById(array: MutableList<DataRowWithColor>): Boolean {
+                queryArrayByDate.value?.let{
+                    val localData: MutableList<DataRowWithColor> = it
+                    fun DataRow.compareById(array: MutableList<DataRowWithColor>): Boolean {
                     for (el in array)
                         if (el.id == this.id)
                             return true
@@ -441,6 +442,7 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
             }
+        }
         }
 
         fun updateLocalOldTaskDB(data:ArrayList<OldData>){
@@ -651,8 +653,11 @@ class MainActivity : AppCompatActivity() {
             rutines.addListeners()
             settings.addListeners()
 
-            queryArrayByPriority.value = getSortedByPriority(getQueryArrayByDate().value!!)
-            queryArrayByDuration.value = getSortedByDuration(getQueryArrayByDate().value!!)
+            getQueryArrayByDate().value?.let {
+                queryArrayByPriority.value = getSortedByPriority(it)
+                queryArrayByDuration.value = getSortedByDuration(it)
+            }
+
 
             _mainFragmentBinding = ActivityMainBinding.inflate(layoutInflater)
             setContentView(mainFragmentBinding.root)
@@ -952,15 +957,17 @@ class MainActivity : AppCompatActivity() {
                         array = array.plus(Pair(c.getString(0), c.getString(1)))
                     while (c.moveToNext())
                 c.close()
-                colorsArray.value = array
                 query.forEach { dataRowWithColor ->
                     if (dataRowWithColor.date.before(Calendar.getInstance(TimeZone.getTimeZone("UTC"))))
                         dataRowWithColor.outdated = true
                 }
-                rutinesArray.value=oh.getUserRutinesArray(userId)
-                queryArrayByDate.value = query
-                queryArrayByPriority.value = getSortedByPriority(query)
-                queryArrayByDuration.value = getSortedByDuration(query)
+                CoroutineScope(Dispatchers.Main).launch {
+                    colorsArray.value = array
+                    rutinesArray.value = oh.getUserRutinesArray(userId)
+                    queryArrayByDate.value = query
+                    queryArrayByPriority.value = getSortedByPriority(query)
+                    queryArrayByDuration.value = getSortedByDuration(query)
+                }
             }
 
         }
