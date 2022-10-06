@@ -14,7 +14,7 @@ class DAOTasks(val mActivity: MainActivity){
 
 
     init {
-       val db=FirebaseDatabase.getInstance()
+        val db=FirebaseDatabase.getInstance()
 
 
         dbReference=db.getReference(mActivity.userId!!).child("task")
@@ -78,16 +78,13 @@ class DAOTasks(val mActivity: MainActivity){
      * */
     fun update(id:Int,category: String?=null,name:String?=null, dateTime:Long?=null, workingTime:Int?=null, priority:Int?=null, currentWorkingTime:Int?=null,finished: Int?=null){
         val ref=dbReference.child(id.toString())
-        val childUpdates = hashMapOf<String, Any>()
-            category?.let { childUpdates.put("category",it) }
-            name?.let {childUpdates.put("name",it)  }
-            dateTime?.let { childUpdates.put("dateTime",it) }
-            workingTime?.let { childUpdates.put("workingTime",it) }
-            priority?.let { childUpdates.put("priority",it) }
-            currentWorkingTime?.let { childUpdates.put("currentWorkingTime",it) }
-            finished?.let { childUpdates.put("isFinished",it) }
-        ref.updateChildren(childUpdates)
-
+        category?.let {  ref.child("category").setValue(it) }
+        name?.let {ref.child("name").setValue(it)  }
+        dateTime?.let { ref.child("dateTime").setValue(it) }
+        workingTime?.let { ref.child("workingTime").setValue(it) }
+        priority?.let { ref.child("priority").setValue(it) }
+        currentWorkingTime?.let { ref.child("currentWorkingTime").setValue(it) }
+        finished?.let { ref.child("isFinished").setValue(it) }
     }
 
     fun delete(taskId: String){
