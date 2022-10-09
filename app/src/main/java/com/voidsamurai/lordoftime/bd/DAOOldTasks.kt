@@ -1,9 +1,10 @@
 package com.voidsamurai.lordoftime.bd
 
+import androidx.annotation.Keep
 import com.google.firebase.database.*
 import com.voidsamurai.lordoftime.MainActivity
 import java.util.*
-
+@Keep
 class DAOOldTasks (mActivity: MainActivity) {
     private val data: ArrayList<OldData> = arrayListOf()
     private var dbReference: DatabaseReference

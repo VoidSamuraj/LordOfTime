@@ -13,6 +13,8 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.firebase.crashlytics.ktx.crashlytics
+import com.google.firebase.ktx.Firebase
 import com.voidsamurai.lordoftime.MainActivity
 import com.voidsamurai.lordoftime.R
 import com.voidsamurai.lordoftime.databinding.FragmentPieChartBinding
@@ -102,7 +104,7 @@ class AppsUsage : Fragment(){
         chartMap = TreeMap()
         legendMap = TreeMap()
         //   var sum = 0
-        if (tab.isNullOrEmpty())
+        if (tab.isEmpty())
             binding.chartFragment.visibility = View.GONE
         else {
             tab.sortByDescending { it.second }
@@ -142,7 +144,6 @@ class AppsUsage : Fragment(){
                         binding.chartDescription.visibility = View.GONE
                         binding.myChart.visibility = View.GONE
 
-                        //  binding.none.visibility = View.VISIBLE
                     } else {
                         binding.none.visibility = View.GONE
                         binding.chartDescription.visibility = View.VISIBLE
@@ -160,7 +161,7 @@ class AppsUsage : Fragment(){
                         binding.chartDescription.layoutManager = LinearLayoutManager(context)
                     }
                 }catch (e:Exception){
-                    //when i return from fragment values cannot be assigned, temp solution
+                    Firebase.crashlytics.recordException(e)
                 }
             }
         }

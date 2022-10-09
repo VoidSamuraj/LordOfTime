@@ -1,11 +1,12 @@
 package com.voidsamurai.lordoftime.bd
 
 
+import androidx.annotation.Keep
 import com.google.firebase.database.*
 import com.voidsamurai.lordoftime.MainActivity
 import java.util.*
 import kotlin.collections.ArrayList
-
+@Keep
 class DAOTasks(val mActivity: MainActivity){
     private val data:ArrayList<DataRow> = arrayListOf()
     private var dbReference: DatabaseReference

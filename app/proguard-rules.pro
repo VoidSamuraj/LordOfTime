@@ -21,26 +21,26 @@
 #-renamesourcefileattribute SourceFile
 
 #-libraryjars libs
--keepattributes InnerClasses,Signature
+#-keepattributes InnerClasses,Signature
 
 # Sdk
--keep public interface com.zendesk.sdk.** { *; }
--keep public class com.zendesk.sdk.** { *; }
+#-keep public interface com.zendesk.sdk.** { *; }
+#-keep public class com.zendesk.sdk.** { *; }
 
 
 # Appcompat and support
 
--keep interface android.support.v7.** { *; }
--keep class android.support.v7.** { *; }
--keep interface android.support.v4.** { *; }
--keep class android.support.v4.** { *; }
+#-keep interface android.support.v7.** { *; }
+#-keep class android.support.v7.** { *; }
+#-keep interface android.support.v4.** { *; }
+#-keep class android.support.v4.** { *; }
 
 
--keep class com.voidsamurai.lordoftime.bd.*{*;}
--keep class com.crashlytics.** { *; }
--keep class com.voidsamurai.lordoftime.AuthActivity
--dontwarn com.crashlytics.**
--keepattributes SourceFile,LineNumberTable,*Annotation*,Signature
--keep class com.crashlytics.android.**
--keep class com.google.firebase.crashlytics.** { *; }
--dontwarn com.google.firebase.crashlytics.**
+#-keep class com.voidsamurai.lordoftime.bd.*{*;}
+#-keep class com.crashlytics.** { *; }
+#-keep class com.voidsamurai.lordoftime.AuthActivity
+#-dontwarn com.crashlytics.**
+#-keepattributes SourceFile,LineNumberTable,*Annotation*,Signature
+#-keep class com.crashlytics.android.**
+#-keep class com.google.firebase.crashlytics.** { *; }
+#-dontwarn com.google.firebase.crashlytics.**

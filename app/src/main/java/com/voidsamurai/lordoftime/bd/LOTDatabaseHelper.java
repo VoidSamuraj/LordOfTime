@@ -7,6 +7,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+
+import androidx.annotation.Keep;
 import androidx.annotation.Nullable;
 import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
@@ -20,7 +22,7 @@ import java.util.TimeZone;
 
 import kotlin.Triple;
 
-
+@Keep
 public class LOTDatabaseHelper extends SQLiteOpenHelper {
     private static final String DB_NAME = "LOT";
     private static final int DB_VERSION = 1;
@@ -407,10 +409,12 @@ public class LOTDatabaseHelper extends SQLiteOpenHelper {
      */
     public  int editColorRow(String oldCategory,String newCategory, String newColor,String user_id) {
         Cursor c=db.rawQuery("SELECT * FROM COLOR WHERE category_id=?",new String[]{newCategory});
-        if(c.moveToFirst())
+        if(c.moveToFirst()) {
+            c.close();
             return -1;
-        else {
+        }else {
             db.update("COLOR", createColorCValues(newCategory, newColor, ""), "category_id = ? AND (user_id=? OR TRIM(user_id) IS NULL)", new String[]{oldCategory, user_id});
+            c.close();
             return 1;
         }
     }
@@ -431,6 +435,7 @@ public class LOTDatabaseHelper extends SQLiteOpenHelper {
                     break;
                 }
             }while(c.moveToNext());
+        c.close();
         if(!found)
             return db.delete("COLOR","category_id = ? AND (user_id=? OR TRIM(user_id) IS NULL)", new String[]{oldCategory,user_id});
         return -1;

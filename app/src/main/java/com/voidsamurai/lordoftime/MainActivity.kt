@@ -114,7 +114,6 @@ class MainActivity : AppCompatActivity() {
     var lastTaskId:Int?=null
     var lastTaskPositioon:Int?=null
     var lastButton:ImageButton?=null
-    var dbAdress:String?=null
     var userId:String?=null
     var emailId:String?=null
     var userName:String?=null
@@ -319,6 +318,7 @@ class MainActivity : AppCompatActivity() {
         editor.putInt(MODE,style).putBoolean(SETTINGS_CHANGE,true).apply()
         newIntent()
     }
+
     private fun refreshHomeFragmentAndDB(){
         getDataFromDB()
         if(change.first&&change.second&&change.third)
@@ -492,6 +492,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+
     fun saveAvatar(uri: Uri){
         val bmp: Bitmap? = if(Build.VERSION.SDK_INT >= Q)
             ImageDecoder.decodeBitmap(ImageDecoder.createSource(contentResolver, uri))
@@ -514,6 +515,7 @@ class MainActivity : AppCompatActivity() {
         oh.addAvatar(userId,byteArray)
 
     }
+
     fun getAvatar(){
 
         val optional=oh.getAvatar(userId)
@@ -564,6 +566,7 @@ class MainActivity : AppCompatActivity() {
         resources.updateConfiguration(config, resources.displayMetrics)
         newIntent()
     }
+
     private fun newIntent(){
         val intent = intent
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
@@ -767,15 +770,6 @@ class MainActivity : AppCompatActivity() {
         settings.removeListeners()
     }
 
-    /*override fun onCreateOptionsMenu(menu: Menu): Boolean {
-
-        findViewById<TextView>(R.id.user_email)?.text=emailId
-        findViewById<TextView>(R.id.user_name)?.text=userName
-        fillMementoMori()
-        menuInflater.inflate(R.menu.menu_main, menu)
-
-        return true
-    }*/
 
     override fun onPrepareOptionsMenu(menu: Menu): Boolean {
         findViewById<TextView>(R.id.user_email)?.text=emailId
@@ -989,6 +983,7 @@ class MainActivity : AppCompatActivity() {
             return  ArrayList(querryArray.toList())
         }
     }
+
     fun getOldData():ArrayList<Triple<Calendar,Float,String>> {
         CoroutineScope(Dispatchers.IO).run {
             val selectionQuery =
@@ -1113,6 +1108,7 @@ class MainActivity : AppCompatActivity() {
             return list
         }
     }
+
     fun deleteCompleted(){
         CoroutineScope(Dispatchers.IO).run {
             val selectionQuery =
@@ -1179,12 +1175,6 @@ class MainActivity : AppCompatActivity() {
                 cal.set(Calendar.SECOND, 0)
                 cal.set(Calendar.MILLISECOND, 0)
 
-                //cal.timeZone = TimeZone.getTimeZone("UTC")
-               // val tr=cal.timeToSave()
-                //Log.v("TIME","OUT "+tr)
-                //Log.v("TIME","OUT "+cal.timeInMillis)
-              //  Log.v("TIME","OUT "+cal.timeToRead())
-
                 return cal.timeInMillis
             }
 
@@ -1197,7 +1187,7 @@ class MainActivity : AppCompatActivity() {
                     val durationHours = (durationMinutes / 60)
 
                     //if now is before task time end
-                    if ((localCal.timeInMillis/*-localCal.timeZone.rawOffset*/) < (cCalendar.timeInMillis + cCalendar.timeZone.rawOffset)
+                    if ((localCal.timeInMillis) < (cCalendar.timeInMillis + cCalendar.timeZone.rawOffset)
                     ) {
 
                         daysArray = c.getString(3).split(',')
@@ -1353,7 +1343,9 @@ class MainActivity : AppCompatActivity() {
 
         alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC, timeToAlarm, pendingIntent)
 
-    } fun deleteTaskNotification(taskId: Int, taskName: String){
+    }
+
+    fun deleteTaskNotification(taskId: Int, taskName: String){
         val myIntent = Intent(this, TimeBroadcastReceiver::class.java)
         myIntent.putExtra("taskId",taskId).putExtra("taskName",taskName)
         val pendingIntent = PendingIntent.getBroadcast(
@@ -1363,11 +1355,12 @@ class MainActivity : AppCompatActivity() {
         alarmManager.cancel(pendingIntent)
 
     }
+
     fun startFinishedNotification(taskId:Int,taskName:String){
         val myIntent = Intent(this, TimeBroadcastReceiver::class.java)
         myIntent.putExtra("taskId",taskId).putExtra("taskName",taskName).putExtra("finished",true)
         val pendingIntent = PendingIntent.getBroadcast(
-            this.applicationContext, taskId, myIntent, 0)            //multiply maybe not necessary
+            this.applicationContext, taskId, myIntent, 0)
         val alarmManager:AlarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
 
         alarmManager.setExact(AlarmManager.RTC, 1, pendingIntent)
@@ -1376,19 +1369,19 @@ class MainActivity : AppCompatActivity() {
 
     fun createTodayNotifications(){
         val data=oh.getServiceTaskInfo(userId)
-        val now=Calendar.getInstance().timeInMillis//+   2*TimeZone.getDefault().rawOffset
+        val now=Calendar.getInstance().timeInMillis
 
         for(row in data){
-            val time=row.third-now//-TimeZone.getDefault().rawOffset
+            val time=row.third-now
             if(time>0)
-                startTaskNotification(row.third/*-TimeZone.getDefault().rawOffset*/,row.first,row.second)
+                startTaskNotification(row.third,row.first,row.second)
         }
 
     }
 
     fun deleteTodayNotifications(){
         val data=oh.getServiceTaskInfo(userId)
-        val now=Calendar.getInstance().timeInMillis//+   TimeZone.getDefault().rawOffset
+        val now=Calendar.getInstance().timeInMillis
 
         for(row in data){
             val time=row.third-now
