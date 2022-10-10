@@ -8,7 +8,6 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
-import androidx.annotation.Keep;
 import androidx.annotation.Nullable;
 import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
@@ -22,7 +21,7 @@ import java.util.TimeZone;
 
 import kotlin.Triple;
 
-@Keep
+//@Keep
 public class LOTDatabaseHelper extends SQLiteOpenHelper {
     private static final String DB_NAME = "LOT";
     private static final int DB_VERSION = 1;
@@ -427,7 +426,7 @@ public class LOTDatabaseHelper extends SQLiteOpenHelper {
     public  int deleteColorRow(String oldCategory,String user_id) {
 
         Cursor c=db.rawQuery("SELECT  TASKTABLE.category FROM TASKTABLE WHERE  (TASKTABLE.user_id=? OR TRIM(TASKTABLE.user_id) IS NULL) ",new String[]{user_id});
-        Boolean found=false;
+        boolean found=false;
         if(c.moveToFirst())
             do{
                 if(c.getString(0).equals(oldCategory)){

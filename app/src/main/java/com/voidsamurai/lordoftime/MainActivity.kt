@@ -835,6 +835,7 @@ class MainActivity : AppCompatActivity() {
                 || super.onSupportNavigateUp()
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
         navController.currentDestination?.label.let {
             when {
@@ -1212,11 +1213,11 @@ class MainActivity : AppCompatActivity() {
 
                         var changed = false
                         //if task is planned for today
-                        if (!today.isNullOrEmpty())
+                        if (!today.isEmpty())
                             hoursArray.forEach {
                                 if (!changed) {
                                     val time = it.split(':')
-                                    if(time.size==2){
+                                    if(time.size==2&&time[0]!=""&&time[1]!=""){
                                         val hour = time[0].toInt()
                                         val minute = time[1].toInt()
                                         if (currentHour < (hour + durationHours) || (currentHour == (hour + durationHours) && currentMinute < (minute + durationMinutes))) {
@@ -1244,11 +1245,11 @@ class MainActivity : AppCompatActivity() {
                                 }
                             }
                         //for future tasks
-                        if ((!changed) && (!daysAfter.isNullOrEmpty())) {
+                        if ((!changed) && (!daysAfter.isEmpty())) {
                             hoursArray.forEach {
                                 if (!changed) {
                                     val time = it.split(':')
-                                    if(time.size==2){
+                                    if(time.size==2&&time[0]!=""&&time[1]!=""){
                                         val hour = time[0].toInt()
                                         val minute = time[1].toInt()
                                         val newDate = getCalendarTime(cCalendar, daysAfter[0], hour, minute)
@@ -1262,10 +1263,10 @@ class MainActivity : AppCompatActivity() {
                         }
                         //for future tasks before
 
-                        if ((!changed) && (!daysBefore.isNullOrEmpty())) {
+                        if ((!changed) && (!daysBefore.isEmpty())) {
                             hoursArray[0].let {
                                 val time = it.split(':')
-                                if(time.size==2){
+                                if(time.size==2&&time[0]!=""&&time[1]!=""){
                                     val hour = time[0].toInt()
                                     val minute = time[1].toInt()
                                     val newDate =
@@ -1277,9 +1278,9 @@ class MainActivity : AppCompatActivity() {
                                 }
                             }
                         }
-                        if ((!changed) && (!today.isNullOrEmpty()) && (!hoursArray.isNullOrEmpty())) {
+                        if ((!changed) && (!today.isEmpty()) && (!hoursArray.isEmpty())) {
                             val time = hoursArray[0].split(':')
-                            if(time.size==2){
+                            if(time.size==2&&time[0]!=""&&time[1]!=""){
                                 val hour = time[0].toInt()
                                 val minute = time[1].toInt()
                                 val newDate = getCalendarTime(cCalendar, today[0], hour, minute, true)
@@ -1492,9 +1493,10 @@ class TimeBroadcastReceiver : BroadcastReceiver() {
             )
     }
 }
+/*
 fun Calendar.timeToSave():Long{
     return  (timeInMillis-(TimeZone.getDefault().rawOffset+TimeZone.getDefault().dstSavings))
-}
+}*/
 fun Calendar.calendarToSave():Calendar{
     val cal= this.clone() as Calendar
     cal.timeInMillis-=(TimeZone.getDefault().rawOffset+TimeZone.getDefault().dstSavings)

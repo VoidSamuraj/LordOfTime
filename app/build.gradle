@@ -21,8 +21,8 @@ android {
         applicationId "com.voidsamurai.lordoftime"
         minSdkVersion 26
         targetSdkVersion 33
-        versionCode 12
-        versionName '1.1'
+        versionCode 20
+        versionName '1.11'
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -31,12 +31,13 @@ android {
     }
     buildTypes {
         release {
-            minifyEnabled true
-            shrinkResources true
+          //  minifyEnabled true
+         //   shrinkResources true
 
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+          //  proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
 
         }
+
 
     }
     compileOptions {

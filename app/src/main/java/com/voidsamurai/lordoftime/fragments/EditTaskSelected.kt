@@ -68,12 +68,13 @@ class EditTaskSelected : Fragment() ,DatePickerDialog.OnDateSetListener,TimePick
             binding.deleteEditButton.visibility=View.VISIBLE
             binding.nameEdit.setText(data!!.name)
             val lastElementPos=adapter.getPosition(Pair(data!!.category,data!!.color))
-            lastElementCategory=adapter.getItem(lastElementPos)!!.first
-
+            if(lastElementPos!=-1) {
+                lastElementCategory = adapter.getItem(lastElementPos)!!.first
+                binding.checkCategory.setSelection(lastElementPos)
+            }
             if(data!!.id==(activity as MainActivity).currentTaskId)
                 binding.deleteEditButton.isEnabled=false
 
-            binding.checkCategory.setSelection(lastElementPos)
             binding.priorityEdit.setText(data!!.priority.toString())
             binding.dateEdit.setText(dateFormat.format(data!!.date.calendarToRead().time))
             binding.durationEdit.setText((((data!!.workingTime/3600)*100).toInt().toFloat()/100).toString())
@@ -130,7 +131,7 @@ class EditTaskSelected : Fragment() ,DatePickerDialog.OnDateSetListener,TimePick
             binding.deleteEditButton.visibility=View.GONE
 
             binding.saveEditButton.setOnClickListener {
-                if(checkIfCanSave()){
+                if(checkIfCanSave()&&binding.checkCategory.selectedItem!=null){
                 addRow(
                     (binding.checkCategory.selectedItem as Pair<*, *>).first.toString(),
                     binding.nameEdit.text.toString(),
@@ -144,7 +145,7 @@ class EditTaskSelected : Fragment() ,DatePickerDialog.OnDateSetListener,TimePick
             }
 
             binding.isRepeating.setOnClickListener {
-                if(checkIfCanSave()){
+                if(checkIfCanSave()&&binding.checkCategory.selectedItem!=null){
                     val id=addRow(
                         (binding.checkCategory.selectedItem as Pair<*, *>).first.toString(),
                         binding.nameEdit.text.toString(),
@@ -163,6 +164,7 @@ class EditTaskSelected : Fragment() ,DatePickerDialog.OnDateSetListener,TimePick
                 }
 
             }
+
 
         }
 

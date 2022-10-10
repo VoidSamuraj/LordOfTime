@@ -1,9 +1,8 @@
 package com.voidsamurai.lordoftime.bd
 
-import androidx.annotation.Keep
 import com.google.firebase.database.*
 import com.voidsamurai.lordoftime.MainActivity
-@Keep
+//@Keep
 class DAOSettings(val mActivity: MainActivity) {
     private var dbReference: DatabaseReference
     private var vel: ValueEventListener

@@ -1,9 +1,8 @@
 package com.voidsamurai.lordoftime.bd
 
-import androidx.annotation.Keep
 import com.google.firebase.database.*
 import com.voidsamurai.lordoftime.MainActivity
-@Keep
+//@Keep
 class DAOColors(mActivity: MainActivity){
     private val data:MutableMap<String,String> = mutableMapOf()
     private var dbReference: DatabaseReference

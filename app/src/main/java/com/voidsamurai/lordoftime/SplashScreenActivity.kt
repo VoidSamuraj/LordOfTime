@@ -1,6 +1,7 @@
 package com.voidsamurai.lordoftime
 
 import android.animation.Animator
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.view.animation.Animation
@@ -17,6 +18,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
+@SuppressLint("CustomSplashScreen")
 class SplashScreenActivity : AppCompatActivity(), Animation.AnimationListener{
 
     lateinit var auth: FirebaseAuth
@@ -86,8 +88,8 @@ class SplashScreenActivity : AppCompatActivity(), Animation.AnimationListener{
                 intent.flags =
                     Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                 intent.putExtra("user_id", auth.uid)
-                intent.putExtra("user_name", auth.currentUser!!.displayName.toString())
-                intent.putExtra("email_id", auth.currentUser!!.email.toString())
+                auth.currentUser?.displayName.toString().let{ intent.putExtra("user_name", it)}
+                auth.currentUser?.email.toString().let{intent.putExtra("email_id", it)}
                 startActivity(intent)
                 finish()
             } else {
