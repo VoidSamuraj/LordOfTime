@@ -14,7 +14,9 @@ import com.voidsamurai.lordoftime.databinding.FragmentColorsListBinding
 import com.voidsamurai.lordoftime.fragments.adapters.ColorsAdapter
 import com.voidsamurai.lordoftime.fragments.dialogs.ColorDialogFragment
 
-
+/**
+ * Fragment displaying categories, (color with names).
+ */
 class ColorsListFragment : Fragment() {
 
     private lateinit var colorAdapter: ColorsAdapter

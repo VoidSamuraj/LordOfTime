@@ -6,7 +6,6 @@ import android.content.Context
 import android.content.res.Configuration
 import android.graphics.Color
 import android.util.DisplayMetrics
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.LinearLayout
@@ -21,6 +20,9 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 
+/**
+ * Adapter for view  in CalendarEditFragment to display days
+ */
 class CalendarEditAdapter (private val context: Context, private val dataSet: ArrayList<ArrayList<NTuple6<Calendar,Float,Int, String, String,String>>?>) :
 
     RecyclerView.Adapter<LinearViewHolder>() {

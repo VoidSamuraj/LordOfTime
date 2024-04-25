@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
-import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.voidsamurai.lordoftime.LinearViewHolder
@@ -18,7 +17,6 @@ import com.voidsamurai.lordoftime.databinding.FragmentCalendarEditBinding
 import com.voidsamurai.lordoftime.fragments.adapters.CalendarEditAdapter
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.math.roundToInt
 
 import android.view.ViewAnimationUtils
 
@@ -27,16 +25,15 @@ import androidx.core.graphics.drawable.toDrawable
 import androidx.core.view.drawToBitmap
 import kotlin.math.max
 
+/**
+ * Fragment displaying calendar with color gradient of time spend on tasks.
+ */
 class CalendarEditFragment : Fragment() {
 
     private var _calendarViewBinding:FragmentCalendarEditBinding?=null
     private val binding get()=_calendarViewBinding!!
 
     private lateinit var background:View
-    var dayAimH: MutableLiveData<Int> = MutableLiveData(6)
-    private var productiveDays:Int=0
-    private var workPer:Float=0f
-    private var productivePer:Float=0f
     private lateinit var weeks1:Array<RecyclerView>
     private lateinit var weeks2:Array<RecyclerView>
     private var date: Calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
@@ -62,21 +59,6 @@ class CalendarEditFragment : Fragment() {
 
         createDaysCalendarChart(Calendar.getInstance(TimeZone.getTimeZone("UTC")),true, weeks1)
         createDaysCalendarChart(Calendar.getInstance(TimeZone.getTimeZone("UTC")),true, weeks2)
-
-        fun fillLabels(){
-            productivePer= (productivePer * 100).roundToInt().toFloat()/100
-            workPer= (workPer * 100).roundToInt().toFloat()/100
-        }
-        fun fillAim(){
-            fillLabels()
-        }
-        fun updateAfterAimChange(){
-            fillLabels()
-        }
-        dayAimH.observe(viewLifecycleOwner) {
-            updateAfterAimChange()
-        }
-
 
         date= Calendar.getInstance(TimeZone.getTimeZone("UTC"))
         binding.currentMonthLabel.setText(mdf.format(date.time))
@@ -129,7 +111,6 @@ class CalendarEditFragment : Fragment() {
                 createDaysCalendarChart(date,true,weeks1)
             else
                 createDaysCalendarChart(date,true,weeks2)
-            fillAim()
 
         }
 
@@ -141,12 +122,9 @@ class CalendarEditFragment : Fragment() {
                 createDaysCalendarChart(date,true,weeks1)
             else
                 createDaysCalendarChart(date,true,weeks2)
-            fillAim()
         }
 
         binding.currentMonthLabel.setText(mdf.format(date.time))
-
-        fillAim()
 
         background = binding.background
 
@@ -177,15 +155,12 @@ class CalendarEditFragment : Fragment() {
     }
 
     override fun onDestroyView() {
-        dayAimH.removeObservers(viewLifecycleOwner)
         _calendarViewBinding=null
-
         super.onDestroyView()
     }
 
     private fun createDaysCalendarChart(monthCalendar: Calendar, isMondayFirstDay:Boolean=false, weeks:Array<RecyclerView>) {
-        productiveDays = 0
-        val hours = 0f
+
         if (isMondayFirstDay) {
             monthCalendar.firstDayOfWeek = Calendar.MONDAY
 
@@ -298,8 +273,6 @@ class CalendarEditFragment : Fragment() {
             )
         }
 
-        workPer=hours/( dayAimH.value!! * monthDays)
-        productivePer=(productiveDays.toFloat()/monthDays*100)
     }
 
     private fun setAdapterManager(recyclerView: RecyclerView, adapter:RecyclerView.Adapter<LinearViewHolder>, layoutManager: RecyclerView.LayoutManager){
@@ -307,6 +280,9 @@ class CalendarEditFragment : Fragment() {
         recyclerView.layoutManager=layoutManager
     }
 
+    /**
+     * Function to perform circular reveal animation
+     */
     private fun circularReveal() {
         val finalRadius: Int = max(background.width, background.height)
         val circularReveal = ViewAnimationUtils.createCircularReveal(

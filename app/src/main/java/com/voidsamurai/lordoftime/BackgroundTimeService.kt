@@ -9,7 +9,9 @@ import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
 import java.util.*
 
-
+/**
+ * Service for displaying notifications(working time).
+ */
 class BackgroundTimeService :Service() {
     private var startTime:Int=0
     private var isRunning:Boolean=true
@@ -47,7 +49,7 @@ class BackgroundTimeService :Service() {
             var secondsCount = startTime // Calendar.getInstance().timeInMillis
             val startTimeCal= (Calendar.getInstance().timeInMillis/1000).toInt()
             var counter=0
-            do {
+            while (this.isRunning) {
                 if(counter%300==0){
                     secondsCount=(Calendar.getInstance().timeInMillis/1000).toInt()-startTimeCal
                     counter=0
@@ -57,7 +59,7 @@ class BackgroundTimeService :Service() {
                 startTime++
                 Thread.sleep(1000)
                 updateNotification(secondsCount/3600,secondsCount/60%60,secondsCount%60)
-            }while (this.isRunning)
+            }
 
             this.startTime=0
             Thread.currentThread().interrupt()
@@ -68,6 +70,8 @@ class BackgroundTimeService :Service() {
     override fun onDestroy() {
         isRunning=false
         super.onDestroy()
+        notificationManager.cancelAll()
+        notificationManager.deleteNotificationChannel(WIDGET_ID)
     }
 
     fun createNotificationChannel(descript: String){
@@ -105,8 +109,13 @@ class BackgroundTimeService :Service() {
     }
 
     private fun updateNotification(hours:Int,minutes:Int,seconds:Int){
-        contentView.setTextViewText(R.id.hour,String.format("%02d:%02d:%02d",hours,minutes,seconds))
-        startForeground(WIDGET_ID.toInt(), notification)
+        if(notificationManager.notificationChannels.isNotEmpty()) {
+            contentView.setTextViewText(
+                R.id.hour,
+                String.format("%02d:%02d:%02d", hours, minutes, seconds)
+            )
+            notificationManager.notify(WIDGET_ID.toInt(), notification)
+        }
     }
 
     override fun onBind(intent: Intent?): IBinder? =null

@@ -22,6 +22,9 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.roundToInt
 
+/**
+ * Fragment for statistics view with array of charts.
+ */
 class DateChartFragment : Fragment() {
 
     private var _binding: FragmentDateWidgetBinding?=null
@@ -29,7 +32,6 @@ class DateChartFragment : Fragment() {
     var dayAimH:MutableLiveData<Int> = MutableLiveData(8)
     private var productiveDays:Int=0
     private var workPer:Float=0f
-    private var productivePer:Float=0f
     private lateinit var weeks1:Array<RecyclerView>
     private lateinit var weeks2:Array<RecyclerView>
     private var date:Calendar= Calendar.getInstance(TimeZone.getTimeZone("UTC"))
@@ -58,9 +60,10 @@ class DateChartFragment : Fragment() {
 
         createDaysCalendarChart(Calendar.getInstance(TimeZone.getTimeZone("UTC")),true, weeks1)
         createDaysCalendarChart(Calendar.getInstance(TimeZone.getTimeZone("UTC")),true, weeks2)
-
+        /**
+         * Function to display productive days number and percentage.
+         */
         fun fillLabels(){
-            productivePer= (productivePer * 100).roundToInt().toFloat()/100
             workPer= (workPer * 100).roundToInt().toFloat()/100
             if (workPer>100)
                 workPer=100f
@@ -68,10 +71,18 @@ class DateChartFragment : Fragment() {
             binding.productiveDays.text=String.format(resources.getString(R.string.productive_days)+": %o ",productiveDays)
             binding.productiveLabel.text=String.format(resources.getString(R.string.productivity)+": %.2f%%",workPer)
         }
+
+        /**
+         * Change text of aim hours and update productive hours and percentage.
+         */
         fun fillAim(){
             dayAim.text=getAimH(dayAimH.value.toString())
             fillLabels()
         }
+
+        /**
+         * Update charts
+         */
         fun updateAfterAimChange(){
             val id=binding.materialButtonToggleGroup.checkedButtonId
             if(id==R.id.day_button)
@@ -95,7 +106,9 @@ class DateChartFragment : Fragment() {
             dayAim.text = getAimH(it.toString())
             updateAfterAimChange()
         }
-
+        /**
+         * remove animation of changing date range.
+         */
         fun slideNone(){
             binding.currentMonthLabel.inAnimation= null
             binding.currentMonthLabel.outAnimation= null
@@ -418,7 +431,6 @@ class DateChartFragment : Fragment() {
         }
 
         workPer=hours/( dayAimH.value!! * monthDays)
-        productivePer=(productiveDays.toFloat()/monthDays*100)
     }
 
     private fun createWeekCalendarChart(monthCalendar:Calendar, isMondayFirstDay:Boolean=false,weeks:Array<RecyclerView>){
@@ -516,7 +528,6 @@ class DateChartFragment : Fragment() {
         setWeekAdapter(weeks[4],ArrayList())
         setWeekAdapter(weeks[5],ArrayList())
         workPer=hours/(days * dayAimH.value!!)
-        productivePer=(productiveDays.toFloat()/days*100)
     }
 
     private fun createMonthCalendarChart(monthCalendar:Calendar, isMondayFirstDay:Boolean=false, weeks:Array<RecyclerView>){
@@ -548,7 +559,7 @@ class DateChartFragment : Fragment() {
             monthsData.put(key,it.value)
         }
 
-        val days=monthCalendar.getActualMaximum(Calendar.DAY_OF_MONTH)
+        val days=monthCalendar.getActualMaximum(Calendar.DAY_OF_YEAR)
         val scale=days* dayAimH.value!!
         fun setMonthAdapter(recyclerView:RecyclerView,arrayList:ArrayList<NTuple5<Int,Float,Boolean,Int,Int?>?> ) {
             setAdapterManager(
@@ -585,7 +596,6 @@ class DateChartFragment : Fragment() {
         setMonthAdapter(weeks[4],ArrayList())
         setMonthAdapter(weeks[5],ArrayList())
         workPer=hours/scale
-        productivePer=(productiveDays.toFloat()/days*100)
     }
 
     private fun getAimH(data:String):String{

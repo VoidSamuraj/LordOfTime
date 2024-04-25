@@ -71,7 +71,6 @@ class ColorDialogFragment(
                     else -> {
                         colors.delete(text)
                         update()
-
                     }
                 }
                 dismiss()
@@ -111,7 +110,7 @@ class ColorDialogFragment(
 
         }
         val build=builder.create()
-            build.setOnShowListener {
+        build.setOnShowListener {
             build.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener { view->
                 if(dialogType==1){
                     if (getName().isEmpty() || (!colorchanged)){
@@ -134,15 +133,14 @@ class ColorDialogFragment(
                         val ret=(activity as MainActivity).getDBOpenHelper()
                             .editColorRow(oldCategory, getName(), color,(activity as MainActivity).userId)
                         if(ret!=-1){
-                        colors.add(getName(),getColor())
-                        update()
-                        it.dismiss()
+                            colors.add(getName(),getColor())
+                            update()
+                            it.dismiss()
                         }else{
                             showNotification(resources.getString(R.string.category_exist))
                         }
                     }
                 }
-
             }
         }
         return build

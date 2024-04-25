@@ -182,6 +182,10 @@ class StartWorkAdapter(private val activity: MainActivity, private var toDoData:
             setEndStyle()
 
     }
+
+    /**
+     * Function to change styling of chart and button.
+     */
     fun setEndStyle() {
         layout.findViewById<TextView>(R.id.progress_label).setText(R.string.ya_working)
         layout.findViewById<ImageButton>(R.id.imageButton)
@@ -234,6 +238,7 @@ class StartWorkAdapter(private val activity: MainActivity, private var toDoData:
         toDoData[position].currentWorkingTime = time.toFloat()
 
     }
+
 
     fun setObserver(layout: View, todo: Float, current: Int, position: Int, id: Int) {
 

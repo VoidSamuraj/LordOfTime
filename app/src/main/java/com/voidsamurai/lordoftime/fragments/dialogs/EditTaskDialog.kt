@@ -8,7 +8,6 @@ import android.content.DialogInterface
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.*
@@ -17,7 +16,6 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
 import androidx.navigation.findNavController
-import androidx.navigation.fragment.findNavController
 import com.voidsamurai.lordoftime.*
 import com.voidsamurai.lordoftime.MainActivity.Companion.formatToFloat
 import com.voidsamurai.lordoftime.bd.DataRowWithColor
@@ -112,7 +110,6 @@ class EditTaskDialog(
                 if(dataRow!!.id==(activity as MainActivity).currentTaskId)
                     deleteButton.isEnabled=false
 
-
                 endHourCalendar=(cal.clone() as Calendar).calendarToRead()
                 startHour.setText(String.format("%02d:%02d", startHourCalendar.get(Calendar.HOUR_OF_DAY),startHourCalendar.get(Calendar.MINUTE)))
                 endHour.setText(String.format("%02d:%02d", endHourCalendar.get(Calendar.HOUR_OF_DAY),endHourCalendar.get(Calendar.MINUTE)))
@@ -135,7 +132,6 @@ class EditTaskDialog(
         }
 
         saveButton.setOnClickListener {
-
             val canSave=checkIfCanSave()
 
             if(mode== MODE.SAVE){
@@ -148,12 +144,10 @@ class EditTaskDialog(
                 if(canSave&&(changed||lastElementCategory!=category)) {
                     if (durationEdit.text.isNullOrEmpty())
                         setDuration()
-
                     updateRow((activity as MainActivity).getDBOpenHelper().getTaskRow(id!!,(activity as MainActivity).userId))
                 }
                 dismiss()
             }
-
         }
         isRepeating.setOnClickListener {
             if(mode== MODE.SAVE){
@@ -164,11 +158,9 @@ class EditTaskDialog(
                         (activity as MainActivity).let {
                             it.repeatDialog = RepeatDialog(id,this)
                             it.repeatDialog.show(requireActivity().supportFragmentManager, "Task")
-
                         }
                     }
                     dismiss()
-
                 }
             }
             else
@@ -176,16 +168,13 @@ class EditTaskDialog(
                     (activity as MainActivity).let {
                         it.repeatDialog = RepeatDialog(it1,this)
                         it.repeatDialog.show(requireActivity().supportFragmentManager, "Task")
-
                     }
                 }
         }
         addColorB.setOnClickListener {
             activity?.findNavController(R.id.nav_host_fragment)!!.navigate(R.id.action_calendarDayEdit_to_colorsFragment)
             dismiss()
-
         }
-
 
         startHourCalendar.set(Calendar.SECOND, 0)                                                 //set hours from prev frag
         startHourCalendar.set(Calendar.MILLISECOND, 0)
@@ -209,7 +198,6 @@ class EditTaskDialog(
                 startHourCalendar.get(Calendar.MINUTE),
                 true
             )
-
             tp.show()
         }
         endHour.setOnClickListener{
@@ -275,7 +263,6 @@ class EditTaskDialog(
         }else{
             deleteButton.visibility=View.GONE
         }
-
         isRutineChecked.observe(this) {
             isRepeating.isChecked = it
         }
@@ -283,13 +270,10 @@ class EditTaskDialog(
             compoundButton.isChecked=isRutineChecked.value!!
         }
         changed=false
-
         return builder.create()
     }
 
-
     fun checkIfCanSave():Boolean{
-
         val color=resources.getColor(R.color.blue_gray,null)
         var canSave =true
         if(nameEdit.text.isNullOrEmpty()){
@@ -306,7 +290,6 @@ class EditTaskDialog(
 
         return canSave
     }
-
 
     fun addNewElement():Long{
         if(durationEdit.text.isNullOrEmpty()||durationEdit.text.toString().toFloat()<0f)
@@ -353,10 +336,8 @@ class EditTaskDialog(
                     drwc,
                     m
                 )
-
             }
         }
-
         return idReturn?:-1L
     }
 
@@ -365,23 +346,18 @@ class EditTaskDialog(
         if (hoursInFloat<0){
             hoursInFloat*=-1
         }
-
         durationEdit.setText(hoursInFloat.toString())
-
     }
     private fun setColorSpinner(){
         val list: Array<String> = (activity as MainActivity).getColors().value!!.keys.toTypedArray()
         list.sort()
-
         adapter= ArrayColorAdapter(requireContext(),R.layout.element_color_edit,(activity as MainActivity).getColors().value!!.toList())
         adapter.setDropDownViewResource(R.layout.element_color_edit)
         category.adapter = adapter
     }
 
-
     private fun updateRow(data:DataRowWithColor) {
         setDuration()
-
         var dur = (durationEdit.text.toString().formatToFloat())
         val (hour, min) = (startHour.text.toString().split(":"))
         val start = hour.toFloat() + min.toFloat() / 60                                //czy na 100
@@ -392,7 +368,6 @@ class EditTaskDialog(
         }else {
 
             m.let {
-
                 dur = (fragment as CalendarDayEdit).getMaxDur(
                     it,
                     (fragment as CalendarDayEdit).getHeight(dur),

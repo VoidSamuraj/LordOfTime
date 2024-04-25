@@ -38,7 +38,7 @@ class AuthActivity : AppCompatActivity() {
                         val sp=getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE)
                         val oldId= sp.getString("user_id","")?:""
                         if(oldId!=itt.id)
-                        sp.edit().putString("user_id",itt.id).putBoolean("IS_USER_CHANGED",true).apply()
+                            sp.edit().putString("user_id",itt.id).putBoolean("IS_USER_CHANGED",true).apply()
 
                     }
                 } catch (e: ApiException) {

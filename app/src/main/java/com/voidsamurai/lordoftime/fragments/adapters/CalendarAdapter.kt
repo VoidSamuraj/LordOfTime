@@ -12,7 +12,9 @@ import com.voidsamurai.lordoftime.LinearViewHolder
 import com.voidsamurai.lordoftime.R
 import com.voidsamurai.lordoftime.charts_and_views.NTuple5
 
-
+/**
+ * Adapter to display single simple pie chart, used for statistics.
+ */
 class CalendarAdapter(private val context: Context, private val dataSet: ArrayList<NTuple5<Int, Float, Boolean, Int, Int?>?>) :
 
     RecyclerView.Adapter<LinearViewHolder>() {

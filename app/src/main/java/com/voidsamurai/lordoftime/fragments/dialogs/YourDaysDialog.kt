@@ -16,7 +16,9 @@ import com.voidsamurai.lordoftime.MainActivity
 import com.voidsamurai.lordoftime.R
 import java.util.*
 
-
+/**
+ * Dialog displayed on first time app enter, to specify birth date and expected time of life.
+ */
 class YourDaysDialog : DialogFragment() ,DatePickerDialog.OnDateSetListener {
     private lateinit var contentView: View
 

@@ -10,7 +10,9 @@ import android.widget.TextView
 import androidx.annotation.LayoutRes
 import com.voidsamurai.lordoftime.R
 
-
+/**
+ * Adapter to display colors and names in drop down menu.
+ */
 class ArrayColorAdapter(
     context: Context,
     @LayoutRes

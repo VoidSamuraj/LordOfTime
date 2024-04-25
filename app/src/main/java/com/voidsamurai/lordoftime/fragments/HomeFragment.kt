@@ -46,6 +46,7 @@ class HomeFragment : Fragment() {
         recyclerView.layoutManager=layoutManager
     }
 
+    //blocking recycler view click
     class RecyclerViewDisabler : RecyclerView.OnItemTouchListener {
         override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean=true
         override fun onTouchEvent(rv: RecyclerView, e: MotionEvent) {}
@@ -57,6 +58,7 @@ class HomeFragment : Fragment() {
         hiddenWidth = resources.getDimension(R.dimen.button_group_width).toInt()
         cornerWidth = resources.getDimension(R.dimen.button_corners).toInt()
 
+        // set keyboard mode
         activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
 
         (activity as MainActivity).getQueryArrayByPriority().observe(viewLifecycleOwner) {
@@ -173,7 +175,6 @@ class HomeFragment : Fragment() {
 
         homeFragmentBinding.taskChangerFAB.setOnClickListener { it ->
 
-
             val background=homeFragmentBinding.homeFrag
             val intArray= IntArray(2)
             homeFragmentBinding.taskChangerFAB.getLocationOnScreen(intArray)
@@ -226,11 +227,9 @@ class HomeFragment : Fragment() {
                     })
                 }
 
-
                 it.isFromCalendarFragment=false
             }
         }
-
     }
     private fun setWorkButtonListener(){
         for(i in 0 until homeFragmentBinding.buttonGroup.childCount){
@@ -324,7 +323,9 @@ class HomeFragment : Fragment() {
         super.onDestroyView()
     }
 
-
+    /**
+     * Animation on navigate back from tasks calendar.
+     */
     private fun circularRevealBack() {
         val background=homeFragmentBinding.bg
         val finalRadius = max(background.width, background.height).toFloat()

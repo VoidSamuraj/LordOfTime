@@ -22,7 +22,9 @@ import com.voidsamurai.lordoftime.fragments.dialogs.EditTaskDialog
 import com.voidsamurai.lordoftime.timeToRead
 import java.util.*
 
-
+/**
+ * Fragment witch displays scrollable view of tasks in day.
+ */
 class CalendarDayEdit : Fragment() {
     private var x:Float?=null
     private var y:Float?=null
@@ -80,7 +82,11 @@ class CalendarDayEdit : Fragment() {
 
     }
 
-
+    /**
+     * Function to add new button (task)
+     * @param drwc  - data of new task
+     * @param marginTop - top margin of new button
+     */
     fun addElement(drwc: DataRowWithColor, marginTop:Int){
         val button=Button(requireContext())
         button.id=drwc.id
@@ -91,6 +97,10 @@ class CalendarDayEdit : Fragment() {
         calendarBinding.parent.addView(button)
         setDimens(marginTop,button)
     }
+    /**
+     * Function to add new button (task). Top margin will be calculated basing on date in parameter.
+     * @param drwc  - data of new task
+     */
     private fun addElement(drwc: DataRowWithColor){
         val ctr=drwc.date.calendarToRead()
         val h=ctr.get(Calendar.HOUR_OF_DAY)
@@ -98,7 +108,6 @@ class CalendarDayEdit : Fragment() {
         addElement(drwc,((m+h)*(calendarBinding.parent.height/24)).toInt())
     }
     fun editElement(drwc: DataRowWithColor){
-
         val button=calendarBinding.parent.findViewById<Button>(drwc.id)
         val button2=Button(requireContext())
         calendarBinding.parent.removeView(button)
@@ -114,10 +123,20 @@ class CalendarDayEdit : Fragment() {
         setDimens(((hour)*resources.getDimension(R.dimen.scroll)/24f).toInt(),button)
     }
 
+    /**
+     * Function to get calculated height from duration.
+     * @param dur - duration of task. Number between 0.0 and 24.0
+     * @return calculated height based on duration.
+     */
     fun getHeight(dur: Float):Int{
         return (dur*calendarBinding.scroll.height/24f).toInt()
     }
 
+    /**
+     * Function to set dimensions of button in view
+     * @param topMargin - y position of button
+     * @param button - button to which positions will be assigned
+     */
     private fun setDimens(topMargin:Int, button:Button){
         val set = ConstraintSet()
         set.clone(calendarBinding.parent)
@@ -137,21 +156,34 @@ class CalendarDayEdit : Fragment() {
         }
     }
 
+    /**
+     * Function to delete button from view with specified id
+     * @param id - id of element to remove
+     */
     fun deleteElement(id:Int){
         val but=calendarBinding.parent.findViewById<Button>(id)
         calendarBinding.parent.removeView(but)
     }
 
-    fun getMaxDur(y:Int,pref:Int):Float{
-        val max=getButtonY(y,pref)
-        return max.toFloat()/calendarBinding.scroll.height*24
-    }
-    fun getMaxDur(y:Int,pref:Int,id:Int):Float{
-        val max=getButtonY(y,pref,id)
+    /**
+     * Function to calculate max hours for task in selected place.
+     * @param y - y position of new button (task)
+     * @param pref - preferred duration of task
+     * @param id - id of existing button (when editing task) or null
+     */
+    fun getMaxDur(y:Int,pref:Int,id:Int?=null):Float{
+        val max=getButtonY(y,pref, id)
         return max.toFloat()/calendarBinding.scroll.height*24
     }
 
-        fun getStartMargin(nextStartHour:Float,duration:Float,id:Int?=-1):Int {
+    /**
+     * Function to get top margin of new button, calculated by position of click
+     * @param nextStartHour - hour in which task will start
+     * @param duration - duration of task
+     * @param id - id of existing button (when editing task) or null
+     * @return calculated margin if possible to place element with specified duration in y position, else -1.
+     */
+    fun getStartMargin(nextStartHour:Float,duration:Float,id:Int?=-1):Int {
         var canBe=true
         val y=  (nextStartHour * calendarBinding.scroll.height / 24f).toInt()
         val dur=  (duration * calendarBinding.scroll.height / 24f).toInt()
@@ -170,21 +202,19 @@ class CalendarDayEdit : Fragment() {
             -1
     }
 
+    /**
+     * Function to calculate max possible height of component
+     * @param y - y position of new button (task)
+     * @param prefDuration - preferred duration of task
+     * @param id - id of existing button (when editing task) or null
+     * @return prefDuration if there is space for new task. Max free space if area between y and y + prefDuration is occupied by other button. Else returns parent height
+     */
     private fun getButtonY(y:Int, prefDuration:Int, id:Int?=null):Int{
         var max:Int=calendarBinding.parent.height-y
-        if (id != null)
             for(child in calendarBinding.parent.children){
-                if(child is Button&&id!=child.id) {
+                if(child is Button && (id==null || id!=child.id)) {
                     val topC = child.marginTop
-                    if (topC>y&&(topC-y)<max)
-                        max = topC-y
-                }
-            }
-        else
-            for(child in calendarBinding.parent.children){
-                if(child is Button) {
-                    val topC = child.marginTop
-                    if (topC>y&&(topC-y)<max)
+                    if (topC>y && (topC-y)<max)
                         max = topC-y
                 }
             }

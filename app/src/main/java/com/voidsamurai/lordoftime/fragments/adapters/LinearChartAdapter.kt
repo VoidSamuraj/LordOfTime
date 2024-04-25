@@ -10,6 +10,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.voidsamurai.lordoftime.LinearViewHolder
 import com.voidsamurai.lordoftime.R
 
+/**
+ * Adapter for main chart to display list of categories.
+ */
 class LinearChartAdapter(private val dataSet: List<Pair<String,String>>):RecyclerView.Adapter<LinearViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LinearViewHolder {

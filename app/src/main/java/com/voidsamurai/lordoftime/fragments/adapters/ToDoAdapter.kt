@@ -17,6 +17,9 @@ import com.voidsamurai.lordoftime.bd.DataRowWithColor
 import java.util.*
 import kotlin.collections.ArrayList
 
+/**
+ * Adapter for most important tasks
+ */
 class ToDoAdapter(private val dataSet: ArrayList<DataRowWithColor>, private val activity:MainActivity): RecyclerView.Adapter<LinearViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LinearViewHolder {

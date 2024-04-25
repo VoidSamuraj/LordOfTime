@@ -10,15 +10,10 @@ class DAOTasks(val mActivity: MainActivity){
     private val data:ArrayList<DataRow> = arrayListOf()
     private var dbReference: DatabaseReference
     private var vel:ValueEventListener
-
-
-
     init {
         val db=FirebaseDatabase.getInstance()
 
-
         dbReference=db.getReference(mActivity.userId!!).child("task")
-
 
         vel=object:ValueEventListener{
 
@@ -33,9 +28,9 @@ class DAOTasks(val mActivity: MainActivity){
                                 child.child("category").value.toString(),
                                 child.child("name").value.toString(),
                                 calendar.clone() as Calendar,
-                                (child.child("workingTime").value as Long).toFloat(),
-                                (child.child("priority").value as Long).toInt(),
-                                (child.child("currentWorkingTime").value as Long).toFloat(),
+                                (child.child("workingTime").value as? Long)?.toFloat() ?:0f,
+                                (child.child("priority").value as? Long)?.toInt() ?: 0,
+                                (child.child("currentWorkingTime").value as? Long)?.toFloat()?: 0f,
 
                                 )
                         )

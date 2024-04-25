@@ -31,6 +31,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
@@ -68,9 +69,10 @@ import java.io.File
 import java.io.FileInputStream
 import java.util.*
 
+const val PERMISSION_REQUEST_CODE= 21371
+
 
 class MainActivity : AppCompatActivity() {
-
 
 
     lateinit var repeatDialog: RepeatDialog
@@ -391,7 +393,6 @@ class MainActivity : AppCompatActivity() {
                     for (el in array) {
                         if (el.id == this.id && (el.name != this.name || el.category != this.category || el.date.time.time != this.date.time.time))
                             return true
-
                     }
                     return false
                 }
@@ -567,11 +568,13 @@ class MainActivity : AppCompatActivity() {
         newIntent()
     }
 
+    /**
+     * Function to restart activity.
+     */
     private fun newIntent(){
         val intent = intent
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
         startActivity(intent)
-
         finish()
     }
 
@@ -629,6 +632,7 @@ class MainActivity : AppCompatActivity() {
         val now=Calendar.getInstance(TimeZone.getTimeZone("UTC")).timeInMillis
         val timeToadd=now-getLastTimeUpdated()
 
+        //update current task after coming back to app
         if(getIsRunningTask()){
             if(getCurrentTaskId()!=-1&&timeToadd!=0L){
                 isTaskStarted=true
@@ -661,7 +665,6 @@ class MainActivity : AppCompatActivity() {
             queryArrayByDuration.value = getSortedByDuration(it)
         }
 
-
         _mainFragmentBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(mainFragmentBinding.root)
 
@@ -676,6 +679,7 @@ class MainActivity : AppCompatActivity() {
         appBarConfiguration = AppBarConfiguration(navController.graph, drawerLayout)
         setupActionBarWithNavController(navController, drawerLayout)
 
+        //counter on button
         CoroutineScope(Dispatchers.Default).launch {
             var olddate=Calendar.getInstance().timeInMillis
             if(getIsRunningTask()) {
@@ -706,6 +710,8 @@ class MainActivity : AppCompatActivity() {
         val menu: Menu = mainFragmentBinding.navView.menu
         val menuItem = menu.findItem(R.id.calendarEditFragment)
         val calendarItem = menu.findItem(R.id.manyCharts)
+
+        //navigation for calendar in drawer
         menuItem.setOnMenuItemClickListener {
 
             drawerLayout.closeDrawer(GravityCompat.START)
@@ -718,6 +724,7 @@ class MainActivity : AppCompatActivity() {
             }
             true
         }
+        //navigation for charts in drawer
         calendarItem.setOnMenuItemClickListener {
 
             drawerLayout.closeDrawer(GravityCompat.START)
@@ -867,6 +874,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     /**
+     * Function to download data about task from local(on device) database
      * @author Karol Robak
      *
      * **/
@@ -964,7 +972,6 @@ class MainActivity : AppCompatActivity() {
                 queryArrayByDuration.value = getSortedByDuration(query)
             }
         }
-
     }
 
     private fun getSortedByDuration(qa: ArrayList<DataRowWithColor>): ArrayList<DataRowWithColor> {
@@ -1339,7 +1346,7 @@ class MainActivity : AppCompatActivity() {
         val myIntent = Intent(this, TimeBroadcastReceiver::class.java)
         myIntent.putExtra("taskId",taskId).putExtra("taskName",taskName)
         val pendingIntent = PendingIntent.getBroadcast(
-            this.applicationContext, taskId, myIntent, 0)
+            this.applicationContext, taskId, myIntent, PendingIntent.FLAG_UPDATE_CURRENT)
         val alarmManager:AlarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
 
         alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC, timeToAlarm, pendingIntent)
@@ -1350,24 +1357,24 @@ class MainActivity : AppCompatActivity() {
         val myIntent = Intent(this, TimeBroadcastReceiver::class.java)
         myIntent.putExtra("taskId",taskId).putExtra("taskName",taskName)
         val pendingIntent = PendingIntent.getBroadcast(
-            this.applicationContext, taskId, myIntent, 0)
+            this.applicationContext, taskId, myIntent, PendingIntent.FLAG_UPDATE_CURRENT)
         val alarmManager:AlarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
 
         alarmManager.cancel(pendingIntent)
 
     }
 
-    fun startFinishedNotification(taskId:Int,taskName:String){
+    fun startFinishedNotification(taskId:Int, taskName:String){
         val myIntent = Intent(this, TimeBroadcastReceiver::class.java)
         myIntent.putExtra("taskId",taskId).putExtra("taskName",taskName).putExtra("finished",true)
         val pendingIntent = PendingIntent.getBroadcast(
-            this.applicationContext, taskId, myIntent, 0)
+            this.applicationContext, taskId, myIntent, PendingIntent.FLAG_UPDATE_CURRENT)
         val alarmManager:AlarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
-
-        alarmManager.setExact(AlarmManager.RTC, 1, pendingIntent)
-
+        if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.S && alarmManager.canScheduleExactAlarms()) {
+            alarmManager.setExact(AlarmManager.RTC, 1, pendingIntent)
+        }else
+            alarmManager.setExact(AlarmManager.RTC, 1, pendingIntent)
     }
-
     fun createTodayNotifications(){
         val data=oh.getServiceTaskInfo(userId)
         val now=Calendar.getInstance().timeInMillis
@@ -1471,6 +1478,26 @@ private fun displayTaskNotification(taskId: Int,taskName:String,title: String,ta
         .setContentIntent(pendingIntent)
     val nm=NotificationManagerCompat.from(context)
     nm.createNotificationChannel(createNotificationChannel(taskId, taskName))
+    if (ActivityCompat.checkSelfPermission(
+            context,
+            Manifest.permission.POST_NOTIFICATIONS
+        ) != PackageManager.PERMISSION_GRANTED
+    ) {
+
+        ActivityCompat.requestPermissions(
+            context as Activity,
+            arrayOf(Manifest.permission.POST_NOTIFICATIONS),
+            PERMISSION_REQUEST_CODE
+        )
+        // TODO: Consider calling
+        //    ActivityCompat#requestPermissions
+        // here to request the missing permissions, and then overriding
+        //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+        //                                          int[] grantResults)
+        // to handle the case where the user grants the permission. See the documentation
+        // for ActivityCompat#requestPermissions for more details.
+        return
+    }
     nm.notify(taskId,notification.build())
 
     if(context.getSharedPreferences(MainActivity.SHARED_PREFERENCES, AppCompatActivity.MODE_PRIVATE).getBoolean("HAVE_NOTIFICATIONS_SOUND",true))
@@ -1478,6 +1505,9 @@ private fun displayTaskNotification(taskId: Int,taskName:String,title: String,ta
 
 }
 
+/**
+ * Class to display notifications
+ */
 class TimeBroadcastReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
         val taskId=intent!!.getIntExtra("taskId",0)

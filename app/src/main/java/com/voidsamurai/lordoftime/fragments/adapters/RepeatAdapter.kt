@@ -1,6 +1,5 @@
 package com.voidsamurai.lordoftime.fragments.adapters
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.LinearLayout
@@ -12,6 +11,9 @@ import com.voidsamurai.lordoftime.bd.DAORutines
 import com.voidsamurai.lordoftime.bd.RutinesRow
 import com.voidsamurai.lordoftime.fragments.dialogs.RepeatDialog
 
+/**
+ * Adapter to display repetition rows in edit task dialog.
+ */
 class RepeatAdapter (private val data:List<RutinesRow>): RecyclerView.Adapter<LinearViewHolder>() {
     var lastPosition:Int?=null
 

@@ -8,7 +8,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:viewBindingIgnore="true">
 
-
         <TextView
             android:id="@+id/date"
             android:layout_width="match_parent"
@@ -20,6 +19,5 @@
             app:layout_constraintStart_toStartOf="parent"
             android:layout_margin="2dp"
             app:layout_constraintTop_toTopOf="parent" />
-
 
 </LinearLayout>

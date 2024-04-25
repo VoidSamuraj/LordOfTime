@@ -1,26 +1,19 @@
 package com.voidsamurai.lordoftime.fragments.adapters
 
 import android.annotation.SuppressLint
-import android.content.res.ColorStateList
-import android.content.res.Resources
 import android.graphics.Color
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.google.firebase.database.core.Context
 import com.voidsamurai.lordoftime.LinearViewHolder
 import com.voidsamurai.lordoftime.R
 import com.voidsamurai.lordoftime.bd.DataRowWithColor
 import com.voidsamurai.lordoftime.calendarToRead
-import com.voidsamurai.lordoftime.timeToRead
-import java.util.*
-import kotlin.collections.ArrayList
+import java.util.Calendar
 
 class ToDoDateAdapter(private val dataSet: ArrayList<DataRowWithColor>, private val context: android.content.Context): RecyclerView.Adapter<LinearViewHolder>() {
 
@@ -44,15 +37,14 @@ class ToDoDateAdapter(private val dataSet: ArrayList<DataRowWithColor>, private 
         val prev=dataSet[position].date.timeInMillis
         val workingTime=dataSet[position].workingTime.toInt()*1000
 
-            if (now>(prev+workingTime)) {
-                layout.findViewById<TextView>(R.id.todo_name).setTextColor(Color.RED)
-                layout.findViewById<TextView>(R.id.todo_date).setTextColor(Color.RED)
-            }else if(now>prev){
-
-                val color= context.resources.getColor(R.color.task_to_do,null)
-                layout.findViewById<TextView>(R.id.todo_name).setTextColor(color)
-                layout.findViewById<TextView>(R.id.todo_date).setTextColor(color)
-            }
+        if (now>(prev+workingTime)) {
+            layout.findViewById<TextView>(R.id.todo_name).setTextColor(Color.RED)
+            layout.findViewById<TextView>(R.id.todo_date).setTextColor(Color.RED)
+        }else if(now>prev){
+            val color= context.resources.getColor(R.color.task_to_do,null)
+            layout.findViewById<TextView>(R.id.todo_name).setTextColor(color)
+            layout.findViewById<TextView>(R.id.todo_date).setTextColor(color)
+        }
 
       //  }
         layout.findViewById<ImageView>(R.id.imageView).visibility=View.GONE

@@ -16,6 +16,9 @@ import com.voidsamurai.lordoftime.bd.RutinesRow
 import com.voidsamurai.lordoftime.fragments.EditTaskSelected
 import com.voidsamurai.lordoftime.fragments.adapters.RepeatAdapter
 
+/**
+ * Dialog displaying routines for task.
+ */
 class RepeatDialog(
     private val taskId:Int,
     private val parentDialog:Fragment?

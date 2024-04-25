@@ -16,6 +16,9 @@ import com.voidsamurai.lordoftime.charts_and_views.NTuple4
 import java.util.*
 import kotlin.collections.ArrayList
 
+/**
+ * Fragment with main chart of daily activity.
+ */
 class FragmentPieChart : Fragment() {
 
     private var _binding: FragmentPieChartBinding?=null

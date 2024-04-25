@@ -24,6 +24,9 @@ import java.lang.Exception
 import java.util.*
 import kotlin.collections.ArrayList
 
+/**
+ * Fragment to display statistics about other apps usage. That needs permission to data usage.
+ */
 class AppsUsage : Fragment(){
 
     private var _binding: FragmentPieChartBinding?=null
@@ -104,6 +107,9 @@ class AppsUsage : Fragment(){
         chartMap = TreeMap()
         legendMap = TreeMap()
         //   var sum = 0
+        tab.forEach {
+            println("EL$it")
+        }
         if (tab.isEmpty())
             binding.chartFragment.visibility = View.GONE
         else {
@@ -143,7 +149,6 @@ class AppsUsage : Fragment(){
                     if (chartMap.values.isEmpty() && legendMap.isEmpty()) {
                         binding.chartDescription.visibility = View.GONE
                         binding.myChart.visibility = View.GONE
-
                     } else {
                         binding.none.visibility = View.GONE
                         binding.chartDescription.visibility = View.VISIBLE
@@ -151,11 +156,11 @@ class AppsUsage : Fragment(){
 
 
                         binding.myChart.fillData(
-                            chartMap.values.toList().sortedByDescending { it.second }.subList(0,5),
+                            chartMap.values.toList().sortedByDescending { it.second }.subList(0,minOf(chartMap.size,5)),
                             aim,
                             fillColorDefault = Color.LTGRAY
                         )
-                        val legendList= legendMap.toList().sortedByDescending { it.second.second }.subList(0,5).map { Pair<String,String>(it.first,it.second.first) }
+                        val legendList= legendMap.toList().sortedByDescending { it.second.second }.subList(0,minOf(chartMap.size,5)).map { Pair<String,String>(it.first,it.second.first) }
                         binding.chartDescription.adapter =
                             LinearChartAdapter(legendList)
                         binding.chartDescription.layoutManager = LinearLayoutManager(context)

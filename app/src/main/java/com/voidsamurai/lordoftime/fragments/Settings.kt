@@ -197,6 +197,9 @@ class Settings : Fragment(), AdapterView.OnItemSelectedListener {
         (activity as MainActivity).emailId.let {
             settingsBinding.email.text=it
         }
+        /**
+         * update displayed manual/auto chart mode and hours aim views.
+         */
         fun setChartStrings(state:Boolean){
             settingsBinding.numberPicker.isClickable=state
             if(!state) {

@@ -20,6 +20,8 @@ import com.voidsamurai.lordoftime.bd.DataRowWithColor
 import com.voidsamurai.lordoftime.databinding.FragmentWorkingBinding
 import com.voidsamurai.lordoftime.fragments.adapters.StartWorkAdapter
 import kotlinx.coroutines.*
+import kotlin.math.abs
+import kotlin.math.min
 
 
 class WorkingFragment : Fragment() {
@@ -90,7 +92,6 @@ class WorkingFragment : Fragment() {
 
                 }
             }
-            val widthPart=itemView.width/3
             val size =itemView.height/2
             val margin = (itemView.height- size)/2
 
@@ -100,8 +101,7 @@ class WorkingFragment : Fragment() {
             else if(dX<0){
                 editIcon!!.setBounds(itemView.right-size-10,itemView.top+margin,itemView.right-10,itemView.bottom-margin)
                 colorSwipeEdit.setBounds(itemView.right+dX.toInt(),itemView.top,itemView.right,itemView.bottom)
-                if(widthPart>=-dX)
-                    colorSwipeEdit.alpha= (-dX/widthPart*255).toInt()
+                colorSwipeEdit.alpha= min((abs(dX) / itemView.width * 200).toInt()+100,255)
                 colorSwipeEdit.draw(c)
                 c.save()
                 c.clipRect(itemView.right+dX.toInt(),itemView.top,itemView.right,itemView.bottom)
@@ -272,11 +272,6 @@ class WorkingFragment : Fragment() {
         })
     }
 
-    /**
-     * Called when the Fragment is no longer started.  This is generally
-     * tied to [Activity.onStop] of the containing
-     * Activity's lifecycle.
-     */
     override fun onStop(){
     (activity as MainActivity).getCurrentWorkingTime().removeObservers(viewLifecycleOwner)
         super.onStop()

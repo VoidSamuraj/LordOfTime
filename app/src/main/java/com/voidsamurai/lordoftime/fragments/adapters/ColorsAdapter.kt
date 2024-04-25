@@ -1,7 +1,6 @@
 package com.voidsamurai.lordoftime.fragments.adapters
 
 import android.graphics.Color
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +12,9 @@ import com.voidsamurai.lordoftime.fragments.dialogs.ColorDialogFragment
 import com.voidsamurai.lordoftime.LinearViewHolder
 import com.voidsamurai.lordoftime.R
 
+/**
+ * Adapter for categories fragment.
+ */
 class ColorsAdapter(val activity: FragmentActivity,private val dataSet: List<Pair<String,String>>) : RecyclerView.Adapter<LinearViewHolder>(){
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LinearViewHolder {
         val view = LayoutInflater.from(parent.context)

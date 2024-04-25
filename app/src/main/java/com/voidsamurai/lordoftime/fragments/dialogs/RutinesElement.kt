@@ -5,7 +5,6 @@ import android.app.AlertDialog
 import android.app.Dialog
 import android.app.TimePickerDialog
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.Button
@@ -20,6 +19,7 @@ import com.voidsamurai.lordoftime.bd.DAORutines
 import java.util.*
 
 /**
+ * Dialog for selecting days and add hours of routines.
  * @param type 0-SAVE; 1-EDIT
  * */
 class RutinesElement(private val taskId:Int,private val type:Int,private val rutinesRowId:Int?=null) : DialogFragment() {
@@ -63,7 +63,6 @@ class RutinesElement(private val taskId:Int,private val type:Int,private val rut
             days.forEach {
                 if(daysNames.contains(it.text))
                     it.isChecked=true
-
             }
             hours.forEach {
                 createChip(it)
@@ -121,26 +120,26 @@ class RutinesElement(private val taskId:Int,private val type:Int,private val rut
                 val time = hours.children.map { view -> (view as Chip).text }
                     .joinToString(separator = ",")
 
-                    (activity as MainActivity).let {
-                        val uid=(activity as MainActivity).userId
-                        when (type) {
-                            0 -> {
-                                val id = it.getDBOpenHelper().addRutinesRow(taskId, daysRow, time,uid)
-                                if (id.toInt()!=-1) {
-                                    it.rutines.add(id.toInt(), taskId, daysRow, time)
-                                    it.repeatDialog.notifyItemInserted()
-                                }
+                (activity as MainActivity).let {
+                    val uid=(activity as MainActivity).userId
+                    when (type) {
+                        0 -> {
+                            val id = it.getDBOpenHelper().addRutinesRow(taskId, daysRow, time,uid)
+                            if (id.toInt()!=-1) {
+                                it.rutines.add(id.toInt(), taskId, daysRow, time)
+                                it.repeatDialog.notifyItemInserted()
                             }
-                            1 -> {
-                                it.getDBOpenHelper().editRutinesRow(rutinesRowId!!, taskId, daysRow, time,uid)
-                                if (id!=-1) {
-                                    it.rutines.update(id, taskId, daysRow, time)
-                                    it.repeatDialog.notifyItemChanged()
-                                }
-                            }
-                            else -> {}
                         }
+                        1 -> {
+                            it.getDBOpenHelper().editRutinesRow(rutinesRowId!!, taskId, daysRow, time,uid)
+                            if (id!=-1) {
+                                it.rutines.update(id, taskId, daysRow, time)
+                                it.repeatDialog.notifyItemChanged()
+                            }
+                        }
+                        else -> {}
                     }
+                }
 
             }
             dismiss()

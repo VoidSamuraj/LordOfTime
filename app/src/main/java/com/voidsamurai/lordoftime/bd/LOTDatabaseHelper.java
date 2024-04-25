@@ -142,7 +142,7 @@ public class LOTDatabaseHelper extends SQLiteOpenHelper {
      */
     public void addOldstatRow(Long date,int duration,String category,String userId){
         ContentValues cv = createOldstatValues(date,duration,category,userId);
-        db.insert("OLDSTATS", null, cv);
+        db.insertWithOnConflict("OLDSTATS", null, cv, SQLiteDatabase.CONFLICT_IGNORE);
         cv.clear();
     }
     /**
@@ -213,7 +213,6 @@ public class LOTDatabaseHelper extends SQLiteOpenHelper {
             do{
                 list.add(c.getInt(0));
             }while(c.moveToNext());
-        int licz=db.delete("RUTINES","task_id = ?", new String[]{String.valueOf(task_id)});
         c.close();
         return list;
     }
@@ -221,11 +220,6 @@ public class LOTDatabaseHelper extends SQLiteOpenHelper {
     public long addTaskRow(String category, String name, Long startdatetime, int hours, int priority,int workingTime,String userId){
         ContentValues cv = createTasktableValues(category,name,startdatetime,hours,priority,workingTime,userId);
         return db.insert("TASKTABLE", null, cv);
-
-    }
-    public long addTaskRow(DataRowWithColor data,String userId){
-        ContentValues cv = createTasktableValues(data.getCategory(),data.getName(),data.getDate().getTime().getTime(),(int)data.getWorkingTime(),data.getPriority(),(int)data.getCurrentWorkingTime(),userId);
-        return  db.insert("TASKTABLE", null, cv);
 
     }
     /**
@@ -348,7 +342,7 @@ public class LOTDatabaseHelper extends SQLiteOpenHelper {
         cv.put("working_time",hours);
         cv.put("priority",priority);
         cv.put("current_work_time",currentWorkingTime);
-        if(!user_id.equals(""))cv.put("user_id",user_id);
+        if(!user_id.isEmpty())cv.put("user_id",user_id);
         return cv;
     }
     /**
@@ -365,7 +359,7 @@ public class LOTDatabaseHelper extends SQLiteOpenHelper {
         if(name!=null)cv.put("name",name);
         if(starttime!=null)cv.put("datetime",starttime);
         if(hours!=0)cv.put("working_time",hours);
-        if(!user_id.equals(""))cv.put("user_id",user_id);
+        if(!user_id.isEmpty())cv.put("user_id",user_id);
         if(priority!=0)cv.put("priority",priority);
         if(currentWorkingTime!=0){
             if(currentWorkingTime==-1)
@@ -383,7 +377,7 @@ public class LOTDatabaseHelper extends SQLiteOpenHelper {
         ContentValues cv = new ContentValues();
         if(starttime!=null)cv.put("date_id",starttime);
         if(hours!=0)cv.put("working_time",hours);
-        if(!user_id.equals(""))cv.put("user_id",user_id);
+        if(!user_id.isEmpty())cv.put("user_id",user_id);
         if(category!=null)cv.put("category",category);
         return cv;
     }
@@ -395,7 +389,7 @@ public class LOTDatabaseHelper extends SQLiteOpenHelper {
         if(task_id!=-1)cv.put("task_id",task_id);
         if(days!=null)cv.put("days",days);
         if(hour!=null)cv.put("hours",hour);
-        if(!user_id.equals(""))cv.put("user_id",user_id);
+        if(!user_id.isEmpty())cv.put("user_id",user_id);
         return cv;
     }
 
@@ -445,7 +439,7 @@ public class LOTDatabaseHelper extends SQLiteOpenHelper {
         ContentValues cv = new ContentValues();
         if(category!=null)cv.put("category_id", category);
         if(color!=null)cv.put("color", color);
-        if(!user_id.equals(""))cv.put("user_id", user_id);
+        if(!user_id.isEmpty())cv.put("user_id", user_id);
         return cv;
     }
 }

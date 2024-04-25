@@ -8,6 +8,9 @@ import android.widget.NumberPicker
 import androidx.appcompat.app.AppCompatDialogFragment
 import com.voidsamurai.lordoftime.R
 
+/**
+ * Dialog for memento mori.
+ */
 class NumberPicker(private var value: Int,private val onSave:(np:NumberPicker)->Unit)  : AppCompatDialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
