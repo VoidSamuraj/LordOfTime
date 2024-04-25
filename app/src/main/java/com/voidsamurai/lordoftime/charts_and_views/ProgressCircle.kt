@@ -8,6 +8,9 @@ import com.voidsamurai.lordoftime.R
 import android.graphics.Shader
 import android.os.Build
 
+/**
+ * Chart to display time spend on task by percentage
+ */
 class ProgressCircle(context: Context?, attributeSet: AttributeSet) : View(context,attributeSet) {
 
     var canvas: Canvas?=null
@@ -22,7 +25,7 @@ class ProgressCircle(context: Context?, attributeSet: AttributeSet) : View(conte
     }
 
 
-    fun drawStats(){
+    private fun drawStats(){
         val paint= Paint()
         paint.style=Paint.Style.STROKE
 

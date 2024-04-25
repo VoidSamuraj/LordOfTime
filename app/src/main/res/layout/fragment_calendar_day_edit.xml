@@ -8,7 +8,9 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/parent"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/scroll">
+            android:layout_height="@dimen/scroll"
+            android:paddingStart="0dp"
+            android:paddingEnd="10dp">
 
                 <com.voidsamurai.lordoftime.charts_and_views.CalendarScrollEdit
                     android:id="@+id/scroll"

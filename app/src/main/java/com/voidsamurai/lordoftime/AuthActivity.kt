@@ -2,11 +2,11 @@ package com.voidsamurai.lordoftime
 
 import android.app.Activity
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
@@ -30,12 +30,17 @@ class AuthActivity : AppCompatActivity() {
         registerForActivityResult(
             ActivityResultContracts.StartActivityForResult()
         ) {
-            Log.v("code", "" + it.resultCode)
             if (it.resultCode == Activity.RESULT_OK) {
 
                 val task = GoogleSignIn.getLastSignedInAccount(this)
                 try {
-                    task?.let { itt -> firebaseAuthWithGoogle(itt) }
+                    task?.let { itt -> firebaseAuthWithGoogle(itt)
+                        val sp=getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE)
+                        val oldId= sp.getString("user_id","")?:""
+                        if(oldId!=itt.id)
+                            sp.edit().putString("user_id",itt.id).putBoolean("IS_USER_CHANGED",true).apply()
+
+                    }
                 } catch (e: ApiException) {
                     Log.w("Login", "Google sign in failed", e)
                 }
@@ -49,7 +54,6 @@ class AuthActivity : AppCompatActivity() {
                     nav.popBackStack()
                 else -> super.onBackPressed()
             }
-
         }
     }
 
@@ -70,27 +74,20 @@ class AuthActivity : AppCompatActivity() {
                     Log.e("Login", "signInWithCredential:failure", task.exception)
                     Toast.makeText(this,resources.getString(R.string.login_error),Toast.LENGTH_SHORT).show()
                 }
-
             }
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_auth)
+        setContentView(R.layout.auth_activity)
         supportActionBar?.hide()
         auth = Firebase.auth
-
         val gso = GoogleSignInOptions
             .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(getString(R.string.defaultt_web_client_id))
             .requestEmail()
             .build()
         googleSignInClient = GoogleSignIn.getClient(this,gso)
-
-
-
     }
-
-
 
     fun signIn(){
         intentAuth=googleSignInClient.signInIntent

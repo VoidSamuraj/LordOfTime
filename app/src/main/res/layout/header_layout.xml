@@ -25,7 +25,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="fitXY"
-            android:src="@drawable/shrek"
+            android:src="@drawable/ic__person"
             android:contentDescription="@string/avatar"/>
     </androidx.cardview.widget.CardView>
 
@@ -47,7 +47,8 @@
             android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp"
             android:autoSizeTextType="uniform"
-            android:text="Name"
+            android:textColor="@color/drawer_text"
+            android:text="@string/name"
             android:lines="1"
             android:textSize="@dimen/drawer_title" />
 
@@ -56,9 +57,100 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
+            android:textColor="@color/drawer_text"
             android:lines="1"
             android:autoSizeTextType="uniform"
-            android:text="Email" />
+            android:text="@string/email" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginTop="20dp"
+            android:background="@color/white"
+            android:alpha="0.3"
+
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/main_header"
+            android:textColor="@color/drawer_text"
+            android:layout_margin="5dp"
+            android:text="@string/your_time"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:weightSum="3"
+
+            android:orientation="horizontal">
+            <TextView
+                android:id="@+id/year_val"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:textAlignment="center"
+                android:textColor="@color/drawer_text"
+                android:textSize="@dimen/normal_text_size"
+                android:layout_height="wrap_content"/>
+            <TextView
+                android:id="@+id/month_val"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:textAlignment="center"
+                android:textColor="@color/drawer_text"
+                android:textSize="@dimen/normal_text_size"
+                android:layout_height="wrap_content"/>
+            <TextView
+                android:id="@+id/day_val"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:textAlignment="center"
+                android:textColor="@color/drawer_text"
+                android:textSize="@dimen/normal_text_size"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:weightSum="3"
+            android:orientation="horizontal">
+            <TextView
+                android:id="@+id/year_label"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:textColor="@color/drawer_text"
+                android:textSize="@dimen/small_text_size"
+                android:textAlignment="center"
+                android:text="@string/years"
+                />
+            <TextView
+                android:id="@+id/month_label"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:textColor="@color/drawer_text"
+                android:textSize="@dimen/small_text_size"
+                android:textAlignment="center"
+                android:text="@string/months"
+               />
+            <TextView
+                android:id="@+id/day_label"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:textColor="@color/drawer_text"
+                android:textSize="@dimen/small_text_size"
+                android:textAlignment="center"
+                android:text="@string/days"
+                />
+
+
+        </LinearLayout>
 
         <View
             android:layout_width="match_parent"

@@ -1,386 +1,432 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/home_frag"
+    tools:context=".fragments.HomeFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:isScrollContainer="true"
-    tools:context=".fragments.HomeFragment">
-
-    <RelativeLayout
-        android:id="@+id/relativeLayout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+    >
 
 
-
-            <androidx.legacy.widget.Space
-                android:id="@+id/space1"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/padding_elevation"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentEnd="true"
-                android:layout_marginStart="0dp"
-                android:layout_marginTop="0dp" />
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/card1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/space1"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentEnd="true"
-                android:layout_marginStart="@dimen/small_padding"
-                android:layout_marginEnd="@dimen/small_padding"
-                app:cardCornerRadius="@dimen/radius_card_view"
-                app:cardElevation="@dimen/padding_elevation">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/textView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:text="@string/newest_tasks_header"
-                        android:textSize="@dimen/main_header" />
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/newest_Tasks_RecycleView"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:paddingTop="@dimen/small_padding"
-                        android:paddingBottom="@dimen/task_changer_label_margin"
-                        tools:itemCount="3"
-                        tools:layout_height="70dp"
-                        tools:listitem="3" />
-                </LinearLayout>
-
-            </androidx.cardview.widget.CardView>
-
-            <androidx.legacy.widget.Space
-                android:id="@+id/space2"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/padding_elevation"
-                android:layout_below="@+id/card1"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentEnd="true" />
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/card2"
-                android:layout_width="match_parent"
-                android:layout_height="220dp"
-                android:layout_below="@+id/space2"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentEnd="true"
-                android:layout_marginStart="@dimen/small_padding"
-                android:layout_marginEnd="@dimen/small_padding"
-                android:transitionName="chartCard"
-                app:cardCornerRadius="@dimen/radius_card_view"
-                app:cardElevation="@dimen/padding_elevation">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/textView2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:text="@string/chart_header"
-                        android:textSize="@dimen/main_header" />
-
-                    <fragment
-                        android:id="@+id/chart_frag"
-                        android:layout_height="match_parent"
-                        android:layout_width="match_parent"
-                        tools:layout="@layout/fragment_pie_chart"
-                        class="com.voidsamurai.lordoftime.fragments.FragmentPieChart"/>
-
-                </LinearLayout>
-                <View
-                    android:id="@+id/card2_click"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:elevation="12dp"/>
-            </androidx.cardview.widget.CardView>
-
-            <androidx.legacy.widget.Space
-                android:id="@+id/space3"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/padding_elevation"
-                android:layout_below="@+id/card2"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentEnd="true" />
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/cardView3"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/space3"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentEnd="true"
-                android:layout_marginStart="@dimen/small_padding"
-                android:layout_marginEnd="@dimen/small_padding"
-                app:cardCornerRadius="@dimen/radius_card_view"
-                app:cardElevation="@dimen/padding_elevation">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:text="@string/priority_header"
-                        android:textSize="@dimen/main_header" />
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/todo_recycle_view"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:fadeScrollbars="true"
-                        android:isScrollContainer="true"
-                        android:maxHeight="300dp"
-                        android:nestedScrollingEnabled="true"
-                        android:overScrollMode="ifContentScrolls"
-                        android:paddingStart="@dimen/small_padding"
-                        android:paddingTop="@dimen/small_padding"
-                        android:paddingBottom="@dimen/task_changer_label_margin"
-                        android:scrollbarAlwaysDrawVerticalTrack="true"
-                        android:scrollbars="vertical"
-                        android:verticalScrollbarPosition="left"
-                        tools:ignore="RtlSymmetry" />
-
-                </LinearLayout>
-
-                <com.google.android.material.floatingactionbutton.FloatingActionButton
-                    android:id="@+id/task_changerFAB"
-                    android:layout_width="@dimen/fab_size"
-                    android:layout_height="@dimen/fab_size"
-                    android:layout_gravity="end|bottom"
-                    android:layout_margin="@dimen/fab_margin"
-                    android:backgroundTint="@color/task_color"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:contentDescription="@string/edit"
-                    android:foregroundGravity="center"
-                    android:src="@drawable/ic_edit"
-                    android:visibility="visible"
-                    android:tint="@color/task_color"
-                    />
-
-            </androidx.cardview.widget.CardView>
-
-            <View
-                android:id="@+id/circle_anim"
-                android:layout_width="@dimen/fab_size"
-                android:layout_height="@dimen/fab_size"
-                android:layout_above="@+id/cardView3"
-                android:layout_alignEnd="@+id/cardView3"
-                android:layout_alignBottom="@id/cardView3"
-                android:layout_gravity="end|bottom"
-                android:layout_margin="@dimen/fab_margin"
-                android:background="@drawable/circle"
-                android:backgroundTint="@color/task_color"
-                android:elevation="@dimen/padding_elevation"
-                android:visibility="invisible" />
-
-
-    </RelativeLayout>
-
-    <View
-        android:id="@+id/view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageView
-        android:id="@+id/corner1bg"
-        android:layout_width="@dimen/button_corners"
-        android:layout_height="@dimen/button_corners"
-        android:layout_marginBottom="148dp"
-        android:scaleType="fitXY"
-        android:src="@drawable/ic_corner1"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:tint="@color/work_button_color"
-        tools:ignore="ContentDescription" />
-
-    <!--
-            android:layout_width="@dimen/button_group_width"
-
-    -->
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/button_group"
-        android:layout_height="200dp"
-        android:layout_width="@dimen/button_group_width"
-        android:alpha="0.8"
-        app:layout_constraintBottom_toBottomOf="@+id/relativeLayout"
-        app:layout_constraintStart_toStartOf="parent">
-        <!-- @dimen/button_group_width  -->
-        <ImageView
-            android:id="@+id/corner1"
-            android:layout_width="@dimen/button_corners"
-            android:layout_height="@dimen/button_corners"
-            android:scaleType="fitXY"
-            android:src="@drawable/ic_corner1"
-            app:layout_constraintBottom_toTopOf="@+id/button_status"
-            app:layout_constraintStart_toStartOf="parent"
-            app:tint="@color/work_button_color"
-            tools:ignore="ContentDescription" />
+        android:id="@+id/home_frag"
+        style="@style/MyStyle.Background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:isScrollContainer="true">
 
-        <ImageView
-            android:id="@+id/corner2"
-            android:layout_width="@dimen/button_corners"
-            android:layout_height="@dimen/button_corners"
-            android:scaleType="fitXY"
-            android:src="@drawable/ic_corner2"
-            app:layout_constraintStart_toStartOf="@+id/corner1"
-            app:layout_constraintTop_toBottomOf="@+id/button_status"
-            app:tint="@color/work_button_color"
-            tools:ignore="ContentDescription" />
-
-        <ImageView
-            android:id="@+id/imageView3"
-            android:layout_width="@dimen/button_half_sphere_width"
-            android:layout_height="99dp"
-            android:layout_marginEnd="@dimen/padding_elevation"
-            android:scaleType="fitXY"
-            android:src="@drawable/half_sphere_r"
+        <ScrollView
+            android:id="@+id/scroll"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:scrollbars="none"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <RelativeLayout
+                android:id="@+id/relativeLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+
+                <androidx.legacy.widget.Space
+                    android:id="@+id/space1"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/padding_elevation"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginStart="0dp"
+                    android:layout_marginTop="0dp" />
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/card1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/space1"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginStart="@dimen/small_padding"
+                    android:layout_marginEnd="@dimen/small_padding"
+                    app:cardCornerRadius="@dimen/radius_card_view"
+                    app:cardElevation="@dimen/padding_elevation">
+
+                    <LinearLayout
+                        style="@style/MyStyle.CardView"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/textView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_marginTop="@dimen/small_margin"
+
+                            android:text="@string/newest_tasks_header"
+                            android:textSize="@dimen/main_header" />
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/newest_Tasks_RecycleView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingStart="@dimen/small_padding"
+                            android:paddingTop="@dimen/small_padding"
+                            android:paddingEnd="0dp"
+                            android:paddingBottom="@dimen/task_changer_label_margin"
+                            tools:itemCount="3"
+                            tools:layout_height="70dp"
+                            tools:listitem="3" />
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+
+                <androidx.legacy.widget.Space
+                    android:id="@+id/space2"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/padding_elevation"
+                    android:layout_below="@+id/card1"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentEnd="true" />
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/card2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/space2"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginStart="@dimen/small_padding"
+                    android:layout_marginEnd="@dimen/small_padding"
+                    android:minHeight="100dp"
+                    android:transitionName="chartCard2"
+                    app:cardCornerRadius="@dimen/radius_card_view"
+                    app:cardElevation="@dimen/padding_elevation">
+
+                    <LinearLayout
+                        style="@style/MyStyle.CardView"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/textView2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_marginTop="@dimen/small_margin"
+                            android:layout_marginBottom="@dimen/small_margin"
+                            android:text="@string/chart_header"
+                            android:textSize="@dimen/main_header" />
+
+                        <fragment
+                            android:id="@+id/chart_frag"
+                            class="com.voidsamurai.lordoftime.fragments.FragmentPieChart"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            tools:layout="@layout/fragment_pie_chart"
+                            />
+
+                    </LinearLayout>
+
+                    <View
+                        android:id="@+id/card2_click"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:elevation="12dp" />
+                </androidx.cardview.widget.CardView>
+
+                <androidx.legacy.widget.Space
+                    android:id="@+id/space3"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/padding_elevation"
+                    android:layout_below="@+id/card2"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentEnd="true" />
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardView3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/space3"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginStart="@dimen/small_padding"
+                    android:layout_marginEnd="@dimen/small_padding"
+                    app:cardCornerRadius="@dimen/radius_card_view"
+                    app:cardElevation="@dimen/padding_elevation">
+
+                    <LinearLayout
+                        style="@style/MyStyle.CardView"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_marginTop="@dimen/small_margin"
+                            android:text="@string/priority_header"
+                            android:textSize="@dimen/main_header" />
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/todo_recycle_view"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fadeScrollbars="true"
+                            android:isScrollContainer="true"
+                            android:maxHeight="300dp"
+                            android:nestedScrollingEnabled="true"
+                            android:overScrollMode="ifContentScrolls"
+                            android:paddingStart="@dimen/small_padding"
+                            android:paddingTop="@dimen/task_changer_label_margin"
+                            android:paddingBottom="@dimen/task_changer_label_margin"
+                            android:scrollbarAlwaysDrawVerticalTrack="true"
+                            android:scrollbars="vertical"
+                            android:verticalScrollbarPosition="left"
+                            tools:ignore="RtlSymmetry" />
+
+                    </LinearLayout>
+
+                    <com.google.android.material.floatingactionbutton.FloatingActionButton
+                        android:id="@+id/task_changerFAB"
+                        android:layout_width="@dimen/fab_size"
+                        android:layout_height="@dimen/fab_size"
+                        android:layout_gravity="end|bottom"
+                        android:layout_margin="@dimen/fab_margin"
+                        android:backgroundTint="@color/task_color"
+                        android:clickable="true"
+                        android:contentDescription="@string/edit"
+                        android:focusable="true"
+                        android:foregroundGravity="center"
+                        android:src="@drawable/ic_edit"
+                        app:borderWidth="0dp"
+                        android:visibility="visible" />
+
+                </androidx.cardview.widget.CardView>
+
+                <androidx.legacy.widget.Space
+                    android:id="@+id/space4"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/default_margin_top"
+                    android:layout_below="@+id/cardView3"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentEnd="true" />
+
+
+            </RelativeLayout>
+        </ScrollView>
+
+        <ImageView
+            android:id="@+id/corner1bg"
+            android:layout_width="@dimen/button_corners"
+            android:layout_height="@dimen/button_corners"
+            android:layout_marginBottom="148dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/ic_corner1"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:tint="@color/work_button_color"
             tools:ignore="ContentDescription" />
 
-        <ImageView
-            android:id="@+id/button_status"
-            android:layout_width="0dp"
-            android:layout_height="99dp"
-            android:src="@drawable/square"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/imageView3"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:ignore="ContentDescription" />
 
-        <TextView
-            android:id="@+id/startTaskLabel"
+        <!--
+            android:layout_width="@dimen/button_group_width"
+@dimen/button_group_width
+    -->
+        <View
+            android:id="@+id/view"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:lines="1"
-            android:maxLines="1"
-            android:text="@string/start_task"
-            android:textSize="@dimen/label_button"
-            android:textAlignment="center"
-            app:layout_constraintBottom_toBottomOf="@+id/button_status"
-            app:layout_constraintEnd_toStartOf="@+id/imageView3"
-            app:layout_constraintTop_toTopOf="@+id/button_status" />
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/button_group"
+            android:layout_width="@dimen/button_group_width"
+            android:layout_height="200dp"
+            android:alpha="0.8"
+            app:layout_constraintBottom_toBottomOf="@+id/scroll"
+            app:layout_constraintStart_toStartOf="parent">
+            <!-- @dimen/button_group_width  -->
+            <ImageView
+                android:id="@+id/corner1"
+                android:layout_width="@dimen/button_corners"
+                android:layout_height="@dimen/button_corners"
+                android:scaleType="fitXY"
+                android:src="@drawable/ic_corner1"
+                app:layout_constraintBottom_toTopOf="@+id/button_status"
+                app:layout_constraintStart_toStartOf="parent"
+                app:tint="@color/work_button_color"
+                tools:ignore="ContentDescription" />
+
+            <ImageView
+                android:id="@+id/corner2"
+                android:layout_width="@dimen/button_corners"
+                android:layout_height="@dimen/button_corners"
+                android:scaleType="fitXY"
+                android:src="@drawable/ic_corner2"
+                app:layout_constraintStart_toStartOf="@+id/corner1"
+                app:layout_constraintTop_toBottomOf="@+id/button_status"
+                app:tint="@color/work_button_color"
+                tools:ignore="ContentDescription" />
+
+            <ImageView
+                android:id="@+id/imageView3"
+                android:layout_width="@dimen/button_half_sphere_width"
+                android:layout_height="99dp"
+                android:layout_marginEnd="@dimen/padding_elevation"
+                android:scaleType="fitXY"
+                android:src="@drawable/half_sphere_r"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:tint="@color/work_button_color"
+                tools:ignore="ContentDescription" />
+
+            <ImageView
+                android:id="@+id/button_status"
+                android:layout_width="0dp"
+                android:layout_height="99dp"
+                android:src="@drawable/square"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/imageView3"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="ContentDescription" />
+
+            <TextView
+                android:id="@+id/startTaskLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="invisible"
+                android:lines="1"
+                android:maxLines="1"
+                android:text="@string/start_task"
+                android:textAlignment="center"
+                android:textSize="@dimen/label_button"
+                app:layout_constraintBottom_toBottomOf="@+id/button_status"
+                app:layout_constraintEnd_toStartOf="@+id/imageView3"
+                app:layout_constraintTop_toTopOf="@+id/button_status" />
+
             <LinearLayout
                 android:id="@+id/label_hour"
+                android:visibility="invisible"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginStart="30dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp"
+                android:gravity="center_horizontal"
                 android:orientation="horizontal"
-                android:gravity="center_horizontal">
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:layout_editor_absoluteX="30dp">
 
                 <TextView
                     android:id="@+id/switcher_hour"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:textSize="@dimen/label_button"
                     android:inAnimation="@anim/slide_in_down"
-                    android:outAnimation="@anim/slide_out_down"/>
+                    android:outAnimation="@anim/slide_out_down"
+                    android:textSize="@dimen/label_button" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:textSize="@dimen/label_button"
                     android:text=":"
+                    android:textSize="@dimen/label_button"
                     tools:ignore="HardcodedText" />
+
                 <TextView
                     android:id="@+id/switcher_minutes1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:textSize="@dimen/label_button"
                     android:inAnimation="@anim/slide_in_down"
-                    android:outAnimation="@anim/slide_out_down"/>
+                    android:outAnimation="@anim/slide_out_down"
+                    android:textSize="@dimen/label_button" />
+
                 <TextView
                     android:id="@+id/switcher_minutes2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:textSize="@dimen/label_button"
                     android:inAnimation="@anim/slide_in_down"
-                    android:outAnimation="@anim/slide_out_down"/>
+                    android:outAnimation="@anim/slide_out_down"
+                    android:textSize="@dimen/label_button" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:textSize="@dimen/label_button"
                     android:text=":"
+                    android:textSize="@dimen/label_button"
                     tools:ignore="HardcodedText" />
+
                 <TextView
                     android:id="@+id/switcher_seconds1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:textSize="@dimen/label_button"
                     android:inAnimation="@anim/slide_in_down"
-                    android:outAnimation="@anim/slide_out_down"/>
+                    android:outAnimation="@anim/slide_out_down"
+                    android:textSize="@dimen/label_button" />
+
                 <TextView
                     android:id="@+id/switcher_seconds2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:textSize="@dimen/label_button"
                     android:inAnimation="@anim/slide_in_down"
-                    android:outAnimation="@anim/slide_out_down"/>
+                    android:outAnimation="@anim/slide_out_down"
+                    android:textSize="@dimen/label_button" />
             </LinearLayout>
 
-        <ImageView
-            android:id="@+id/status_image"
-            android:layout_width="80dp"
-            android:layout_height="60dp"
-            android:background="@null"
-            android:scaleType="fitCenter"
-            android:src="@drawable/ic_baseline_play_arrow_24"
-            app:layout_constraintBottom_toBottomOf="@+id/imageView3"
-            app:layout_constraintEnd_toEndOf="@id/imageView3"
-            app:layout_constraintTop_toTopOf="@+id/imageView3"
-            app:tint="@color/work_button_icon_color"
-            tools:ignore="ContentDescription" />
+            <ImageView
+                android:id="@+id/status_image"
+                android:layout_width="80dp"
+                android:layout_height="60dp"
+                android:background="@null"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_baseline_play_arrow_24"
+                app:layout_constraintBottom_toBottomOf="@+id/imageView3"
+                app:layout_constraintEnd_toEndOf="@id/imageView3"
+                app:layout_constraintTop_toTopOf="@+id/imageView3"
+                app:tint="@color/work_button_icon_color"
+                tools:ignore="ContentDescription" />
 
-        <com.airbnb.lottie.LottieAnimationView
-            android:id="@+id/analog_clock"
-            android:layout_width="80dp"
-            android:layout_height="60dp"
-            app:lottie_rawRes="@raw/clock"
-            app:lottie_speed="0.5"
-            app:lottie_loop="true"
-            app:lottie_autoPlay="true"
-            android:layout_marginEnd="5dp"
-            app:layout_constraintBottom_toBottomOf="@+id/imageView3"
-            app:layout_constraintEnd_toEndOf="@+id/imageView3"
-            app:layout_constraintTop_toTopOf="@+id/imageView3" />
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/analog_clock"
+                android:layout_width="80dp"
+                android:layout_height="60dp"
+                android:layout_marginEnd="5dp"
+                app:layout_constraintBottom_toBottomOf="@+id/imageView3"
+                app:layout_constraintEnd_toEndOf="@+id/imageView3"
+                app:lottie_autoPlay="true"
+                app:lottie_loop="true"
+                app:lottie_rawRes="@raw/clock2"
+                app:lottie_speed="0.5"
+                app:layout_constraintTop_toTopOf="@+id/imageView3" />
 
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <ImageView
+        android:id="@+id/bg"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+</FrameLayout>

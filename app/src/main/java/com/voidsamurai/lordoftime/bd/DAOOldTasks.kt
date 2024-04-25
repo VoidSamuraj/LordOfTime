@@ -3,7 +3,7 @@ package com.voidsamurai.lordoftime.bd
 import com.google.firebase.database.*
 import com.voidsamurai.lordoftime.MainActivity
 import java.util.*
-
+//@Keep
 class DAOOldTasks (mActivity: MainActivity) {
     private val data: ArrayList<OldData> = arrayListOf()
     private var dbReference: DatabaseReference
@@ -52,7 +52,6 @@ class DAOOldTasks (mActivity: MainActivity) {
         ref.child("category").setValue(category)
         ref.child("currentWorkingTime").setValue(currentWorkingTime)
 
-
     }
 
     fun delete(taskId: String) {
@@ -67,5 +66,3 @@ class DAOOldTasks (mActivity: MainActivity) {
         dbReference.removeEventListener(vel)
     }
 }
-
-//date_id INTEGER PRIMARY KEY , working_time INTEGER, category TEXT

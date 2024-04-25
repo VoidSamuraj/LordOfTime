@@ -6,7 +6,6 @@ import android.content.Context
 import android.content.res.Configuration
 import android.graphics.Color
 import android.util.DisplayMetrics
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.LinearLayout
@@ -18,15 +17,19 @@ import com.voidsamurai.lordoftime.R
 import com.voidsamurai.lordoftime.charts_and_views.NTuple6
 import com.voidsamurai.lordoftime.fragments.CalendarEditFragmentDirections
 import java.util.*
+import kotlin.collections.ArrayList
 
 
+/**
+ * Adapter for view  in CalendarEditFragment to display days
+ */
 class CalendarEditAdapter (private val context: Context, private val dataSet: ArrayList<ArrayList<NTuple6<Calendar,Float,Int, String, String,String>>?>) :
 
     RecyclerView.Adapter<LinearViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LinearViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.calendar_edit_element, parent, false)
+            .inflate(R.layout.element_calendar_edit, parent, false)
 
         return LinearViewHolder(view)
     }
@@ -54,33 +57,31 @@ class CalendarEditAdapter (private val context: Context, private val dataSet: Ar
         calendarLinear.setOnClickListener {
             val  action:CalendarEditFragmentDirections.ActionCalendarEditFragmentToCalendarDayEdit=
                 CalendarEditFragmentDirections.actionCalendarEditFragmentToCalendarDayEdit(dataSet[position]!![0].t1.time.time)
-           it.findNavController().navigate(action)
+            it.findNavController().navigate(action)
         }
 
 
-        dataSet.get(position)?.let {
+        dataSet[position]?.let {
             val date=calendarLinear.findViewById<TextView>(R.id.date)
 
             if(context.getResources().configuration.uiMode and
-                    Configuration.UI_MODE_NIGHT_MASK==Configuration.UI_MODE_NIGHT_YES) {
+                Configuration.UI_MODE_NIGHT_MASK==Configuration.UI_MODE_NIGHT_YES) {
                 date.setShadowLayer(10f,0f,0f,Color.BLACK)
             }
             date.text=it[0].t1.get(Calendar.DAY_OF_MONTH).toString()
-
-            if(it.size>0){
+            if(it.size>0&&it[0].t2!=null){
                 var dur=0f
                 for(r in it){
-                    if(r.t2!=null)
-                        Log.v("DANE","day:"+r.t1.get(Calendar.DAY_OF_MONTH)+" dzas:"+r.t2+" "+r.t3+" "+r.t4+" "+r.t5+" "+r.t6)
                     dur+= r.t2 ?: 0f
                 }
                 if(dur>0) {
                     if(dur>18f)
                         dur=18f
-                    val color =
-                        Color.rgb((255f * dur / 18f).toInt(), (255f - (255f * dur / 18f)).toInt(), 0)
-                    Log.v("color",""+dur+" size:"+it.size)
+                    val color = Color.rgb((255f * dur / 18f).toInt(), (255f - (255f * dur / 18f)).toInt(), 0)
                     date.setBackgroundColor(color)
+                }
+                else if(dur==0f){
+                    date.setBackgroundColor(Color.argb(100,0,255,0))
                 }
             }
         }

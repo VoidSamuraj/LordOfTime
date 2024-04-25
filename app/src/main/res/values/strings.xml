@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name" translatable="false">LordOfTime</string>
+    <string name="app_name" translatable="false">Lord Of Time</string>
     <string name="action_settings">Settings</string>
     <string name="next">Next</string>
     <string name="previous">Previous</string>
@@ -66,5 +66,60 @@
     <string name="from_hour">From</string>
     <string name="cancel">Cancel</string>
     <string name="time_occupied">To selected time is already assigned task</string>
+    <string name="chart">Main chart</string>
+    <string name="manually">Manual</string>
+    <string name="edit_tasks">My schedule</string>
+    <string name="charts">Charts</string>
+    <string name="your_time">Time Left</string>
+    <string name="years">Years</string>
+    <string name="year">Year</string>
+    <string name="day">Day</string>
+    <string name="month">Month</string>
+    <string name="birthDate">Birth Date</string>
+    <string name="expected_life_time">Expected Life Time</string>
+    <string name="memento_mori" translatable="false">Memento Mori</string>
+    <string name="months2">Months</string>
+    <string name="show_completed">Show completed</string>
+    <string name="delete_completed">Delete completed</string>
+    <string name="confirm_delete">Are you sure to auto delete completed tasks?</string>
+    <string name="productive_days">Productive days</string>
+    <string name="productivity">Productivity</string>
+    <string name="is_finished">Finished</string>
+    <string name="hour">Hour</string>
+    <string name="is_repeating">Repeats</string>
+    <string name="repeat_task">Powtarzanie zadania</string>
+    <string name="monday">Monday</string>
+    <string name="tuesday">Tuesday</string>
+    <string name="wednesday">Wednesday</string>
+    <string name="thursday">Thursday</string>
+    <string name="friday">Friday</string>
+    <string name="saturday">Saturday</string>
+    <string name="sunday">Sunday</string>
+    <string name="hours">Hours</string>
+    <string name="select_hour">Add Hour</string>
+    <string name="nohour">0 hours</string>
+    <string name="category_in_use">Category is currently used by the task</string>
+    <string name="database_processing_error">Processing Error</string>
+    <string name="warning">WARNING</string>
+    <string name="confirm_delete_dialog_text">Are you sure you want to delete</string>
+    <string name="dont_show_again">"Don't show again "</string>
+    <string name="witchout_permission">"The application may not function properly without this permission "</string>
+    <string name="try_again">Try again</string>
+    <string name="time_to_task">Time to</string>
+    <string name="task_is_waiting">You have task to do</string>
+    <string name="task_completed">Task completed</string>
+    <string name="show_notification">Show notifications</string>
+    <string name="sound_notification">Noitfication sound</string>
+    <string name="last_24_hours">Last 24 hours</string>
+    <string name="give_permission_to_display_stats">Give permission to display stats</string>
+    <string name="user_profile_updated">User profile updated</string>
+    <string name="data_deleted">delete data</string>
+    <string name="data_deleted_faliure">data deleting failure</string>
+    <string name="data_deleted_success">data deleted</string>
+    <string name="confirm_delete_data">Are you sure to delete user\'s data</string>
+    <string name="insert_name">insert name</string>
+    <string name="select_color">select color</string>
+    <string name="change_name_or_color">change name or color</string>
+    <string name="category_exist">"selected name is already taken "</string>
 
 </resources>

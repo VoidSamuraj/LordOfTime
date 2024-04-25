@@ -12,10 +12,12 @@ import com.voidsamurai.lordoftime.MainActivity
 import com.voidsamurai.lordoftime.R
 import com.voidsamurai.lordoftime.databinding.FragmentColorsListBinding
 import com.voidsamurai.lordoftime.fragments.adapters.ColorsAdapter
+import com.voidsamurai.lordoftime.fragments.dialogs.ColorDialogFragment
 
-
+/**
+ * Fragment displaying categories, (color with names).
+ */
 class ColorsListFragment : Fragment() {
-
 
     private lateinit var colorAdapter: ColorsAdapter
     private lateinit var colorList: RecyclerView
@@ -43,9 +45,9 @@ class ColorsListFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         data=(activity as MainActivity).getColors()
         colorList=binding.colorsList
-        (activity as MainActivity).getColors().observe(viewLifecycleOwner,{
+        (activity as MainActivity).getColors().observe(viewLifecycleOwner) {
             fillEditList(it)
-        })
+        }
 
         binding.colorFab.setOnClickListener{
             showDialog()
@@ -66,7 +68,7 @@ class ColorsListFragment : Fragment() {
     private fun showDialog(){
 
         val ft =
-            ColorDialogFragment(R.layout.dialog_fragment_edit_color_category,ColorDialogFragment.SAVE)
+            ColorDialogFragment(R.layout.dialog_fragment_edit_color_category, ColorDialogFragment.SAVE)
         ft.show(requireActivity().supportFragmentManager,"Kolor")
     }
 }

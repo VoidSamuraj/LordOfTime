@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:context=".fragments.dialogs.YourDaysDialog"
+    android:background="@drawable/gradient_dark"
+    >
+
+    <TextView
+        android:id="@+id/memento_mori"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/memento_mori"
+        android:textColor="#8C8C8C"
+        android:textSize="@dimen/main_header"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_margin="20dp" />
+
+
+
+    <TextView
+        android:id="@+id/date_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/birthDate"
+        android:textColor="@color/black"
+        android:textSize="@dimen/normal_text_size"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/memento_mori"
+        android:layout_margin="20dp"/>
+
+    <EditText
+        android:focusable="false"
+        android:id="@+id/birth_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:minWidth="80dp"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:textSize="@dimen/normal_text_size"
+        app:layout_constraintStart_toStartOf="@+id/date_layout"
+        app:layout_constraintTop_toBottomOf="@+id/date_layout"
+        android:layout_marginTop="5dp"
+        tools:ignore="Autofill" />
+
+    <TextView
+        android:id="@+id/yars_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/black"
+        android:text="@string/expected_life_time"
+        android:textSize="@dimen/normal_text_size"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/birth_date"
+        android:layout_margin="20dp"/>
+
+    <EditText
+        android:id="@+id/years"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:minWidth="80dp"
+        android:inputType="numberSigned"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:textSize="@dimen/normal_text_size"
+        app:layout_constraintStart_toStartOf="@+id/yars_label"
+        app:layout_constraintTop_toBottomOf="@+id/yars_label"
+        tools:ignore="Autofill" />
+
+    <TextView
+        android:id="@+id/yars_label2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/years"
+        android:layout_margin="5dp"
+        android:textSize="@dimen/small_text_size"
+        app:layout_constraintBottom_toBottomOf="@+id/years"
+        app:layout_constraintStart_toEndOf="@+id/years"
+        app:layout_constraintTop_toTopOf="@+id/years" />
+
+    <Button
+        android:id="@+id/cancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
+        android:text="@string/cancel"
+        android:textColor="#B5B5B5"
+        android:textSize="@dimen/small_text_size"
+        android:background="@android:color/transparent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/years"
+        app:layout_constraintTop_toBottomOf="@+id/years" />
+
+    <Button
+        android:id="@+id/save"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:text="@string/save"
+        android:textColor="@color/white"
+        android:textSize="@dimen/normal_text_size"
+        android:background="@android:color/transparent"
+        app:layout_constraintBottom_toBottomOf="@+id/cancel"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/cancel" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

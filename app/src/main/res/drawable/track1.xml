@@ -1,16 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_enabled="false">
+        <shape android:shape="rectangle">
+            <solid android:color="@color/gray"/>
+            <corners android:radius="100dp"/>
+            <stroke android:width="1dp" android:color="@color/dark_gray"/>
+        </shape>
+    </item>
     <item android:state_checked="false">
         <shape android:shape="rectangle">
-            <solid android:color="@color/white"/>
+            <solid android:color="@color/switch_track_unselected"/>
             <corners android:radius="100dp"/>
-            <stroke android:width="1dp" android:color="#8e8e8e8e"/>
+            <stroke android:width="1dp" android:color="@color/switch_track_stroke_selected"/>
+
         </shape>
     </item>
     <item android:state_checked="true">
         <shape android:shape="rectangle">
-            <solid android:color="#34C759"/>
+            <solid android:color="@color/switch_track_selected"/>
             <corners android:radius="100dp"/>
+            <stroke android:width="1dp" android:color="@color/switch_track_stroke_selected"/>
         </shape>
     </item>
 </selector>

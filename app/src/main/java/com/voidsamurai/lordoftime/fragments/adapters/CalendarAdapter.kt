@@ -12,14 +12,16 @@ import com.voidsamurai.lordoftime.LinearViewHolder
 import com.voidsamurai.lordoftime.R
 import com.voidsamurai.lordoftime.charts_and_views.NTuple5
 
-
+/**
+ * Adapter to display single simple pie chart, used for statistics.
+ */
 class CalendarAdapter(private val context: Context, private val dataSet: ArrayList<NTuple5<Int, Float, Boolean, Int, Int?>?>) :
 
     RecyclerView.Adapter<LinearViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LinearViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.calendar_card_view, parent, false)
+            .inflate(R.layout.element_calendar_card, parent, false)
 
         return LinearViewHolder(view)
     }
@@ -27,6 +29,7 @@ class CalendarAdapter(private val context: Context, private val dataSet: ArrayLi
 
     override fun onBindViewHolder(holder: LinearViewHolder, position: Int) {
         val dm=DisplayMetrics()
+
         val activity=( context as Activity)//.windowManager. defaultDisplay.getMetrics(dm)
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
             val display = activity.display

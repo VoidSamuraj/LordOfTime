@@ -1,247 +1,462 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<androidx.constraintlayout.widget.ConstraintLayout
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+
+    tools:context=".fragments.Settings"
+    android:id="@+id/scroll"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.Settings">
-
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/imageView2"
-                android:layout_width="200dp"
-                android:layout_height="200dp"
-                android:elevation="10dp"
-                android:gravity="center"
-                app:cardCornerRadius="100dp"
-                android:layout_marginTop="10dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:layout_gravity="center">
-
-                <ImageView
-                    android:id="@+id/avatar"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scaleType="fitXY"
-                    android:contentDescription="@string/avatar"
-                    android:src="@drawable/shrek" />
-            </androidx.cardview.widget.CardView>
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/image_edit"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:src="@drawable/ic_edit"
-        app:cardElevation="11dp"
-        android:elevation="@dimen/padding_elevation"
-        android:contentDescription="@string/edit"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView2"
-        app:layout_constraintEnd_toEndOf="@+id/imageView2" />
-
-
-
-    <LinearLayout
-        android:id="@+id/linearLayout2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView2">
-
-        <TextView
-            android:id="@+id/name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="@dimen/settings_text"
-            android:layout_marginEnd="5dp"
-            tools:text="@string/name" />
-
-
-    </LinearLayout>
-
-
-    <LinearLayout
-        android:id="@+id/linearLayout3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="10dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout2">
-
-        <TextView
-            android:id="@+id/email"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="5dp"
-            android:textSize="@dimen/line_text_size"
-            tools:text="@string/email" />
-
-
-    </LinearLayout>
-
-
-    <View
-        android:id="@+id/divider"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="20dp"
-        android:background="?android:attr/listDivider"
-        app:layout_constraintTop_toBottomOf="@id/linearLayout3" />
-
+    android:orientation="vertical"
+    android:scrollbars="none">
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/divider"
-        tools:context=".fragments.Settings">
+        android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/textView10"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/default_margin"
-            android:layout_marginTop="@dimen/default_margin"
-            android:text="@string/language"
-            android:textSize="@dimen/settings_text"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+
+
         <androidx.cardview.widget.CardView
-            android:layout_width="wrap_content"
-            android:minWidth="150dp"
-            android:layout_height="30dp"
-            app:cardCornerRadius="5dp"
-            app:cardBackgroundColor="@color/background"
-            app:layout_constraintBottom_toBottomOf="@+id/textView10"
-            app:layout_constraintStart_toEndOf="@+id/textView10"
-            app:layout_constraintTop_toTopOf="@+id/textView10"
+            android:id="@+id/imageView2"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:elevation="10dp"
+            android:gravity="center"
+            app:cardCornerRadius="100dp"
+            android:layout_marginTop="10dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_gravity="center">
 
-            android:layout_marginStart="@dimen/default_margin">
-            <Spinner
-                android:layout_gravity="center"
-                android:id="@+id/languages"
-                android:layout_width="wrap_content"
+            <ImageView
+                android:id="@+id/avatar"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:textSize="@dimen/settings_text"
-                android:textAlignment="center"
-                android:dropDownSelector="@color/colorAccent" />
+                android:scaleType="fitXY"
+                android:contentDescription="@string/avatar"
+                android:src="@drawable/ic__person" />
         </androidx.cardview.widget.CardView>
 
-
-        <TextView
-            android:id="@+id/textView12"
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/image_edit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/settings_margin"
-            android:text="@string/mode"
-            android:textSize="@dimen/settings_text"
-            app:layout_constraintStart_toStartOf="@+id/textView10"
-            app:layout_constraintTop_toBottomOf="@+id/textView10" />
+            android:layout_gravity="center"
+            android:src="@drawable/ic_edit"
+            android:backgroundTint="@color/fab_settings_tint"
+            app:cardElevation="11dp"
+            app:borderWidth="0dp"
+            android:elevation="@dimen/padding_elevation"
+            android:contentDescription="@string/edit"
+            app:layout_constraintBottom_toBottomOf="@+id/imageView2"
+            app:layout_constraintEnd_toEndOf="@+id/imageView2" />
 
-        <com.google.android.material.button.MaterialButtonToggleGroup
-            android:id="@+id/toggle_group"
+
+
+        <LinearLayout
+            android:id="@+id/linearLayout2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/default_margin"
-            app:checkedButton="@+id/auto"
-            app:layout_constraintBottom_toBottomOf="@+id/textView12"
-            app:layout_constraintStart_toEndOf="@+id/textView12"
-            app:layout_constraintTop_toTopOf="@+id/textView12"
-            app:selectionRequired="true"
-            app:singleSelection="true"
-            android:elevation="10dp">
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imageView2">
 
-
-            <Button
-                android:id="@+id/light"
-                style="@style/ToggleButtonWithIcon"
+            <TextView
+                android:id="@+id/name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                app:icon="@drawable/ic_baseline_light_mode_24" />
+                android:textSize="@dimen/settings_text"
+                android:layout_marginEnd="5dp"
+                tools:text="@string/name" />
 
-            <Button
-                android:id="@+id/auto"
-                style="@style/ToggleButtonWithIcon"
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/linearLayout3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="10dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/linearLayout2">
+
+            <TextView
+                android:id="@+id/email"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/auto"
+                android:layout_marginEnd="5dp"
+                android:textSize="@dimen/line_text_size"
+                tools:text="@string/email" />
 
+
+        </LinearLayout>
+
+
+        <View
+            android:id="@+id/divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"
+            android:background="?android:attr/listDivider"
+            app:layout_constraintTop_toBottomOf="@id/linearLayout3" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/divider"
+            tools:context=".fragments.Settings">
+
+            <TextView
+                android:id="@+id/textView10"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/default_margin"
+                android:layout_marginTop="@dimen/settings_margin"
+                android:text="@string/language"
+                android:textSize="@dimen/normal_text_size"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardView2"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:layout_marginStart="@dimen/default_margin"
+                android:minWidth="120dp"
+                app:cardBackgroundColor="@color/background2"
+                app:cardCornerRadius="5dp"
+                app:layout_constraintBottom_toBottomOf="@+id/textView10"
+                app:layout_constraintStart_toEndOf="@+id/textView10"
+                app:layout_constraintTop_toTopOf="@+id/textView10">
+
+                <Spinner
+                    android:id="@+id/languages"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:minWidth="120dp"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:dropDownSelector="@color/colorAccent"
+                    android:textAlignment="center"
+                    android:textSize="@dimen/small_text_size" />
+            </androidx.cardview.widget.CardView>
+
+
+            <TextView
+                android:id="@+id/textView12"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/settings_margin"
+                android:text="@string/mode"
+                android:textSize="@dimen/normal_text_size"
+                app:layout_constraintStart_toStartOf="@+id/textView10"
+                app:layout_constraintTop_toBottomOf="@+id/cardView2" />
+
+            <com.google.android.material.button.MaterialButtonToggleGroup
+                android:id="@+id/toggle_group"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/default_margin"
+                android:elevation="1dp"
+                app:checkedButton="@+id/auto"
+                android:background="@drawable/filled_border"
+                android:backgroundTint="@color/background2"
+                app:layout_constraintBottom_toBottomOf="@+id/textView12"
+                app:layout_constraintStart_toEndOf="@+id/textView12"
+                app:layout_constraintTop_toTopOf="@+id/textView12"
+                app:selectionRequired="true"
+                app:singleSelection="true">
+
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/light"
+                    style="@style/ToggleButtonWithText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    app:icon="@drawable/ic_baseline_light_mode_24" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/auto"
+                    style="@style/ToggleButtonWithText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/auto"
+
+                    />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/dark"
+                    style="@style/ToggleButtonWithText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    app:icon="@drawable/ic_baseline_dark_mode_24" />
+            </com.google.android.material.button.MaterialButtonToggleGroup>
+
+
+            <TextView
+                android:id="@+id/old_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/settings_margin"
+                android:text="@string/show_outdated"
+                android:textSize="@dimen/normal_text_size"
+                app:layout_constraintStart_toStartOf="@+id/textView12"
+                app:layout_constraintTop_toBottomOf="@+id/toggle_group" />
+
+            <androidx.constraintlayout.widget.Barrier
+                android:id="@+id/barrier"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:barrierDirection="right"
+                android:orientation="vertical"
+                app:constraint_referenced_ids="old_label,complete_label,delete_label,show_notifications,sound_notification" />
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/old_switch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/default_margin"
+                android:elevation="10dp"
+                android:textOff="@string/no"
+                android:textOn="@string/yes"
+                android:textSize="@dimen/small_text_size"
+                android:thumb="@drawable/thumb1"
+                app:layout_constraintBottom_toBottomOf="@+id/old_label"
+                app:layout_constraintStart_toEndOf="@+id/barrier"
+                app:layout_constraintTop_toTopOf="@+id/old_label"
+                app:showText="true"
+                app:thumbTextPadding="4dp"
+                app:track="@drawable/track1"
+                tools:checked="true"
                 />
-
-            <Button
-                android:id="@+id/dark"
-                style="@style/ToggleButtonWithIcon"
+            <TextView
+                android:id="@+id/complete_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                app:icon="@drawable/ic_baseline_dark_mode_24" />
-        </com.google.android.material.button.MaterialButtonToggleGroup>
+                android:layout_marginTop="@dimen/settings_margin"
+                android:text="@string/show_completed"
+                android:textSize="@dimen/normal_text_size"
+                app:layout_constraintStart_toStartOf="@+id/textView12"
+                app:layout_constraintTop_toBottomOf="@+id/old_switch" />
 
-        <TextView
-            android:id="@+id/old_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/settings_margin"
-            android:text="@string/show_outdated"
-            android:textSize="@dimen/settings_text"
-            app:layout_constraintStart_toStartOf="@+id/textView12"
-            app:layout_constraintTop_toBottomOf="@+id/textView12" />
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/complete_switch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/default_margin"
+                android:elevation="10dp"
+                android:textOff="@string/no"
+                android:textOn="@string/yes"
+                android:textSize="@dimen/small_text_size"
+                android:thumb="@drawable/thumb1"
+                app:layout_constraintBottom_toBottomOf="@+id/complete_label"
+                app:layout_constraintStart_toEndOf="@+id/barrier"
+                app:layout_constraintTop_toTopOf="@+id/complete_label"
+                app:showText="true"
+                app:thumbTextPadding="4dp"
+                app:track="@drawable/track1" />
 
-        <androidx.appcompat.widget.SwitchCompat
-            android:id="@+id/old_switch"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/default_margin"
-            android:textOff="@string/no"
-            android:textOn="@string/yes"
-            android:thumb="@drawable/thumb1"
-            app:layout_constraintBottom_toBottomOf="@+id/old_label"
-            app:layout_constraintStart_toEndOf="@+id/old_label"
-            app:layout_constraintTop_toTopOf="@+id/old_label"
-            app:showText="true"
-            app:track="@drawable/track1"
-            android:elevation="10dp"/>
+            <TextView
+                android:id="@+id/delete_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/delete_completed"
+                android:textSize="@dimen/normal_text_size"
+                android:layout_marginTop="@dimen/settings_margin"
+                app:layout_constraintStart_toStartOf="@+id/textView12"
+                app:layout_constraintTop_toBottomOf="@+id/complete_switch" />
 
-        <TextView
-            android:id="@+id/textView11"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/settings_margin"
-            android:text="@string/notifications"
-            android:textSize="@dimen/settings_text"
-            app:layout_constraintStart_toStartOf="@+id/old_label"
-            app:layout_constraintTop_toBottomOf="@+id/old_label" />
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/delete_switch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/default_margin"
+                android:elevation="10dp"
+                android:textOff="@string/no"
+                android:textOn="@string/yes"
+                android:textSize="@dimen/small_text_size"
+                android:thumb="@drawable/thumb1"
+                app:layout_constraintBottom_toBottomOf="@+id/delete_label"
+                app:layout_constraintStart_toEndOf="@+id/barrier"
+                app:layout_constraintTop_toTopOf="@+id/delete_label"
+                app:showText="true"
+                app:thumbTextPadding="4dp"
+                app:track="@drawable/track1" />
 
-        <Button
-            android:id="@+id/logout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/logout"
-            android:backgroundTint="@color/logout_button"
-            android:textColor="@color/red"
-            android:elevation="10dp"
-            android:textSize="@dimen/settings_text"
-            android:layout_marginTop="@dimen/settings_margin"
-            app:layout_constraintStart_toStartOf="@+id/old_label"
-            app:layout_constraintTop_toBottomOf="@+id/textView11" />
+            <TextView
+                android:id="@+id/show_notifications"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/normal_text_size"
+                android:layout_marginTop="@dimen/settings_margin"
+                android:text="@string/show_notification"
+                app:layout_constraintStart_toStartOf="@+id/delete_label"
+                app:layout_constraintTop_toBottomOf="@+id/delete_switch" />
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/show_notification_switch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/default_margin"
+                android:elevation="10dp"
+                android:textOff="@string/no"
+                android:textOn="@string/yes"
+                android:textSize="@dimen/small_text_size"
+                android:thumb="@drawable/thumb1"
+                app:layout_constraintBottom_toBottomOf="@+id/show_notifications"
+                app:layout_constraintStart_toEndOf="@+id/barrier"
+                app:layout_constraintTop_toTopOf="@+id/show_notifications"
+                app:showText="true"
+                app:thumbTextPadding="4dp"
+                app:track="@drawable/track1" />
+
+            <TextView
+                android:id="@+id/sound_notification"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/normal_text_size"
+                android:layout_marginTop="@dimen/settings_margin"
+                android:text="@string/sound_notification"
+                app:layout_constraintStart_toStartOf="@+id/delete_label"
+                app:layout_constraintTop_toBottomOf="@+id/show_notification_switch" />
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/sound_notification_switch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/default_margin"
+                android:elevation="10dp"
+                android:textOff="@string/no"
+                android:textOn="@string/yes"
+                android:textSize="@dimen/small_text_size"
+                android:thumb="@drawable/thumb1"
+                app:layout_constraintBottom_toBottomOf="@+id/sound_notification"
+                app:layout_constraintStart_toEndOf="@+id/barrier"
+                app:layout_constraintTop_toTopOf="@+id/sound_notification"
+                app:showText="true"
+                app:thumbTextPadding="4dp"
+                app:track="@drawable/track1" />
+
+            <TextView
+                android:id="@+id/chart_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/chart"
+                android:textSize="@dimen/normal_text_size"
+                android:layout_marginTop="@dimen/settings_margin"
+                app:layout_constraintStart_toStartOf="@+id/old_label"
+                app:layout_constraintTop_toBottomOf="@+id/sound_notification_switch" />
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/chart_switch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/settings_margin"
+                android:elevation="10dp"
+                android:textOff="@string/manually"
+                android:textOn="@string/auto"
+                android:textSize="@dimen/small_text_size"
+                android:thumb="@drawable/thumb2"
+                app:layout_constraintStart_toStartOf="@+id/chart_label"
+                app:layout_constraintTop_toBottomOf="@+id/chart_label"
+                app:showText="true"
+                app:thumbTextPadding="4dp"
+                app:track="@drawable/track1" />
+
+
+            <LinearLayout
+                android:id="@+id/numberPicker"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_marginStart="@dimen/default_margin"
+                android:background="@drawable/border"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="@dimen/small_padding"
+                android:paddingStart="@dimen/current_colors_view_width"
+                android:paddingEnd="@dimen/current_colors_view_width"
+                app:layout_constraintBottom_toBottomOf="@+id/chart_switch"
+                app:layout_constraintCircleRadius="@dimen/small_margin"
+                app:layout_constraintStart_toEndOf="@+id/chart_switch"
+                app:layout_constraintTop_toTopOf="@+id/chart_switch">
+
+
+                <TextView
+                    android:id="@+id/hours"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/small_text_size"
+                    tools:text="Aim" />
+
+
+            </LinearLayout>
+
+
+            <View
+                android:id="@+id/divider2"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:background="?android:attr/listDivider"
+                app:layout_constraintTop_toBottomOf="@id/numberPicker" />
+
+            <Button
+                android:id="@+id/logout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/default_margin_top"
+                android:layout_marginBottom="@dimen/default_margin_top"
+                android:backgroundTint="@color/logout_button"
+                android:elevation="10dp"
+                android:text="@string/logout"
+                android:textColor="@color/red"
+                android:textSize="@dimen/small_text_size"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/old_label"
+                app:layout_constraintTop_toBottomOf="@+id/divider2" />
+
+            <Button
+                android:id="@+id/delete_data"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/settings_margin"
+                android:layout_marginTop="@dimen/default_margin_top"
+                android:layout_marginBottom="@dimen/default_margin_top"
+                android:backgroundTint="@color/logout_button"
+                android:elevation="10dp"
+                android:text="@string/data_deleted"
+                android:textColor="@color/red"
+                android:textSize="@dimen/small_text_size"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/logout"
+                app:layout_constraintTop_toBottomOf="@+id/divider2" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
 
+
+</ScrollView>
 
 
 

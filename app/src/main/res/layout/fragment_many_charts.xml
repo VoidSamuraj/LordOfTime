@@ -1,11 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    tools:context=".fragments.ManyChartsFragment"
+    android:scrollbars="none"
+    style="@style/MyStyle.Background"
+    android:orientation="vertical">
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     tools:context=".fragments.ManyChartsFragment"
     android:orientation="vertical">
 
@@ -15,7 +22,7 @@
 
     <androidx.cardview.widget.CardView
         android:id="@+id/card2"
-        android:transitionName="chartCard"
+        android:transitionName="chartCard2"
         android:layout_width="match_parent"
         android:layout_height="220dp"
         android:layout_marginStart="@dimen/small_padding"
@@ -24,6 +31,7 @@
         app:cardCornerRadius="@dimen/radius_card_view">
 
         <LinearLayout
+            android:background="@drawable/gradient_background"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
@@ -33,6 +41,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/small_margin"
+                android:layout_marginBottom="@dimen/small_margin"
                 android:text="@string/chart_header"
                 android:textSize="@dimen/main_header" />
 
@@ -62,6 +72,7 @@
         >
 
         <androidx.fragment.app.FragmentContainerView
+            android:background="@drawable/gradient_background"
             android:id="@+id/date_chart_fragment"
             android:name="com.voidsamurai.lordoftime.fragments.DateChartFragment"
             android:layout_width="match_parent"
@@ -70,7 +81,55 @@
     </androidx.cardview.widget.CardView>
 
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/padding_elevation" />
+
+    <androidx.cardview.widget.CardView
+
+        android:id="@+id/usage_card_view"
+        android:transitionName="chartCard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/small_padding"
+        android:layout_marginEnd="@dimen/small_padding"
+        app:cardElevation="@dimen/padding_elevation"
+        app:cardCornerRadius="@dimen/radius_card_view">
+
+        <LinearLayout
+            android:background="@drawable/gradient_background"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/usage_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/small_margin"
+                android:layout_marginBottom="@dimen/small_margin"
+                android:text="@string/last_24_hours"
+                android:textSize="@dimen/main_header" />
+
+            <fragment
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/usage_fragment"
+                tools:layout="@layout/fragment_pie_chart"
+                class="com.voidsamurai.lordoftime.fragments.AppsUsage"/>
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        />
+
+
 
 
 
 </LinearLayout>
+</ScrollView>

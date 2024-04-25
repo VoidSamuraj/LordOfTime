@@ -29,18 +29,15 @@
             app:popEnterAnim="@anim/slide_in_right_long"
             app:popExitAnim="@anim/slide_out_left_long" />
         <action
-            android:id="@+id/action_FirstFragment_to_editList"
-            app:destination="@id/editList"
-            app:enterAnim="@anim/no_transition"
-            app:exitAnim="@anim/no_transition"
-            app:popEnterAnim="@anim/no_transition"
-            app:popExitAnim="@anim/no_transition" />
-        <action
             android:id="@+id/action_FirstFragment_to_settings"
             app:destination="@id/settings" />
         <action
             android:id="@+id/action_FirstFragment_to_calendarEditFragment"
-            app:destination="@id/calendarEditFragment" />
+            app:destination="@id/calendarEditFragment"
+            app:enterAnim="@anim/no_transition"
+            app:exitAnim="@anim/no_transition"
+            app:popEnterAnim="@anim/no_transition"
+            app:popExitAnim="@anim/no_transition" />
     </fragment>
     <fragment
         android:id="@+id/colorsFragment"
@@ -68,14 +65,6 @@
             app:destination="@id/editTaskSelected" />
     </fragment>
     <fragment
-        android:id="@+id/editList"
-        android:name="com.voidsamurai.lordoftime.fragments.EditList"
-        android:label="EditList" >
-        <action
-            android:id="@+id/action_editList_to_editTaskSelected"
-            app:destination="@id/editTaskSelected" />
-    </fragment>
-    <fragment
         android:id="@+id/editTaskSelected"
         android:name="com.voidsamurai.lordoftime.fragments.EditTaskSelected"
         android:label="EditTaskSelected" >
@@ -97,7 +86,7 @@
         android:id="@+id/calendarEditFragment"
         android:name="com.voidsamurai.lordoftime.fragments.CalendarEditFragment"
         android:label="fragment_calendar_edit"
-        tools:layout="@layout/fragment_calendar_edit" >
+        tools:layout="@layout/fragment_calendar_edit">
         <action
             android:id="@+id/action_calendarEditFragment_to_calendarDayEdit"
             app:destination="@id/calendarDayEdit" />

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:viewBindingIgnore="true"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_vertical"
+    android:layout_marginTop="5dp"
+    >
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/line_height"
+        app:srcCompat="@drawable/ic_baseline_radio_button_unchecked_24"
+        android:layout_gravity="center"
+        tools:ignore="ContentDescription" />
+
+    <TextView
+        android:id="@+id/todo_name"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/line_height"
+        android:layout_weight="4"
+        android:maxWidth="200dp"
+        android:paddingStart="4dp"
+        android:layout_gravity="center"
+        android:textSize="@dimen/line_text_size"
+        tools:text="test"
+        tools:ignore="RtlSymmetry" />
+
+    <TextView
+        android:id="@+id/todo_date"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/line_height"
+        android:paddingStart="12dp"
+        android:layout_gravity="end"
+        android:textSize="18sp"
+        android:paddingEnd="12dp"
+        tools:text="data"
+        android:textAlignment="textEnd"
+        tools:ignore="RtlSymmetry" />
+
+</LinearLayout>

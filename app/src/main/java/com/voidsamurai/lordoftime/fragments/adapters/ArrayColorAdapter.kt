@@ -10,7 +10,9 @@ import android.widget.TextView
 import androidx.annotation.LayoutRes
 import com.voidsamurai.lordoftime.R
 
-
+/**
+ * Adapter to display colors and names in drop down menu.
+ */
 class ArrayColorAdapter(
     context: Context,
     @LayoutRes
@@ -26,7 +28,7 @@ class ArrayColorAdapter(
     private fun getCustomView(position: Int, convertView: View?, parent: ViewGroup?): View {
         var listItem = convertView
         if (listItem == null)
-            listItem = LayoutInflater.from(context).inflate(R.layout.color_edit_element, parent, false)
+            listItem = LayoutInflater.from(context).inflate(R.layout.element_color_edit, parent, false)
 
         listItem?.findViewById<View>(R.id.chart_color_block)!!.setBackgroundColor(
             Color.parseColor(

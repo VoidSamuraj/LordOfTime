@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"  android:fitsSystemWindows="true"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     tools:context=".MainActivity">
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -16,17 +17,18 @@
         <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:theme="@style/Theme.LordOfTime.AppBarOverlay">
+            android:theme="@style/Theme.LordOfTime.AppBarOverlay"
+            >
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:background="?attr/colorPrimary"
+                android:layout_height="@dimen/bar_height"
                 app:layout_constraintBaseline_toBaselineOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
+                android:background="@color/work_button_color"
                 app:popupTheme="@style/Theme.LordOfTime.PopupOverlay"/>
 
 
@@ -59,11 +61,18 @@
         android:id="@+id/nav_view"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_gravity="start"
         android:fitsSystemWindows="true"
+        android:layout_gravity="start"
         app:headerLayout="@layout/header_layout"
-        android:background="@color/drawer_bg"
+        app:itemTextColor="@color/drawer_text"
+        app:itemIconTint="@color/drawer_text"
+        android:background="@drawable/gradient_drawer"
         app:menu="@menu/drawer_menu">
+        <!--
+                android:background="@color/drawer_bg"
+
+       android:layout_gravity="start"
+       -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -84,12 +93,14 @@
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_marginEnd="@dimen/small_margin"
-                    android:src="@drawable/ic_settings"/>
+                    android:src="@drawable/ic_settings"
+                    app:tint="@color/drawer_text" />
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:ems="8"
                     android:textAppearance="@android:style/TextAppearance.Material.Widget.IconMenu.Item"
+                    android:textColor="@color/drawer_text"
                     android:text="@string/action_settings" />
 
             </LinearLayout>

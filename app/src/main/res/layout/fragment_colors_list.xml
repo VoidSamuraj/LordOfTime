@@ -12,7 +12,7 @@
         android:layout_height="match_parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:listitem="@layout/color_edit_element"/>
+        tools:listitem="@layout/element_color_edit"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/color_fab"

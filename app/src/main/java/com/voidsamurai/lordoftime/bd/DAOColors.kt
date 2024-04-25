@@ -2,6 +2,7 @@ package com.voidsamurai.lordoftime.bd
 
 import com.google.firebase.database.*
 import com.voidsamurai.lordoftime.MainActivity
+//@Keep
 class DAOColors(mActivity: MainActivity){
     private val data:MutableMap<String,String> = mutableMapOf()
     private var dbReference: DatabaseReference
@@ -11,6 +12,7 @@ class DAOColors(mActivity: MainActivity){
         val db=FirebaseDatabase.getInstance()
 
         dbReference=db.getReference(mActivity.userId!!).child("color")
+
 
         vel=object:ValueEventListener{
 

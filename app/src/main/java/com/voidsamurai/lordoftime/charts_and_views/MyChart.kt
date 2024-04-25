@@ -5,7 +5,6 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.util.AttributeSet
-import android.util.Log
 import android.view.View
 import com.voidsamurai.lordoftime.R
 import kotlin.math.cos
@@ -42,8 +41,8 @@ class MyChart(context: Context?, attributeSet: AttributeSet ):
 
         side = if (width > height)
             height * 7 / 10
-         else
-            width * 7 / 10
+        else
+            width * 6 / 10
 
         drawPie(canvas)
     }
@@ -55,12 +54,19 @@ class MyChart(context: Context?, attributeSet: AttributeSet ):
             var dur =0.0f
             var width:Float
             data?.let {
-            for (item in it){
-                dur+=item.second
-                width=scale*item.second
-                drawArc1(canvas!!,startAngle,width,item.first,item.second)
-                startAngle+=width
-            }
+                for (item in it){
+                    dur+=item.second
+                }
+                if(maxVal==null||dur>maxVal!!.toFloat())
+                    maxVal=-1
+              //  dur =0.0f
+                for (item in it){
+                  //  dur+=item.second
+                    width=scale*item.second
+                    drawArc1(canvas!!,startAngle,width,item.first,item.second)
+                    startAngle+=width
+                }
+
             }
             return dur
         }
@@ -68,25 +74,22 @@ class MyChart(context: Context?, attributeSet: AttributeSet ):
         paint.style=Paint.Style.FILL
         val duration:Float
         if(data!=null&&canvas!=null){
-            if(maxVal!=null){
-                paint.setShadowLayer(15f,0f,0f,Color.BLACK)
-                drawArc1(canvas,0.0f,360.0f,fillColorDefault?:Color.WHITE)
-                paint.setShadowLayer(0f,0f,0f,Color.BLACK)
+            paint.setShadowLayer(15f,0f,0f,Color.BLACK)
+            drawArc1(canvas,0.0f,360.0f,fillColorDefault?:Color.WHITE)
+            paint.setShadowLayer(0f,0f,0f,Color.BLACK)
+
+            if(maxVal!=null&&maxVal!=-1){
                 val scale:Float = 360.0f/ maxVal!!
                 duration=fillRound(scale)
 
 
             }else{
-
                 var dur =0.0f
                 for (item in data!!)
                     dur += item.second
-
                 val scale:Float = 360.0f/dur
-
                 duration=fillRound(scale)
             }
-
             paint.setShadowLayer(8f,0f,0f,Color.BLACK)
             paint.textAlign=Paint.Align.CENTER
             paint.style= Paint.Style.FILL
@@ -95,7 +98,11 @@ class MyChart(context: Context?, attributeSet: AttributeSet ):
             paint.setShadowLayer(0f,0f,0f,Color.BLACK)
             paint.color = Color.BLACK
             paint.textSize=20f
-            val text:String=String.format("%02d",duration.toInt())+":"+String.format("%02d",(duration%1*60).toInt())+"h"
+            val hours=duration.toInt()
+           // val hours=duration.toInt()//+((duration%1*100).toInt()/60)
+            val minutes=((duration*60f)%60).toInt()//+((duration%1*100).toInt()/60)
+          //  val minutes=(duration%1f*60).toInt()
+            val text:String=String.format("%02d",hours)+"h "+String.format("%02d",minutes)+"m"
             canvas.drawText(text,width/2f , height/2.0f- ((paint.descent() + paint.ascent()) / 2),paint)
 
         }
@@ -103,22 +110,9 @@ class MyChart(context: Context?, attributeSet: AttributeSet ):
     }
     private fun drawArc1(canvas: Canvas,startAngle:Float,sweepAngle:Float,color: Int,duration:Float=0.0f){
 
-        /*
-        *
-        paint.style= Paint.Style.STROKE
-        paint.color = color
-        val rect:RectF =RectF( (width / 2 - side / 3).toFloat(),
-            (height / 2 - side / 3).toFloat(),
-            (width / 2 + side / 3).toFloat(),
-            (height / 2 + side / 3).toFloat())
-        val path=Path()
-        paint.strokeWidth=100f
-        path.addArc(rect, startAngle, sweepAngle)
-        canvas.drawPath(path,paint)
-
-        * */
         paint.style= Paint.Style.FILL
         paint.color = color
+        if((sweepAngle-startAngle)!=360.0f)
         canvas.drawArc(
             (width / 2 - side / 2).toFloat(),
             (height / 2 - side / 2).toFloat(),
@@ -129,6 +123,18 @@ class MyChart(context: Context?, attributeSet: AttributeSet ):
             true,
             paint
         )
+        else
+            canvas.drawArc(
+                (width / 2 - side / 2+1).toFloat(),
+                (height / 2 - side / 2+1).toFloat(),
+                (width / 2 + side / 2-1).toFloat(),
+                (height / 2 + side / 2-1).toFloat(),
+                startAngle,
+                sweepAngle,
+                true,
+                paint
+            )
+
         paint.color = Color.BLACK
         paint.strokeWidth=3f
 
@@ -175,6 +181,6 @@ class MyChart(context: Context?, attributeSet: AttributeSet ):
 
         }
     }
-   
+
 
 }

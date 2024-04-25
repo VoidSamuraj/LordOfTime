@@ -1,5 +1,3 @@
-
-
 package com.voidsamurai.lordoftime.fragments
 
 import android.annotation.SuppressLint
@@ -19,20 +17,21 @@ import com.voidsamurai.lordoftime.R
 import com.voidsamurai.lordoftime.charts_and_views.NTuple5
 import com.voidsamurai.lordoftime.databinding.FragmentDateWidgetBinding
 import com.voidsamurai.lordoftime.fragments.adapters.CalendarAdapter
+import com.voidsamurai.lordoftime.fragments.dialogs.NumberPicker
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.roundToInt
 
-
+/**
+ * Fragment for statistics view with array of charts.
+ */
 class DateChartFragment : Fragment() {
-
 
     private var _binding: FragmentDateWidgetBinding?=null
     private val binding get()=_binding!!
-    var dayAimH:MutableLiveData<Int> = MutableLiveData(6)
+    var dayAimH:MutableLiveData<Int> = MutableLiveData(8)
     private var productiveDays:Int=0
     private var workPer:Float=0f
-    private var productivePer:Float=0f
     private lateinit var weeks1:Array<RecyclerView>
     private lateinit var weeks2:Array<RecyclerView>
     private var date:Calendar= Calendar.getInstance(TimeZone.getTimeZone("UTC"))
@@ -54,24 +53,36 @@ class DateChartFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        dayAimH.value=(activity as MainActivity).getCalendarChartRange()
         dayAim=binding.hours
         weeks1 = arrayOf( binding.firstWeek,binding.secondWeek,binding.thirdWeek,binding.fourthWeek,binding.fifthWeek,binding.sixthWeek)
         weeks2 = arrayOf( binding.firstWeek2,binding.secondWeek2,binding.thirdWeek2,binding.fourthWeek2,binding.fifthWeek2,binding.sixthWeek2)
 
         createDaysCalendarChart(Calendar.getInstance(TimeZone.getTimeZone("UTC")),true, weeks1)
         createDaysCalendarChart(Calendar.getInstance(TimeZone.getTimeZone("UTC")),true, weeks2)
-
+        /**
+         * Function to display productive days number and percentage.
+         */
         fun fillLabels(){
-            productivePer= (productivePer * 100).roundToInt().toFloat()/100
             workPer= (workPer * 100).roundToInt().toFloat()/100
-            if (workPer>100)workPer=100f
-            binding.summaryText.text=String.format("Produktywne dni: %o dni. Wydajność: %.2f%%",productiveDays,workPer)
+            if (workPer>100)
+                workPer=100f
+
+            binding.productiveDays.text=String.format(resources.getString(R.string.productive_days)+": %o ",productiveDays)
+            binding.productiveLabel.text=String.format(resources.getString(R.string.productivity)+": %.2f%%",workPer)
         }
+
+        /**
+         * Change text of aim hours and update productive hours and percentage.
+         */
         fun fillAim(){
-            dayAim.text=dayAimH.value.toString()
+            dayAim.text=getAimH(dayAimH.value.toString())
             fillLabels()
         }
+
+        /**
+         * Update charts
+         */
         fun updateAfterAimChange(){
             val id=binding.materialButtonToggleGroup.checkedButtonId
             if(id==R.id.day_button)
@@ -91,11 +102,13 @@ class DateChartFragment : Fragment() {
                     createMonthCalendarChart(date,true,weeks2)
             fillLabels()
         }
-        dayAimH.observe(viewLifecycleOwner, {
-            dayAim.text=it.toString()
+        dayAimH.observe(viewLifecycleOwner) {
+            dayAim.text = getAimH(it.toString())
             updateAfterAimChange()
-        })
-
+        }
+        /**
+         * remove animation of changing date range.
+         */
         fun slideNone(){
             binding.currentMonthLabel.inAnimation= null
             binding.currentMonthLabel.outAnimation= null
@@ -284,7 +297,10 @@ class DateChartFragment : Fragment() {
         fillAim()
 
         binding.numberPicker.setOnClickListener {
-            val fnp=NumberPicker(dayAimH.value!!)
+            val fnp= NumberPicker(dayAimH.value!!) {
+                dayAimH.value = it.value + 1
+                (activity as MainActivity).setCalendarChartRange(it.value + 1)
+            }
             // fnp.show(requireActivity().supportFragmentManager,"Hours")
             fnp.show(childFragmentManager,"Hours")
         }
@@ -311,6 +327,10 @@ class DateChartFragment : Fragment() {
         else
             monthCalendar.firstDayOfWeek=Calendar.SUNDAY
 
+        val nextCalendar= monthCalendar.clone() as Calendar
+        val prevCalendar= monthCalendar.clone() as Calendar
+        nextCalendar.add(Calendar.MONTH,1)
+        prevCalendar.add(Calendar.MONTH,-1)
 
         val allData:Map<Calendar,Float> =(activity as MainActivity).getOldData().associate { Pair(it.first,it.second) }
         val monthData:Map<Calendar,Float> =allData.filter { entry ->
@@ -318,10 +338,10 @@ class DateChartFragment : Fragment() {
         }
 
         val lastMonthData:Map<Calendar,Float> =allData.filter { entry ->
-            (monthCalendar.get(Calendar.YEAR)==entry.key.get(Calendar.YEAR)) &&((monthCalendar.get(Calendar.MONTH)-1)==entry.key.get(Calendar.MONTH))
+            (prevCalendar.get(Calendar.YEAR)==entry.key.get(Calendar.YEAR)) &&(prevCalendar.get(Calendar.MONTH)==entry.key.get(Calendar.MONTH))
         }
         val nextMonthData:Map<Calendar,Float> =allData.filter { entry ->
-            (monthCalendar.get(Calendar.YEAR)==entry.key.get(Calendar.YEAR)) &&((monthCalendar.get(Calendar.MONTH)+1)==entry.key.get(Calendar.MONTH))
+            (nextCalendar.get(Calendar.YEAR)==entry.key.get(Calendar.YEAR)) &&(nextCalendar.get(Calendar.MONTH)==entry.key.get(Calendar.MONTH))
         }
         val c:Calendar= Calendar.getInstance(TimeZone.getTimeZone("UTC"))
         c.set(2021, 11, 1, 12, 6,0)
@@ -352,7 +372,15 @@ class DateChartFragment : Fragment() {
 
 
         val lastMonth: Calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
-        lastMonth.set(Calendar.MONTH,monthCalendar.get(Calendar.MONTH)-1)
+        val lm=monthCalendar.get(Calendar.MONTH)-1
+
+        lastMonth.set(Calendar.MONTH,
+            if(lm>=0)
+                lm
+            else
+                12
+        )
+
         var lastMonthDays=lastMonth.getActualMaximum(Calendar.DAY_OF_MONTH)-(firstMonthDay-1)
         var nextMonthDays=1
 
@@ -403,7 +431,6 @@ class DateChartFragment : Fragment() {
         }
 
         workPer=hours/( dayAimH.value!! * monthDays)
-        productivePer=(productiveDays.toFloat()/monthDays*100)
     }
 
     private fun createWeekCalendarChart(monthCalendar:Calendar, isMondayFirstDay:Boolean=false,weeks:Array<RecyclerView>){
@@ -444,7 +471,14 @@ class DateChartFragment : Fragment() {
         calendar.set(Calendar.DAY_OF_MONTH,1)
 
         val lastMonth:Calendar=Calendar.getInstance(TimeZone.getTimeZone("UTC"))
-        lastMonth.set(Calendar.MONTH,monthCalendar.get(Calendar.MONTH)-1)
+        val lm=monthCalendar.get(Calendar.MONTH)-1
+        lastMonth.set(Calendar.MONTH,
+            if(lm>=0)
+                lm
+            else
+                12
+
+        )
 
         fun setWeekAdapter(recyclerView:RecyclerView,arrayList:ArrayList<NTuple5<Int,Float,Boolean,Int,Int?>?> ) {
             setAdapterManager(
@@ -494,7 +528,6 @@ class DateChartFragment : Fragment() {
         setWeekAdapter(weeks[4],ArrayList())
         setWeekAdapter(weeks[5],ArrayList())
         workPer=hours/(days * dayAimH.value!!)
-        productivePer=(productiveDays.toFloat()/days*100)
     }
 
     private fun createMonthCalendarChart(monthCalendar:Calendar, isMondayFirstDay:Boolean=false, weeks:Array<RecyclerView>){
@@ -526,7 +559,7 @@ class DateChartFragment : Fragment() {
             monthsData.put(key,it.value)
         }
 
-        val days=monthCalendar.getActualMaximum(Calendar.DAY_OF_MONTH)
+        val days=monthCalendar.getActualMaximum(Calendar.DAY_OF_YEAR)
         val scale=days* dayAimH.value!!
         fun setMonthAdapter(recyclerView:RecyclerView,arrayList:ArrayList<NTuple5<Int,Float,Boolean,Int,Int?>?> ) {
             setAdapterManager(
@@ -563,10 +596,11 @@ class DateChartFragment : Fragment() {
         setMonthAdapter(weeks[4],ArrayList())
         setMonthAdapter(weeks[5],ArrayList())
         workPer=hours/scale
-        productivePer=(productiveDays.toFloat()/days*100)
     }
 
-
+    private fun getAimH(data:String):String{
+        return String.format("%s %s %s",resources.getString(R.string.aim),data,resources.getString(R.string.h))
+    }
 
 
     private fun setAdapterManager(recyclerView: RecyclerView, adapter:RecyclerView.Adapter<LinearViewHolder>, layoutManager: RecyclerView.LayoutManager){
