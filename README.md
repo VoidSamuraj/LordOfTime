@@ -1,10 +1,46 @@
 # LordOfTime
-Time and task management app
+![Project Status](https://img.shields.io/badge/Maintained%3F-no-red.svg)
+![Static Badge](https://img.shields.io/badge/compileSdk-33-blue)
+![Static Badge](https://img.shields.io/badge/minSdkVersion-26-blue)
+![Static Badge](https://img.shields.io/badge/targetSdkVersion-30-blue)
 
-App used to manage your time.
-Work in progress.
-Time and task management app  
-<br/>
+![Firebase Analytics Badge](https://img.shields.io/badge/Firebase%20Analytics-Version%2028.4.1-green)
+![Firebase Auth Badge](https://img.shields.io/badge/Firebase%20Auth-Version%2021.0.8-green)
+![Firebase Database Badge](https://img.shields.io/badge/Firebase%20Database-Version%2020.0.6-green)
+![Firebase Storage Badge](https://img.shields.io/badge/Firebase%20Storage-Version%2020.0.2-green)
+![Firebase Crashlytics Badge](https://img.shields.io/badge/Firebase%20Crashlytics-Version%2028.4.1-green)
+![Google Play Services Auth Badge](https://img.shields.io/badge/Google%20Play%20Services%20Auth-Version%2020.3.0-purple)
+![Lottie Badge](https://img.shields.io/badge/Lottie-Version%205.0.2-pink)
+
+## Description
+Time and task management app.
+This is my first mobile application, it may not be using the best practices, but it allowed me to learn many things about Android. The application covers many issues regarding writing Android applications. 
+When writing this project, I used :
+- services
+- notifications
+- fragments
+- dialogues
+- SQLite
+- Firebase.
+- I created my own views and diagrams.
+- different animations.
+
+The resulting code could be more readable and more divided, but for now I am suspending work on the project.
+
+## Features
+- create own account and log in on different devices.
+- create and track tasks.
+- set task repetition.
+- set categories for tasks.
+- set your daily goals and track progress.
+- notification when it's time for a task.
+
+Experimental:
+- dark/light mode.
+- change language.
+- get info about other apps usage.
+
+## Usage
 <a href="https://play.google.com/store/apps/details?id=com.voidsamurai.lordoftime">
 <img src="https://user-images.githubusercontent.com/49106260/157001205-8efc5d81-936b-452e-9847-3191c7dd7794.png"  width="300"/>&nbsp;&nbsp;
 <a/>
