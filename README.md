@@ -3,6 +3,7 @@
 ![Static Badge](https://img.shields.io/badge/compileSdk-33-blue)
 ![Static Badge](https://img.shields.io/badge/minSdkVersion-26-blue)
 ![Static Badge](https://img.shields.io/badge/targetSdkVersion-30-blue)
+![Static Badge](https://img.shields.io/badge/XML-BE3144)
 
 ![Firebase Analytics Badge](https://img.shields.io/badge/Firebase%20Analytics-Version%2028.4.1-green)
 ![Firebase Auth Badge](https://img.shields.io/badge/Firebase%20Auth-Version%2021.0.8-green)
