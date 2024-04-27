@@ -20,7 +20,7 @@ When writing this project, I used :
 - services
 - notifications
 - fragments
-- dialogues
+- dialogs
 - SQLite
 - Firebase.
 - I created my own views and diagrams.
